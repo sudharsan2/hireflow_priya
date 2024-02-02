@@ -1,10 +1,64 @@
-// Login.js
-import React from 'react';
-import './login.css';
+import React from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import "./login.css";
+import { notification } from "antd";
 
 const Login = () => {
-  const imgurl1 = process.env.PUBLIC_URL + './img/bg_2.mp4';
-  const imgurl2 = process.env.PUBLIC_URL + './img/login.jpg';
+  const navigate = useNavigate();
+
+  const validationSchema = Yup.object({
+    username: Yup.string().required("Username is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const res = await axios.post(
+          "http://172.235.10.116:9090/hiring/auth/signin/",
+          {
+            username: values.username,
+            password: values.password,
+          }
+        );
+
+        console.log("response", res.data);
+        localStorage.setItem("accessToken", res.data.tokens.access_token);
+        // Show success notification
+        notification.success({
+          message: "Login Successful",
+          description: "You have successfully logged in.",
+        });
+
+        navigate("/first-page");
+      } catch (err) {
+        // Check if the error response contains a message
+        const errorMessage = err.response
+          ? err.response.data.message
+          : "An error occurred during login.";
+
+        console.log("Error", errorMessage);
+
+        // Show error notification
+        notification.error({
+          message: "Login Failed",
+          description: errorMessage,
+        });
+      }
+    },
+  });
+
+  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_2.mp4";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/login.jpg";
+
   return (
     <div className="Login">
       <video autoPlay loop muted className="background-video" playsInline>
@@ -19,14 +73,32 @@ const Login = () => {
           <div className="form-container">
             <h1>Sign in to HireFlow</h1>
             <p>by FocusR AI</p>
-            <form>
+            <form onSubmit={formik.handleSubmit}>
               <div className="form-group">
-                
-                <input type="text" id="username" name="username" placeholder="Enter your username" />
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="Enter your username"
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                />
+                {formik.touched.username && formik.errors.username && (
+                  <div className="error">{formik.errors.username}</div>
+                )}
               </div>
               <div className="form-group">
-               
-                <input type="password" id="password" name="password" placeholder="Enter your password" />
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                />
+                {formik.touched.password && formik.errors.password && (
+                  <div className="error">{formik.errors.password}</div>
+                )}
               </div>
               <div className="additional-options">
                 <label>
@@ -37,7 +109,9 @@ const Login = () => {
                   Forgot Password?
                 </a>
               </div>
-              <button type="submit">Login</button>
+              <button type="submit" disabled={formik.isSubmitting}>
+                {formik.isSubmitting ? "Logging in..." : "Login"}
+              </button>
             </form>
           </div>
         </div>

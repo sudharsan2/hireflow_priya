@@ -108,6 +108,12 @@
     margin-bottom: 15px;
     font-size: 15px;
   }
+
+  .error {
+    color: red;
+    font-size: 14px; /* You can adjust the font size as needed */
+    margin-top: 5px; /* Adjust the margin as needed for spacing */
+  }
   
   .additional-options label {
     display: flex;
