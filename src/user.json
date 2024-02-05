@@ -1,0 +1,115 @@
+
+
+[
+    
+      {
+        "ROLE": "HRR",
+        "name": "John Doe",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+    {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+     
+        {
+          "ROLE": "Tech",
+          "name": "John",
+          "NewApplicants": 10,
+          "Verified": 5,
+          "AssignedToTech": 3,
+          "WaitingForApproval": 2,
+          "Completed": 8
+        },
+        {
+          "ROLE": "Tech",
+          "name": "John",
+          "NewApplicants": 10,
+          "Verified": 5,
+          "AssignedToTech": 3,
+          "WaitingForApproval": 2,
+          "Completed": 8
+        },
+        {
+          "ROLE": "Tech",
+          "name": "John",
+          "NewApplicants": 10,
+          "Verified": 5,
+          "AssignedToTech": 3,
+          "WaitingForApproval": 2,
+          "Completed": 8
+        },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      },
+      {
+        "ROLE": "Tech",
+        "name": "John",
+        "NewApplicants": 10,
+        "Verified": 5,
+        "AssignedToTech": 3,
+        "WaitingForApproval": 2,
+        "Completed": 8
+      }
+  ]
+  
