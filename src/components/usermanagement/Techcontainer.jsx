@@ -1,14 +1,13 @@
 // HRRContainer.jsx
-
 import React, { useState, useEffect, useRef } from 'react';
-import userData from '../../user.json'; // Import the JSON data directly
 import './hrrcontainer.css'; // Import the CSS file
 import BarChartIcon from '@mui/icons-material/BarChart';
+import axios from 'axios';
 
 const UserCard = ({ user, onClick }) => {
     return (
       <div className="user-card" onClick={() => onClick(user)}>
-        <h3>{user.name}</h3>
+        <h3>{user.username}</h3>
         
       </div>
     );
@@ -24,39 +23,61 @@ const UserCard = ({ user, onClick }) => {
     };
   
     useEffect(() => {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
   
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }, [onClose]);
   
     return (
       <div className="user-details-modal" ref={modalRef}>
-      <h3>{user.name}</h3>
-      <p>Role: {user.ROLE}</p>
-      <p>New Applicants: {user.NewApplicants}</p>
-      <p>Verified: {user.Verified}</p>
-      <p>Assigned to tech: {user.AssignedToTech}</p>
-      <p>waiting for approval: {user.WaitingForApproval}</p>
-      <p>completed: {user.Completed}</p>
-      <div className='button-container'>
-      <button onClick={onDelete}>Delete</button>
-      <button>Pause</button>
+        <h3>{user.name}</h3>
+        <p>Role: {user.roles}</p>
+        <p>New Applicants: {user.NewApplicants}</p>
+        <p>Verified: {user.Verified}</p>
+        <p>Assigned to tech: {user.AssignedToTech}</p>
+        <p>waiting for approval: {user.WaitingForApproval}</p>
+        <p>completed: {user.Completed}</p>
+        <div className="button-container">
+          <button onClick={onDelete}>Delete</button>
+          <button>Pause</button>
+        </div>
+        <span>
+          <BarChartIcon />
+          Show Analytics
+        </span>
       </div>
-      <span><BarChartIcon/>Show Analytics</span>
-      
-    </div>
     );
   };
-  
   const Techcontainer = () => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
   
     useEffect(() => {
-      setUsers(userData);
-    }, []);
+      // Fetch users from the API using Axios
+      const token = localStorage.getItem("accessToken");
+      const fetchUsers = async () => {
+        try {
+          const response = await axios.get(
+            "http://172.235.10.116:9090/hiring/auth/getAllUsers",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+            }
+          );
+          setUsers(response.data);
+        } catch (error) {
+          console.error("Failed to fetch users:", error.message);
+        }
+      };
+  
+      // Call the fetchUsers function
+      fetchUsers();
+    }, []); // Empty dependency array means this effect will run only once, similar to componentDidMount
+  
   
     const handleCardClick = (user) => {
       setSelectedUser(user);
@@ -74,13 +95,13 @@ const UserCard = ({ user, onClick }) => {
       handleCloseModal();
     };
   
-    const hrrUsers = users.filter(user => user.ROLE === 'Tech');
+    const hrrUsers = users.filter(user => user.roles === 3);
   
     return (
       <div className="container">
         {hrrUsers.map(user => (
           <UserCard
-            key={user.name}
+            key={user.id}
             user={user}
             onClick={handleCardClick}
           />

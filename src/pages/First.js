@@ -1,5 +1,7 @@
+import { Button } from 'antd';
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useNavigate } from 'react-router-dom';
 
 const dummyData = {
   columns: {
@@ -31,6 +33,7 @@ const dummyData = {
 };
 
 const First = () => {
+    const navigate = useNavigate()
   const [data, setData] = useState(dummyData);
 
   const onDragEnd = (result) => {
@@ -89,9 +92,16 @@ const First = () => {
       setData(newData);
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userRole");
+    navigate("/");
+  };
   
 
   return (
+    <>
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="all-columns" direction="horizontal" type="column">
         {(provided) => (
@@ -143,6 +153,10 @@ const First = () => {
         )}
       </Droppable>
     </DragDropContext>
+    <Button onClick={handleLogout}>
+LOGOUT
+    </Button>
+    </>
   );
 };
 

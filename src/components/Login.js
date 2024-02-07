@@ -5,10 +5,76 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
 import { notification } from "antd";
+import { jwtDecode } from "jwt-decode";
+
+////////////////////////////////////////////////////////////////////////////////////
 
 const Login = () => {
-  const imgurl1 = process.env.PUBLIC_URL + './img/bg_2.mp4';
-  const imgurl2 = process.env.PUBLIC_URL + './img/login.jpg';
+  const navigate = useNavigate();
+
+  const validationSchema = Yup.object({
+    username: Yup.string().required("Username is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const res = await axios.post(
+          "http://172.235.10.116:9090/hiring/auth/signin/",
+          {
+            username: values.username,
+            password: values.password,
+          }
+        );
+
+        // Extracting role from the decoded JWT
+        const decodedToken = jwtDecode(res.data.tokens.access_token);
+        const role = decodedToken.role;
+
+        console.log("response", res.data);
+        localStorage.setItem("accessToken", res.data.tokens.access_token);
+        localStorage.setItem("userRole", role);
+        // Show success notification
+        notification.success({
+          message: "Login Successful",
+          description: "You have successfully logged in.",
+        });
+
+        // Conditionally navigate based on the user's role
+        if (role === "ROLE_ADMIN") {
+          navigate("/admin-page");
+        } else if (role === "ROLE_RECRUITER") {
+          navigate("/kanban-recurit");
+        } else {
+          // Navigate to a default page or handle other roles
+          navigate("/");
+        }
+      } catch (err) {
+        // Check if the error response contains a message
+        const errorMessage = err.response
+          ? err.response.data.message
+          : "An error occurred during login.";
+
+        console.log("Error", errorMessage);
+
+        // Show error notification
+        notification.error({
+          message: "Login Failed",
+          description: errorMessage,
+        });
+      }
+    },
+  });
+
+  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_2.mp4";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/login.jpg";
+
   return (
     <div className="Login">
       <video autoPlay loop muted className="background-video" playsInline>
