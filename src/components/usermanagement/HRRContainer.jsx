@@ -4,9 +4,19 @@ import "./hrrcontainer.css";
 import BarChartIcon from "@mui/icons-material/BarChart";
 
 const UserCard = ({ user, onClick }) => {
+  const getAvatarUrl = () => {
+    return `https://api.dicebear.com/7.x/miniavs/svg?backgroundColor=ffdfbf`;
+  };
+
   return (
-    <div className="user-card" onClick={() => onClick(user)}>
+    <div className="user-card-hrr" onClick={() => onClick(user)}>
+      <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <h3>{user.username}</h3>
+      <div>
+      <p>{user.empId}</p>
+
+      </div>
+      <p>completed: {user.Completed}</p>
     </div>
   );
 };

@@ -5,13 +5,20 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import axios from 'axios';
 
 const UserCard = ({ user, onClick }) => {
-    return (
-      <div className="user-card" onClick={() => onClick(user)}>
-        <h3>{user.username}</h3>
-        
-      </div>
-    );
+  const getAvatarUrl = () => {
+    return `https://api.dicebear.com/7.x/miniavs/svg?glassesProbability=50`;
   };
+
+  return (
+    <div className="user-card-tech" onClick={() => onClick(user)}>
+      <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
+      <h3>{user.username}</h3>
+      <p>{user.empId}</p>
+      <p>completed: {user.Completed}</p>
+    </div>
+  );
+};
+
   
   const UserDetailsModal = ({ user, onClose, onDelete }) => {
     const modalRef = useRef(null);

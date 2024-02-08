@@ -20,7 +20,7 @@ const HRRHeader = ({ onAddUser, onAssign }) => {
 
   return (
     <div className="header">
-  <h2>HRR</h2>
+  <h2>Human Resource Recruiter</h2>
   
   <span onClick={onAssign} className="assign-text">
     Assign

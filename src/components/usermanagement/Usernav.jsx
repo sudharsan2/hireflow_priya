@@ -144,7 +144,9 @@ const Usernav = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <img src={imgurl1} alt="Logo" className="logo" />
+        <h2>HireFlow</h2>
+        <p>by FocusR AI</p>
+        
       </div>
       <div className="navbar-right">
         <span onClick={handleAddUserClick} className="nav-span">
