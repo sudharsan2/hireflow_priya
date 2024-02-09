@@ -5,18 +5,22 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 
 const UserCard = ({ user, onClick }) => {
   const getAvatarUrl = () => {
-    return process.env.PUBLIC_URL + "./img/avtr1.jpg";;
+    return process.env.PUBLIC_URL + "./img/avtr3.jpg";;
   };
 
   return (
-    <div className="user-card-hrr" onClick={() => onClick(user)}>
+    <div className="user-card-can" onClick={() => onClick(user)}>
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
-      <h3>{user.username}</h3>
+      <h3>{user.name}</h3>
       <div>
-      <p>{user.empId}</p>
 
       </div>
-      <p>completed: {user.Completed}</p>
+      <p>Job Role: {user.jobRole}</p>
+
+      <p>Experience: {user.yearsOfExperience}</p>
+      <div className="score">
+        <p>{user.resumeScore}</p>
+      </div>
     </div>
   );
 };
@@ -41,12 +45,11 @@ const UserDetailsModal = ({ user, onClose, onDelete }) => {
   return (
     <div className="user-details-modal" ref={modalRef}>
       <h3>{user.name}</h3>
-      <p>Role: {user.roles}</p>
-      <p>New Applicants: {user.NewApplicants}</p>
+      <p>Job Role: {user.jobRole}</p>
+      <p>Score: {user.resumeScore}</p>
       <p>Verified: {user.Verified}</p>
-      <p>Assigned to tech: {user.AssignedToTech}</p>
-      <p>waiting for approval: {user.WaitingForApproval}</p>
-      <p>completed: {user.Completed}</p>
+      <p>Experience: {user.yearsOfExperience}</p>
+      
       <div className="button-container">
         <button onClick={onDelete}>Delete</button>
         <button>Pause</button>
@@ -59,7 +62,7 @@ const UserDetailsModal = ({ user, onClose, onDelete }) => {
   );
 };
 
-const HRRContainer = () => {
+const Candidatecon = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -69,7 +72,7 @@ const HRRContainer = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://172.235.10.116:9090/hiring/auth/getAllUsers",
+          "http://172.235.10.116:9090/hiring/entryLevel/getAllCandidates",
           {
             headers: {
               "Content-Type": "application/json",
@@ -103,7 +106,7 @@ const HRRContainer = () => {
     handleCloseModal();
   };
 
-  const hrrUsers = users.filter((user) => user.roles === 2);
+  const hrrUsers = users;
 
   return (
     <div className="container">
@@ -125,4 +128,4 @@ const HRRContainer = () => {
   );
 };
 
-export default HRRContainer;
+export default Candidatecon;

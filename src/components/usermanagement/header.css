@@ -24,6 +24,15 @@
     
     margin-right:15px;
   }
+
+  .header span:hover{
+    display: flex;
+    cursor: pointer;
+    color: #3e3e3e;
+    align-items: center;
+    text-decoration: underline;
+    margin-right:15px;
+  }
   
   
 /* Styles for the Add User modal */
@@ -36,7 +45,8 @@
 .add-user-modal {
   position: fixed;
   height: fit-content;
-  width: 400px;
+  align-items: center;
+  width: 380px;
   border-radius: 10px;
   top: 50%;
   left: 50%;

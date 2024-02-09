@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const UserCard = ({ user, onClick }) => {
   const getAvatarUrl = () => {
-    return `https://api.dicebear.com/7.x/miniavs/svg?glassesProbability=50`;
+    return process.env.PUBLIC_URL + "./img/avtr2.jpg";
   };
 
   return (

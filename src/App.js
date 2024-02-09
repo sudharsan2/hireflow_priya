@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Usermanagement from "./pages/Usermanagement";
 import First from "./pages/First";
+import Candidate from "./pages/Candidate"
 // Import your first-page component
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<Login />} />
         <Route path="/admin-page" element={<Usermanagement />} />
         <Route path="/kanban-recurit" element={<First />} />
+        <Route path="/candidate" element={<Candidate />} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>
