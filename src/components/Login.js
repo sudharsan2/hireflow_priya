@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
-import { notification } from "antd";
+import { Alert, notification } from "antd";
 import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import {
+  fetchLoginDetailsAsync,
+  getErrorFromAuth,
+  getIsAuthenticatedFromAuth,
+  getIsLoadingFromAuth,
+} from "../redux/slices/authSlice";
+import useIsMountedRef from "../hooks/useIsMountedRef";
+import { useSelector } from "react-redux";
 
 ////////////////////////////////////////////////////////////////////////////////////
 
 const Login = () => {
+  const isMountedRef = useIsMountedRef();
   const navigate = useNavigate();
-
-  const validationSchema = Yup.object({
+  const dispatch = useDispatch();
+  const isLoading = useSelector(getIsLoadingFromAuth);
+  const isAuthenticated = useSelector(getIsAuthenticatedFromAuth);
+  const isError = useSelector(getErrorFromAuth);
+  const LoginSchema = Yup.object({
     username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required"),
   });
@@ -22,58 +35,41 @@ const Login = () => {
       username: "",
       password: "",
     },
-    validationSchema,
-    onSubmit: async (values) => {
+    validationSchema: LoginSchema,
+    onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
-        const res = await axios.post(
-          "http://172.235.10.116:9090/hiring/auth/signin/",
-          {
-            username: values.username,
-            password: values.password,
-          }
-        );
+        dispatch(fetchLoginDetailsAsync(values));
 
-        // Extracting role from the decoded JWT
-        const decodedToken = jwtDecode(res.data.tokens.access_token);
-        const role = decodedToken.role;
-
-        console.log("response", res.data);
-        localStorage.setItem("accessToken", res.data.tokens.access_token);
-        localStorage.setItem("userRole", role);
-        // Show success notification
-        notification.success({
-          message: "Login Successful",
-          description: "You have successfully logged in.",
-        });
-
-        // Conditionally navigate based on the user's role
-        if (role === "ROLE_ADMIN") {
-          navigate("/admin-page");
-        } else if (role === "ROLE_RECRUITER") {
-          navigate("/kanban-recurit");
-        } else {
-          // Navigate to a default page or handle other roles
-          navigate("/");
+        if (isMountedRef.current) {
+          setSubmitting(false);
         }
-      } catch (err) {
-        // Check if the error response contains a message
-        const errorMessage = err.response
-          ? err.response.data.message
-          : "An error occurred during login.";
-
-        console.log("Error", errorMessage);
-
-        // Show error notification
-        notification.error({
-          message: "Login Failed",
-          description: errorMessage,
-        });
+      } catch (error) {
+        console.error(error);
+        resetForm();
+        if (isMountedRef.current) {
+          setSubmitting(false);
+          setErrors({ afterSubmit: error.message });
+        }
       }
     },
   });
 
-  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
-  const imgurl2 = process.env.PUBLIC_URL + "./img/login3.jpg";
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    if (isAuthenticated) {
+      if (role === "ROLE_ADMIN") {
+        navigate("/admin-page");
+      } else if (role === "ROLE_RECRUITER") {
+        navigate("/kanban-recurit");
+      } else {
+        // Navigate to a default page or handle other roles
+        navigate("/");
+      }
+    }
+  }, [isAuthenticated, navigate]);
+
+  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_2.mp4";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/login.jpg";
 
   return (
     <div className="Login">
@@ -90,6 +86,7 @@ const Login = () => {
             <h1>Sign in to HireFlow</h1>
             <p>by FocusR AI</p>
             <form onSubmit={formik.handleSubmit}>
+              {isError !== "" && <Alert severity="error">{isError}</Alert>}
               <div className="form-group">
                 <input
                   type="text"
@@ -136,4 +133,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login;

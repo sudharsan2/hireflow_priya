@@ -61,11 +61,26 @@
     color: #ffffff;
     align-items: center;
     
-    margin-right:15px;
+    margin-right:20px;
   }
   
   .nav-span:hover {
     color: #848383;
     
+  }
+
+  .nav-drop{
+    background-color: #121e24;
+    color: #fff;
+    height: 30px;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100px;
+    margin-right: 20px;
+    border-color: #2a3c4a00;
+    margin-left:20px;
+    padding-top: 2px;
+    border-radius: 5px;
+    text-align: center;
   }
   

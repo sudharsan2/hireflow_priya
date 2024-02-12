@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Usermanagement from "./pages/Usermanagement";
 import First from "./pages/First";
 import Candidate from "./pages/Candidate"
+import Kanban from "./pages/Kanban";
 // Import your first-page component
 
 const App = () => {
@@ -13,8 +14,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/admin-page" element={<Usermanagement />} />
-        <Route path="/kanban-recurit" element={<First />} />
+        <Route path="/kanban-recurit" element={<Kanban />} />
         <Route path="/candidate" element={<Candidate />} />
+
         {/* Add more routes as needed */}
       </Routes>
     </Router>

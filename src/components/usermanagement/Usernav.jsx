@@ -154,6 +154,17 @@ const Usernav = () => {
         
       </div>
       <div className="navbar-right">
+  <select className="nav-drop">
+      
+    <option value="model1"> gpt-3.5-turbo	</option>
+    <option value="model2">gpt-4	</option>
+    <option value="model3">gpt-4-turbo-preview	</option>
+    <option value="model4">Llama</option>
+    <option value="model4">Palm</option>
+    <option value="model4">Gemini Pro</option>
+  </select>
+
+
         <span onClick={handleAddUserClick} className="nav-span">
           <PersonAddAlt1Icon style={{ marginRight: "5px" }} />
           Add user
