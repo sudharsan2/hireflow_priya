@@ -68,8 +68,8 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_2.mp4";
-  const imgurl2 = process.env.PUBLIC_URL + "./img/login.jpg";
+  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/login3.jpg";
 
   return (
     <div className="Login">
