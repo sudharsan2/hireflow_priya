@@ -1,27 +1,61 @@
 .kanban-board {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
-  }
-  
-  .column {
-    border: 1px solid #ddd;
-    padding: 10px;
-    width: 200px;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    margin-bottom: 5px;
-    padding: 5px;
-    cursor: grab;
-  }
-  
-  button {
-    margin-top: 10px;}
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.column {
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: 200px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
+  padding: 5px;
+  cursor: grab;
+}
+
+li:hover {
+  background-color: #e0e0e0;
+}
+
+li.dragging {
+  background-color: #d3ffd3;
+}
+
+.placeholder {
+  background-color: #a9a9a9;
+  height: 40px; /* Adjust the height as needed */
+  margin: 5px 0;
+}
+
+.card-header i {
+  color: #007bff;
+  font-size: 16px;
+  font-weight: bold;
+
+  margin-bottom: 5px; /* Adjust the color as needed */
+}
+
+.card-details {
+  font-size: 14px;
+  color: #555;
+}
+
+.card-mark {
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff; /* Adjust the color as needed */
+}
+
+button {
+  margin-top: 10px;
+}

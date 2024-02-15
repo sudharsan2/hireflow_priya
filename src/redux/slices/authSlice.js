@@ -109,8 +109,8 @@ export const {
   startLoading,
   stopLoading,
   setIsAuthenticated,
-  setIsAssetDetailsCaptured,
-  setStatus,
+
+ 
   resetError,
 } = authSlice.actions;
 

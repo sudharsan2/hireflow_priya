@@ -4,11 +4,11 @@ import api from "../../services/api";
 //////////////////////////////////////////////////////////////////
 
 export const fetchTasksAsync = createAsyncThunk(
-  "kanban/fetchTasks",
+  "interviewer/fetchTasks",
   async () => {
     try {
       const response = await api.get(
-        "/hiring/entryLevel/getCandidateForRecruiter"
+        "/hiring/interviewer/getCandidateForInterviewer"
       );
       return response.data;
     } catch (error) {
@@ -18,25 +18,12 @@ export const fetchTasksAsync = createAsyncThunk(
   }
 );
 
-export const fetchInterviewersAsync = createAsyncThunk(
-  "kanban/fetchInterviewers",
-  async () => {
-    try {
-      const response = await api.get("/hiring/auth/getListOfInterviewer");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching interviewers:", error);
-      throw error;
-    }
-  }
-);
-
 export const updateTaskAsync = createAsyncThunk(
-  "kanban/updateTask",
+  "interviewer/updateTask",
   async (updatedData) => {
     try {
-      const response = await api.put(
-        `/hiring/entryLevel/updatedata/${updatedData.resumeId}/`,
+      const response = await api.post(
+        "/hiring/interviewer/SaveInterviewerData/",
         updatedData
       );
       return response.data;
@@ -47,15 +34,30 @@ export const updateTaskAsync = createAsyncThunk(
   }
 );
 
-const kanbanSlice = createSlice({
-  name: "kanban",
+export const fetchInterviewerDataByIdAsync = createAsyncThunk(
+  "interviewer/fetchInterviewerDataById",
+  async (resumeId) => {
+    try {
+      const response = await api.get(
+        `/hiring/interviewer/getInterviewerDataById/${resumeId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching interviewer data by ID:", error);
+      throw error;
+    }
+  }
+);
+
+const interviewerSlice = createSlice({
+  name: "interviewer",
   initialState: {
     tasks: {
-      Assigned: [],
       Tech: [],
       Waiting: [],
       Selected: [],
     },
+    interviewerData: [],
     interviewers: [],
     updatedData: [],
     status: "idle",
@@ -95,9 +97,6 @@ const kanbanSlice = createSlice({
         const allTasks = action.payload;
 
         // Assuming the currentStatus values are strings like "ASSIGNED" and "IN_TECH"
-        state.tasks.Assigned = allTasks.filter(
-          (task) => task.currentStatus === "ASSIGNED"
-        );
         state.tasks.Tech = allTasks.filter(
           (task) => task.currentStatus === "IN_TECH"
         );
@@ -116,23 +115,21 @@ const kanbanSlice = createSlice({
         state.status = "succeeded";
         // Update the corresponding task in your state with the new data if needed
       })
-      .addCase(updateTaskAsync.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
-      .addCase(fetchInterviewersAsync.pending, (state) => {
+      .addCase(fetchInterviewerDataByIdAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchInterviewersAsync.fulfilled, (state, action) => {
+      .addCase(fetchInterviewerDataByIdAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.interviewers = action.payload;
+        // Assuming the fetched data is an object containing the fields you need
+        // You can update the state accordingly based on the structure of the API response
+        state.interviewerData = action.payload;
       })
-      .addCase(fetchInterviewersAsync.rejected, (state, action) => {
+      .addCase(fetchInterviewerDataByIdAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
   },
 });
 
-export const { addTask, moveTask, UpdatedDataTask } = kanbanSlice.actions;
-export default kanbanSlice.reducer;
+export const { addTask, moveTask, UpdatedDataTask } = interviewerSlice.actions;
+export default interviewerSlice.reducer;

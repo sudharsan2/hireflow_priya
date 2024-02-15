@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
-import { Alert, notification } from "antd";
+import { Alert, Button, notification } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import {
@@ -48,7 +48,11 @@ const Login = () => {
         resetForm();
         if (isMountedRef.current) {
           setSubmitting(false);
-          setErrors({ afterSubmit: error.message });
+          // Show error notification
+          notification.error({
+            message: "Login Failed",
+            description: isError || "An error occurred during login.",
+          });
         }
       }
     },
@@ -57,14 +61,25 @@ const Login = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
     if (isAuthenticated) {
-      if (role === "ROLE_ADMIN") {
-        navigate("/admin-page");
-      } else if (role === "ROLE_RECRUITER") {
-        navigate("/kanban-recurit");
-      } else {
-        // Navigate to a default page or handle other roles
-        navigate("/");
+      switch (role) {
+        case "ROLE_ADMIN":
+          navigate("/admin-page");
+          break;
+        case "ROLE_RECRUITER":
+          navigate("/kanban-recurit");
+          break;
+        case "ROLE_INTERVIEWER":
+          navigate("/kanban-interviewer");
+          break;
+        default:
+          // Navigate to a default page or handle other roles
+          navigate("/");
       }
+      // Show notification when API call is finished
+      notification.success({
+        message: "Login Successful",
+        description: "You have successfully logged in.",
+      });
     }
   }, [isAuthenticated, navigate]);
 
@@ -86,7 +101,7 @@ const Login = () => {
             <h1>Sign in to HireFlow</h1>
             <p>by FocusR AI</p>
             <form onSubmit={formik.handleSubmit}>
-              {isError !== "" && <Alert severity="error">{isError}</Alert>}
+              {/* {isError !== "" && <Alert severity="error">{isError}</Alert>} */}
               <div className="form-group">
                 <input
                   type="text"
@@ -122,9 +137,14 @@ const Login = () => {
                   Forgot Password?
                 </a>
               </div>
-              <button type="submit" disabled={formik.isSubmitting}>
-                {formik.isSubmitting ? "Logging in..." : "Login"}
-              </button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isLoading} // Set loading state based on the isLoading value
+                disabled={formik.isSubmitting}
+              >
+                Login
+              </Button>
             </form>
           </div>
         </div>
@@ -133,4 +153,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login;

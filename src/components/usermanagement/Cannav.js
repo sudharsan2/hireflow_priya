@@ -6,10 +6,12 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Input, Select, notification } from "antd";
+import { logoutAction } from "../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Cannav = () => {
   const navigate = useNavigate();
- 
+  const dispatch = useDispatch();
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
@@ -33,9 +35,9 @@ const Cannav = () => {
   
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userRole");
-    navigate("/");
+    localStorage.clear(); // Clear all items in local storage
+    dispatch(logoutAction());
+    navigate("/", { replace: true });
   };
 
   const handleHome = () => {
