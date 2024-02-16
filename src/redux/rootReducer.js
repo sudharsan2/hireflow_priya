@@ -3,7 +3,8 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 // slices
 import authReducer from "../redux/slices/authSlice";
-import kanbanReducer from '../redux/slices/kanbanSlice';
+import kanbanReducer from "../redux/slices/kanbanSlice";
+import interviewerReducer from "../redux/slices/interviewerSlice";
 
 // ----------------------------------------------------------------------
 
@@ -23,15 +24,21 @@ const kanbanPersistConfig = {
   blacklist: ["isLoading"],
 };
 
+const interviewerPersistConfig = {
+  key: "interviewer",
+  storage,
+  keyPrefix: "redux-",
+  whitelist: ["addTask", "moveTask"],
+  blacklist: ["isLoading"],
+};
+
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
-  kanban: persistReducer(kanbanPersistConfig, kanbanReducer)
+  kanban: persistReducer(kanbanPersistConfig, kanbanReducer),
+  interviewer: persistReducer(interviewerPersistConfig, interviewerReducer)
 });
 
-const persistedReducer = persistReducer(
-  { key: 'root', storage },
-  rootReducer
-);
+const persistedReducer = persistReducer({ key: "root", storage }, rootReducer);
 
 const reducers = (state, action) => {
   if (action.type === "USER_LOGOUT") {

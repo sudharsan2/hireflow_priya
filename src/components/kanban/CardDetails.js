@@ -1,55 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-
-import { Divider, MenuItem, Paper, Select, Stack, TextField } from "@mui/material";
+import {
+  Divider,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
-import { updateTaskAsync } from "../../redux/slices/kanbanSlice";
+import {
+  UpdatedDataTask,
+  fetchInterviewersAsync,
+  updateTaskAsync,
+} from "../../redux/slices/kanbanSlice";
+import { useSelector } from "react-redux";
 
 ////////////////////////////////////////////////////////////////////////////////
 
 const CardDetails = ({ cardData, onClose }) => {
   const dispatch = useDispatch();
   const [editedDetails, setEditedDetails] = useState({ ...cardData });
+  const interviewers = useSelector((state) => state.kanban.interviewers);
+
+  useEffect(() => {
+    // Fetch interviewers when the component mounts
+    dispatch(fetchInterviewersAsync());
+  }, [dispatch]);
 
   const handleInputChange = (field, value) => {
     setEditedDetails((prevDetails) => ({ ...prevDetails, [field]: value }));
   };
 
-  // const handleSave = () => {
-  //   // Handle the save action, you can dispatch an action or perform other logic
-  //   console.log("Save clicked with data:", editedDetails);
-  //   // Close the card details modal
-  //   onClose();
-  // };
-
   const handleSave = async () => {
     try {
       // Dispatch the update action with the editedDetails and submissionStatus as 'SAVED'
-      await dispatch(updateTaskAsync({ ...editedDetails, submissionStatus: 'SAVED' }));
+      await dispatch(
+        updateTaskAsync({ ...editedDetails, submissionStatus: "SAVED" })
+      );
       console.log("Save clicked with data:", editedDetails);
       // Close the card details modal
+      dispatch(UpdatedDataTask(editedDetails));
       onClose();
+      window.location.reload();
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       // Dispatch the update action with the editedDetails and submissionStatus as 'SUBMITTED'
-      await dispatch(updateTaskAsync({ ...editedDetails, submissionStatus: 'SUBMITTED' }));
+      await dispatch(
+        updateTaskAsync({ ...editedDetails, submissionStatus: "SUBMITTED" })
+      );
       console.log("Submit clicked with data:", editedDetails);
       // Close the card details modal
+
       onClose();
+      window.location.reload();
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
     }
   };
-  
 
   return (
     <Drawer
@@ -225,25 +242,46 @@ const CardDetails = ({ cardData, onClose }) => {
             margin="normal"
           />
         </Stack>
-        <Stack direction="row" spacing={2} sx={{ marginTop: 1 }}>
+        <Stack direction="row" spacing={2}   sx={{ marginTop: 1 }}>
           {/* <Typography color="red">Shortlist Status:</Typography> */}
           <Select
             size="small"
             value={editedDetails.shortlistStatus || ""}
-            onChange={(e) => handleInputChange("shortlistStatus", e.target.value)}
-            // fullWidth
+            onChange={(e) =>
+              handleInputChange("shortlistStatus", e.target.value)
+            }
+            fullWidth
             displayEmpty
           >
-            <MenuItem value="" disabled>Select Shortlist Status</MenuItem>
+            <MenuItem value="" disabled>
+              Select Shortlist Status
+            </MenuItem>
             <MenuItem value="SHORTLISTED">Shortlisted</MenuItem>
             <MenuItem value="NOTSHORTLISTED">Not Shortlisted</MenuItem>
           </Select>
-        </Stack>
 
-        
+          <Select
+            size="small"
+            value={editedDetails.interviewer || ""}
+            onChange={(e) => handleInputChange("interviewer", e.target.value)}
+            fullWidth
+            displayEmpty
+          >
+            <MenuItem value="" disabled>
+              Select Interviewer
+            </MenuItem>
+            {interviewers.map((interviewer) => (
+              <MenuItem key={interviewer.id} value={interviewer.empId}>
+                {interviewer.username}
+              </MenuItem>
+            ))}
+          </Select>
+        </Stack>
+       
+
         {/* Add more Typography pairs as needed */}
       </Paper>
-      <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
+      <Stack direction="row" spacing={2}  sx={{ marginTop: 2 }}>
         <Button variant="contained" color="primary" onClick={handleSave}>
           Save
         </Button>

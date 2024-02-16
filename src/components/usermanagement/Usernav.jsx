@@ -6,10 +6,12 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Input, Select, notification } from "antd";
-
+import { useDispatch } from "react-redux";
+import { logoutAction } from "../../redux/slices/authSlice";
 
 const Usernav = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [isAddUserModalOpen, setAddUserModalOpen] = useState(false);
   const [emailError, setEmailError] = useState("");
@@ -136,40 +138,43 @@ const Usernav = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userRole");
-    navigate("/");
+    localStorage.clear(); // Clear all items in local storage
+    dispatch(logoutAction());
+    navigate("/", { replace: true });
   };
 
   const handleCandidate = () => {
     navigate("/candidate");
   };
 
-  const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
     <nav className="navbar">
       <div className="navbar-left">
+        <img className="navbar-logo"src={imgurl2}/>
+        <div>
         <h2>HireFlow</h2>
         <p>by FocusR AI</p>
+        </div>
         
       </div>
       <div className="navbar-right">
-  <select className="nav-drop">
-      
-    <option value="model1"> gpt-3.5-turbo	</option>
-    <option value="model2">gpt-4	</option>
-    <option value="model3">gpt-4-turbo-preview	</option>
-    <option value="model4">Llama</option>
-    <option value="model4">Palm</option>
-    <option value="model4">Gemini Pro</option>
-  </select>
-
+        <select className="nav-drop">
+          <option value="model1"> gpt-3.5-turbo </option>
+          <option value="model2">gpt-4 </option>
+          <option value="model3">gpt-4-turbo-preview </option>
+          <option value="model4">Llama</option>
+          <option value="model4">Palm</option>
+          <option value="model4">Gemini Pro</option>
+        </select>
 
         <span onClick={handleAddUserClick} className="nav-span">
           <PersonAddAlt1Icon style={{ marginRight: "5px" }} />
           Add user
         </span>
-        <span onClick={handleCandidate} className="nav-span">Candidate</span>
+        <span onClick={handleCandidate} className="nav-span">
+          Candidate
+        </span>
         <span onClick={handleLogout} className="nav-span">
           Logout
         </span>

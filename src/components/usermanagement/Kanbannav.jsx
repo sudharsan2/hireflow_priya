@@ -6,12 +6,14 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, Input, Select, notification } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutAction } from "../../redux/slices/authSlice";
-import { useDispatch } from "react-redux";
+import SearchIcon from '@mui/icons-material/Search';
 
-const Cannav = () => {
+const Kanbannav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+ 
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
@@ -39,12 +41,12 @@ const Cannav = () => {
     dispatch(logoutAction());
     navigate("/", { replace: true });
   };
-
   const handleHome = () => {
     
     navigate("/admin-page");
   };
 
+  const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
     <nav className="navbar">
@@ -57,8 +59,9 @@ const Cannav = () => {
         
       </div>
       <div className="navbar-right">
-      <span onClick= {handleHome} className="nav-span">
-          Home
+      <span  className="nav-span"> 
+        <SearchIcon />
+          Search
         </span>
         
         <span onClick={handleLogout} className="nav-span">
@@ -71,4 +74,4 @@ const Cannav = () => {
   );
 };
 
-export default Cannav;
+export default Kanbannav;

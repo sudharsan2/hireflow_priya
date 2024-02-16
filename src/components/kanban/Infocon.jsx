@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import './header.css'; // Import the CSS file for styling
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
-const HRRHeader = ({ onAddUser, onAssign }) => {
+const Infocon = ({ onAddUser, onAssign }) => {
   const [isAddUserModalOpen, setAddUserModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     ROLE: '',
@@ -20,10 +20,12 @@ const HRRHeader = ({ onAddUser, onAssign }) => {
 
   return (
     <div className="header">
-  <h2>Human Resource Recruiter</h2>
   
   <span onClick={onAssign} className="assign-text">
-    Assign
+    Waiting:
+  </span>
+  <span onClick={onAssign} className="assign-text">
+    Assigned:
   </span>
 
 
@@ -31,4 +33,4 @@ const HRRHeader = ({ onAddUser, onAssign }) => {
   );
 };
 
-export default HRRHeader;
+export default Infocon;
