@@ -94,28 +94,6 @@ body {
   background-color: #ffffff;
 }
 
-.avatarkan {
-  position: absolute;
-  top: 0;
-  right: 5%;
-  width: 50px; /* Adjust the width as needed */
-  height: 50px; /* Adjust the height as needed */
-  
-  border-radius: 50%;
-
-}
-
-.avatarkanin {
-  position: absolute;
-  top: 0;
-  right: 5%;
-  width: 50px; /* Adjust the width as needed */
-  height: 50px; /* Adjust the height as needed */
-  
-  border-radius: 50%;
-
-}
-
 .user-card-hrr:hover {
   
   background-color: #fddede;
@@ -198,7 +176,7 @@ body {
   height:26px;
   width:50px;
   border-radius: 13px;
-  background-color:  #55ffc9;
+  background-color: #79feac;
   align-items: center;
   text-align: center;
   justify-content: center;
@@ -209,4 +187,26 @@ body {
   align-items: center;
   text-align: center;
   justify-content: center;
+}
+
+.avatarkan {
+  position: absolute;
+  top: 0;
+  right: 5%;
+  width: 50px; /* Adjust the width as needed */
+  height: 50px; /* Adjust the height as needed */
+  
+  border-radius: 50%;
+
+}
+
+.avatarkanin {
+  position: absolute;
+  top: 0;
+  right: 5%;
+  width: 50px; /* Adjust the width as needed */
+  height: 50px; /* Adjust the height as needed */
+  
+  border-radius: 50%;
+
 }

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
+import { notification } from "antd";
 
 //////////////////////////////////////////////////////////////////
 
@@ -33,10 +34,26 @@ export const fetchInterviewersAsync = createAsyncThunk(
 
 export const updateTaskAsync = createAsyncThunk(
   "kanban/updateTask",
-  async (updatedData) => {
+  async (updatedData, { rejectWithValue }) => {
     try {
       const response = await api.put(
         `/hiring/entryLevel/updatedata/${updatedData.resumeId}/`,
+        updatedData
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      return rejectWithValue(error.data); // Use rejectWithValue to pass the error data
+    }
+  }
+);
+
+export const updateWaitingTaskAsync = createAsyncThunk(
+  "kanban/updateWaitingTask",
+  async (updatedData) => {
+    try {
+      const response = await api.post(
+        "/hiring/evaluationLevel/finalEvaluation/",
         updatedData
       );
       return response.data;
@@ -59,7 +76,8 @@ const kanbanSlice = createSlice({
     interviewers: [],
     updatedData: [],
     status: "idle",
-    error: null,
+    msg: "",
+    error: "",
   },
   reducers: {
     addTask: (state, action) => {
@@ -83,6 +101,12 @@ const kanbanSlice = createSlice({
         const task = state.tasks[sourceColumn].splice(sourceIndex, 1)[0];
         state.tasks[destinationColumn].splice(destinationIndex, 0, task);
       }
+    },
+    setErrorMessage: (state, action) => {
+      state.error = action.payload;
+    },
+    setMsgNull: (state, action) => {
+      state.msg = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -113,12 +137,41 @@ const kanbanSlice = createSlice({
         state.status = "updating";
       })
       .addCase(updateTaskAsync.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.msg = action.payload.message;
+        // Show a success notification
+        notification.success({
+          message: "Update Successful",
+          description: state.msg,
+        });
         // Update the corresponding task in your state with the new data if needed
       })
       .addCase(updateTaskAsync.rejected, (state, action) => {
-        state.status = "failed";
         state.error = action.error.message;
+        // Show an error notification with the API error message
+        notification.error({
+          message: "Update Failed",
+          description: state.error || "Failed to update. Please try again.",
+        });
+      })
+      .addCase(updateWaitingTaskAsync.pending, (state) => {
+        state.status = "updating";
+      })
+      .addCase(updateWaitingTaskAsync.fulfilled, (state, action) => {
+        state.msg = action.payload.message;
+        // Show a success notification
+        notification.success({
+          message: "Update Successful",
+          description: state.msg,
+        });
+        // Update the corresponding task in your state with the new data if needed
+      })
+      .addCase(updateWaitingTaskAsync.rejected, (state, action) => {
+        state.error = action.error.message;
+        // Show an error notification with the API error message
+        notification.error({
+          message: "Update Failed",
+          description: state.error || "Failed to update. Please try again.",
+        });
       })
       .addCase(fetchInterviewersAsync.pending, (state) => {
         state.status = "loading";
@@ -134,5 +187,10 @@ const kanbanSlice = createSlice({
   },
 });
 
-export const { addTask, moveTask, UpdatedDataTask } = kanbanSlice.actions;
+export const { addTask, moveTask, UpdatedDataTask, setErrorMessage } =
+  kanbanSlice.actions;
 export default kanbanSlice.reducer;
+
+// Selectors
+export const getErrorFromUser = (state) => state.kanban.error;
+export const getMsgFromUser = (state) => state.kanban.msg;

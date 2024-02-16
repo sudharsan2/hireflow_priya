@@ -1,76 +1,64 @@
 // Navbar.js
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./usernav.css";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button, Input, Select, notification } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { Input } from "antd";
+import { useDispatch } from "react-redux";
 import { logoutAction } from "../../redux/slices/authSlice";
-import SearchIcon from '@mui/icons-material/Search';
+import ResultPage from "./ResultsPage";
+import { useSelector } from "react-redux";
+import { fetchSearchResults } from "../../redux/slices/searchSlice";
 
 const Kanbannav = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
- 
-  const [roles, setRoles] = useState([]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log("Token", token);
-    axios
-      .get("http://172.235.10.116:9090/hiring/auth/getAllRoles", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((res) => {
-        setRoles(res.data);
-      })
-      .catch((err) => {
-        console.log("Error in Lifecycle", err);
-      });
-  }, []); // Empty dependency array to run only once when the component mounts
-
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const searchResults = useSelector((state) => state.search.searchResults);
+    const loading = useSelector((state) => state.search.loading);
   
-
-  const handleLogout = () => {
-    localStorage.clear(); // Clear all items in local storage
-    dispatch(logoutAction());
-    navigate("/", { replace: true });
-  };
-  const handleHome = () => {
-    
-    navigate("/admin-page");
-  };
-
+    const [searchInput, setSearchInput] = useState("");
+  
+    const handleLogout = () => {
+      localStorage.clear();
+      dispatch(logoutAction());
+      navigate("/", { replace: true });
+    };
+  
+    const handleSearch = () => {
+      dispatch(fetchSearchResults(searchInput));
+      navigate('/results-page')
+    };
+  
   const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
-    <nav className="navbar">
-      <div className="navbar-left">
-        <img className="navbar-logo"src={imgurl2}/>
-        <div>
-        <h2>HireFlow</h2>
-        <p>by FocusR AI</p>
+    <>
+      <nav className="navbar">
+        <div className="navbar-left">
+          <img className="navbar-logo" src={imgurl2} />
+          <div>
+            <h2>HireFlow</h2>
+            <p>by FocusR AI</p>
+          </div>
         </div>
-        
-      </div>
-      <div className="navbar-right">
-      <span  className="nav-span"> 
-        <SearchIcon />
-          Search
-        </span>
-        
-        <span onClick={handleLogout} className="nav-span">
-          Logout
-        </span>
-        
-        
-      </div>
-    </nav>
+        <div className="navbar-right">
+          <Input.Search
+            placeholder="Search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onSearch={handleSearch}
+            loading={loading}
+          />
+
+          <span onClick={handleLogout} className="nav-span">
+            Logout
+          </span>
+        </div>
+      </nav>
+     
+    </>
   );
 };
 
