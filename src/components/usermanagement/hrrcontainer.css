@@ -188,3 +188,25 @@ body {
   text-align: center;
   justify-content: center;
 }
+
+.avatarkan {
+  position: absolute;
+  top: 0;
+  right: 5%;
+  width: 50px; /* Adjust the width as needed */
+  height: 50px; /* Adjust the height as needed */
+  
+  border-radius: 50%;
+
+}
+
+.avatarkanin {
+  position: absolute;
+  top: 0;
+  right: 5%;
+  width: 50px; /* Adjust the width as needed */
+  height: 50px; /* Adjust the height as needed */
+  
+  border-radius: 50%;
+
+}

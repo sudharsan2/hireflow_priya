@@ -7,6 +7,7 @@ import First from "./pages/First";
 import Candidate from "./pages/Candidate"
 import Kanban from "./pages/Kanban";
 import KanbanInterviewer from "./pages/KanbanInterviewer";
+import ResultPage from "./components/usermanagement/ResultsPage";
 // Import your first-page component
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/kanban-recurit" element={<Kanban />} />
         <Route path="/kanban-Interviewer" element={<KanbanInterviewer />} />
         <Route path="/candidate" element={<Candidate />} />
+        <Route path="/results-page" element={<ResultPage />} />
 
         {/* Add more routes as needed */}
       </Routes>

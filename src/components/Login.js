@@ -138,6 +138,7 @@ const Login = () => {
                 </a>
               </div>
               <Button
+              className="log-button"
                 type="primary"
                 htmlType="submit"
                 loading={isLoading} // Set loading state based on the isLoading value

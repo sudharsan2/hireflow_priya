@@ -12,6 +12,7 @@ import { logoutAction } from "../redux/slices/authSlice";
 import { Button, Modal, Form, Input, Rate, Select, Divider } from "antd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
+import Kanbanintnav from "../components/usermanagement/Kanbanintnav";
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -25,6 +26,7 @@ export default function KanbanInterviewer() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [interViewerId, setInterViewerId] = useState("");
   const [interViewerData, setInterViewerData] = useState([]);
+  const [interViewerStatus, setInterViewerStatus] = useState("");
 
   useEffect(() => {
     dispatch(fetchTasksAsync());
@@ -42,6 +44,24 @@ export default function KanbanInterviewer() {
       return;
     }
 
+    // Check if the source column is "Tech" and the destination column is  "Selected"
+    if (
+      source.droppableId === "Tech" &&
+      destination.droppableId === "Selected"
+    ) {
+      // Prevent the drop action for cards from the "Assigned" column to  or "Selected"
+      return;
+    }
+
+    // Check if the source column is "Waiting" and the destination column is  "Selected"
+    if (
+      source.droppableId === "Waiting" &&
+      destination.droppableId === "Selected"
+    ) {
+      // Prevent the drop action for cards from the "Waiting" column to  or "Selected"
+      return;
+    }
+
     dispatch(
       moveTask({
         sourceColumn: source.droppableId,
@@ -54,24 +74,34 @@ export default function KanbanInterviewer() {
     console.log("updated task", updatedTask);
 
     if (source.droppableId !== destination.droppableId) {
-      dispatch(
-        updateTaskAsync({ ...interViewerData, submissionStatus: "SUBMITTED" })
-      );
+      // Ensure interViewerData is updated with the latest data
+      dispatch(fetchInterviewerDataByIdAsync(updatedTask.resumeId))
+        .then((response) => {
+          const data = response.payload;
+          setInterViewerData(data);
+
+          dispatch(
+            updateTaskAsync({
+              ...data, // Use the latest interViewerData
+              submissionStatus: "SUBMITTED",
+            })
+          );
+        })
+        .catch((error) => {
+          console.error("Error fetching interviewer data by ID:", error);
+          // Handle error as needed
+        });
     }
   };
 
   const handleCardClick = async (task) => {
     try {
-      // Fetch data for the selected resumeId
       const response = await dispatch(
         fetchInterviewerDataByIdAsync(task.resumeId)
       );
       const data = response.payload;
       setInterViewerData(data);
-      console.log("InterViewerData", data);
-      console.log("id", response.payload.id);
       setInterViewerId(response.payload.id);
-      // Update selectedTasks state with fetched data
       setSelectedTasks({ [task.resumeId]: { ...task, ...data } });
       setIsModalVisible(true);
     } catch (error) {
@@ -104,8 +134,11 @@ export default function KanbanInterviewer() {
     navigate("/", { replace: true });
   };
 
+  const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
+
   return (
     <>
+      <Kanbanintnav />
       <DragDropContext onDragEnd={handleDrop}>
         <div className="kanban-board">
           {Object.keys(tasks).map((column) => (
@@ -116,7 +149,18 @@ export default function KanbanInterviewer() {
                   {...provided.droppableProps}
                   className="column"
                 >
-                  <h2>{column.toUpperCase()}</h2>
+                  <h2
+                    style={{
+                      backgroundColor: "rgb(219, 247, 255)",
+                      padding: "20px",
+                      borderTop: "3px solid #0091ff",
+                      borderRadius: "10px",
+                      color: "rgb(62, 62, 62)",
+                      fontSize: "1.2em",
+                    }}
+                  >
+                    {column}
+                  </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
                       <Draggable
@@ -136,17 +180,19 @@ export default function KanbanInterviewer() {
                               cursor: "pointer",
                             }}
                           >
-                            <div className="card-header">
-                              {" "}
-                              <i
-                                className="fas fa-user-circle"
-                                style={{ marginRight: "5px" }}
-                              ></i>
-                              {task.name}
-                            </div>
-                            <div className="card-details">{task.jobRole}</div>
-                            <div className="card-mark">
-                              Score: {task.resumeScore}
+                            <div style={{ position: "relative" }}>
+                              <img
+                                className="avatarkan"
+                                src={avatarUrl}
+                                alt="User Avatar"
+                              />
+
+                              <div>
+                                <h2>{task.name}</h2>
+                                <p>Job Role: {task.jobRole}</p>
+                                
+                                <p className="score">{task.resumeScore}</p>
+                              </div>
                             </div>
                           </li>
                         )}
@@ -274,7 +320,7 @@ export default function KanbanInterviewer() {
           ))}
       </Modal>
 
-      <Button onClick={handleLogout}>LOGOUT</Button>
+     
     </>
   );
 }

@@ -85,7 +85,7 @@ input:hover {
   border: 1px solid #4b3b83;
 }
 
-button {
+.log-button {
   width: calc(100% - 40px); /* Adjusted width */
   padding: 12px;
   background-color: #2bc0a2;
@@ -95,9 +95,12 @@ button {
   border-radius: 40px;
   cursor: pointer;
   margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
-button:hover {
+.log-button:hover {
   background-color: #239074;
 }
 

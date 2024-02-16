@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -5,15 +6,26 @@ import {
   fetchTasksAsync,
   updateTaskAsync,
   fetchInterviewersAsync,
+  updateWaitingTaskAsync,
 } from "../redux/slices/kanbanSlice";
 import "../pages/kanban.css";
 import { useNavigate } from "react-router-dom";
 import { logoutAction } from "../redux/slices/authSlice";
-import { Button, Input, Modal, Select, Tooltip, Typography } from "antd";
+import {
+  Button,
+  DatePicker,
+  Input,
+  Modal,
+  Select,
+  Tooltip,
+  Typography,
+} from "antd";
 import CardDetails from "../components/kanban/CardDetails";
 import api from "../services/api";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { UpdatedDataTask } from "../redux/slices/interviewerSlice";
+import moment from "moment";
+import Kanbannav from "../components/usermanagement/Kanbannav";
 
 const { Option } = Select;
 
@@ -25,14 +37,39 @@ export default function Kanban() {
   const updatedTask = useSelector((state) => state.kanban.updatedData);
   const [selectedCard, setSelectedCard] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalWaitingVisible, setIsModalWaitingVisible] = useState(false);
+  // Add a state variable to track save status
+  const [isSaved, setIsSaved] = useState(false);
+  const [waitingValues, setWaitingValues] = useState({
+    longTermAssocaition: "",
+    joinDate: "",
+    specialRequest: "",
+    hrFeedback: "",
+    shortlistStatus: "",
+    remarks: "",
+  });
 
   const handleCardClick = async (cardData) => {
     try {
-      const response = await api.get(
-        `/hiring/entryLevel/getACandidate/${cardData.id}`
-      );
-      setSelectedCard(response.data);
-      setIsModalVisible(true);
+      if (cardData.currentStatus === "IN_TECH") {
+        // If the card is in the "Waiting" column, open the modal with empty fields
+        setIsModalVisible(false);
+      } else if (cardData.currentStatus === "IN_FINAL") {
+        // If the card is in the "Final" column, open the modal with specific fields
+        const response = await api.get(
+          `/hiring/entryLevel/getACandidate/${cardData.id}`
+        );
+        setSelectedCard(response.data);
+        // setSelectedCard(modalData);
+        setIsModalWaitingVisible(true);
+      } else {
+        // If the card is in other columns, fetch the card details from the API
+        const response = await api.get(
+          `/hiring/entryLevel/getACandidate/${cardData.id}`
+        );
+        setSelectedCard(response.data);
+        setIsModalVisible(true);
+      }
     } catch (error) {
       console.error("Error fetching card details:", error);
     }
@@ -42,7 +79,7 @@ export default function Kanban() {
   useEffect(() => {
     dispatch(fetchTasksAsync());
     dispatch(fetchInterviewersAsync());
-  }, [dispatch, moveTask]);
+  }, [dispatch, moveTask, isSaved]);
 
   const handleDrop = (result) => {
     const { source, destination } = result;
@@ -53,6 +90,16 @@ export default function Kanban() {
         source.index === destination.index)
     ) {
       // Card was dropped outside of a droppable area or didn't change position
+      return;
+    }
+
+    // Check if the source column is "Assigned" and the destination column is "Waiting" or "Selected"
+    if (
+      source.droppableId === "Assigned" &&
+      (destination.droppableId === "Waiting" ||
+        destination.droppableId === "Selected")
+    ) {
+      // Prevent the drop action for cards from the "Assigned" column to "Waiting" or "Selected"
       return;
     }
 
@@ -68,7 +115,10 @@ export default function Kanban() {
     // Only dispatch the API call if the columns are different
     if (source.droppableId !== destination.droppableId) {
       dispatch(
-        updateTaskAsync({ ...updatedTask, submissionStatus: "SUBMITTED" })
+        updateTaskAsync({
+          ...updatedTask,
+          recruiterSubmissionStatus: "SUBMITTED",
+        })
       );
     }
     // window.location.reload();
@@ -76,32 +126,65 @@ export default function Kanban() {
 
   const handleModalClose = () => {
     setIsModalVisible(false);
+    setIsModalWaitingVisible(false);
   };
 
   const handleSave = async () => {
     try {
       // Dispatch the update action with the editedDetails and submissionStatus as 'SAVED'
       await dispatch(
-        updateTaskAsync({ ...selectedCard, submissionStatus: "SAVED" })
+        updateTaskAsync({ ...selectedCard, recruiterSubmissionStatus: "SAVED" })
       );
       console.log("Save clicked with data:", selectedCard);
       // Close the card details modal
       dispatch(UpdatedDataTask(selectedCard));
-
+      setIsSaved(true); // Set isSaved to true after saving
       // window.location.reload();
+      // Close the modal
+      setIsModalVisible(false);
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
     }
   };
+
+  const handleWaitSave = async () => {
+    try {
+      // Prepare the payload for the API call
+      const apiPayload = {
+        resumeId: selectedCard.resumeId, // Use the resumeId from the selectedCard
+        longTermAssocaition: waitingValues.longTermAssocaition,
+        joinDate: waitingValues.joinDate,
+        specialRequest: waitingValues.specialRequest,
+        hrFeedback: waitingValues.hrFeedback,
+        shortlistStatus: waitingValues.shortlistStatus,
+        remarks: waitingValues.remarks,
+        submissionStatus: "SAVED",
+      };
+
+      // Dispatch the updateWaitingTaskAsync action with the payload
+      await dispatch(updateWaitingTaskAsync(apiPayload));
+
+      console.log("Save clicked with data:", selectedCard);
+      dispatch(UpdatedDataTask(selectedCard));
+      setIsSaved(true);
+      setIsModalWaitingVisible(false); // Close the second modal
+    } catch (error) {
+      console.error("Error updating task:", error);
+      // Handle the error as needed
+    }
+  };
+
   const handleLogout = () => {
     localStorage.clear(); // Clear all items in local storage
     dispatch(logoutAction());
     navigate("/", { replace: true });
   };
 
+  const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   return (
     <>
+      <Kanbannav />
       <DragDropContext onDragEnd={handleDrop}>
         <div className="kanban-board">
           {Object.keys(tasks).map((column) => (
@@ -112,14 +195,27 @@ export default function Kanban() {
                   {...provided.droppableProps}
                   className="column"
                 >
-                  <h2>{column.toUpperCase()}</h2>
+                  <h2
+                    style={{
+                      backgroundColor: "rgb(219, 247, 255)",
+                      padding: "20px",
+                      borderTop: "3px solid #0091ff",
+                      borderRadius: "10px",
+                      color: "rgb(62, 62, 62)",
+                      fontSize: "1.2em",
+                    }}
+                  >
+                    {column}
+                  </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
                       <Draggable
                         key={task.id}
                         draggableId={task.id.toString()}
                         index={index}
-                        isDragDisabled={task.submissionStatus !== "SAVED"}
+                        isDragDisabled={
+                          task.recruiterSubmissionStatus !== "SAVED"
+                        }
                       >
                         {(provided) => (
                           <li
@@ -130,22 +226,24 @@ export default function Kanban() {
                             style={{
                               ...provided.draggableProps.style,
                               cursor:
-                                task.submissionStatus === "SAVED"
+                                task.recruiterSubmissionStatus === "SAVED"
                                   ? "pointer"
                                   : "not-allowed",
                             }}
                           >
-                            <div className="card-header">
-                              {" "}
-                              <i
-                                className="fas fa-user-circle"
-                                style={{ marginRight: "5px" }}
-                              ></i>
-                              {task.name}
-                            </div>
-                            <div className="card-details">{task.jobRole}</div>
-                            <div className="card-mark">
-                              Score: {task.resumeScore}
+                            <div style={{ position: "relative" }}>
+                              <img
+                                className="avatarkan"
+                                src={avatarUrl}
+                                alt="User Avatar"
+                              />
+
+                              <div>
+                                <h2>{task.name}</h2>
+                                <p>Job Role: {task.jobRole}</p>
+                                <p>Experience: {task.yearsOfExperience}</p>
+                                <p className="score">{task.resumeScore}</p>
+                              </div>
                             </div>
                           </li>
                         )}
@@ -169,11 +267,13 @@ export default function Kanban() {
         title="Candidate Details"
         visible={isModalVisible}
         onCancel={handleModalClose}
-        footer={[
-          // <Button key="back" onClick={handleModalClose}>
-          //   Close
-          // </Button>,
-        ]}
+        footer={
+          [
+            // <Button key="back" onClick={handleModalClose}>
+            //   Close
+            // </Button>,
+          ]
+        }
       >
         {selectedCard && (
           <div
@@ -347,7 +447,115 @@ export default function Kanban() {
         </Button>
       </Modal>
 
-      <Button onClick={handleLogout}>LOGOUT</Button>
+      <Modal
+        title="Candidate Details"
+        open={isModalWaitingVisible}
+        onCancel={handleModalClose}
+        footer={
+          [
+            // <Button key="back" onClick={handleModalClose}>
+            //   Close
+            // </Button>,
+          ]
+        }
+      >
+        {" "}
+        {selectedCard && (
+          <div
+            style={{
+              display: "grid",
+              gap: "10px",
+              gridTemplateColumns: "1fr 1fr",
+            }}
+          >
+            <Typography>Name: {selectedCard.resumeId}</Typography>
+
+            <Tooltip title="LongTermAssocaition">
+              <Input
+                placeholder="LongTermAssocaition"
+                value={waitingValues.longTermAssocaition}
+                onChange={(e) =>
+                  setWaitingValues({
+                    ...waitingValues,
+                    longTermAssocaition: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
+            <Tooltip title="JoinDate">
+              <DatePicker
+                placeholder="JoinDate"
+                format="YYYY-MM-DD"
+                value={
+                  waitingValues.joinDate
+                    ? moment(waitingValues.joinDate, "YYYY-MM-DD")
+                    : null
+                }
+                onChange={(date, dateString) =>
+                  setWaitingValues({
+                    ...waitingValues,
+                    joinDate: dateString,
+                  })
+                }
+              />
+            </Tooltip>
+
+            <Tooltip title="SpecialRequest">
+              <Input
+                placeholder="SpecialRequest"
+                value={waitingValues.specialRequest}
+                onChange={(e) =>
+                  setWaitingValues({
+                    ...waitingValues,
+                    specialRequest: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
+            <Tooltip title="HrFeedback">
+              <Input
+                placeholder="HrFeedback"
+                value={waitingValues.hrFeedback}
+                onChange={(e) =>
+                  setWaitingValues({
+                    ...waitingValues,
+                    hrFeedback: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
+            <Tooltip title="ShortlistStatus">
+              <Input
+                placeholder="ShortlistStatus"
+                value={waitingValues.shortlistStatus}
+                onChange={(e) =>
+                  setWaitingValues({
+                    ...waitingValues,
+                    shortlistStatus: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
+            <Tooltip title="Remarks">
+              <Input
+                placeholder="Remarks"
+                value={waitingValues.remarks}
+                onChange={(e) =>
+                  setWaitingValues({
+                    ...waitingValues,
+                    remarks: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
+          </div>
+        )}
+        <Button key="save" type="primary" onClick={handleWaitSave}>
+          Save
+        </Button>
+      </Modal>
+
+    
     </>
   );
 }
