@@ -13,24 +13,29 @@ import { useSelector } from "react-redux";
 import { fetchSearchResults } from "../../redux/slices/searchSlice";
 
 const Kanbannav = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const searchResults = useSelector((state) => state.search.searchResults);
-    const loading = useSelector((state) => state.search.loading);
-  
-    const [searchInput, setSearchInput] = useState("");
-  
-    const handleLogout = () => {
-      localStorage.clear();
-      dispatch(logoutAction());
-      navigate("/", { replace: true });
-    };
-  
-    const handleSearch = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const loading = useSelector((state) => state.search.loading);
+
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logoutAction());
+    navigate("/", { replace: true });
+  };
+
+  const handleSearch = () => {
+   
+
+    
+      // Only navigate when loading is true
+      navigate("/results-page");
       dispatch(fetchSearchResults(searchInput));
-      navigate('/results-page')
-    };
-  
+   
+  };
+
   const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
@@ -57,7 +62,6 @@ const Kanbannav = () => {
           </span>
         </div>
       </nav>
-     
     </>
   );
 };

@@ -64,6 +64,36 @@ export const updateWaitingTaskAsync = createAsyncThunk(
   }
 );
 
+export const fetchFinalDataByIdAsync = createAsyncThunk(
+  "kanban/fetchFinalDataById",
+  async (resumeId) => {
+    try {
+      const response = await api.get(
+        `/hiring/evaluationLevel/finalEvalById/${resumeId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching interviewer data by ID:", error);
+      throw error;
+    }
+  }
+);
+
+export const fetchFinalDataAsync = createAsyncThunk(
+  "kanban/fetchFinalData",
+  async (resumeId) => {
+    try {
+      const response = await api.get(
+        '/hiring/evaluationLevel/CandidateForFinalEval'
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching interviewer data by ID:", error);
+      throw error;
+    }
+  }
+);
+
 const kanbanSlice = createSlice({
   name: "kanban",
   initialState: {
@@ -75,6 +105,8 @@ const kanbanSlice = createSlice({
     },
     interviewers: [],
     updatedData: [],
+    finalData: [],
+    EvaluationData: [],
     status: "idle",
     msg: "",
     error: "",
@@ -125,9 +157,7 @@ const kanbanSlice = createSlice({
         state.tasks.Tech = allTasks.filter(
           (task) => task.currentStatus === "IN_TECH"
         );
-        state.tasks.Waiting = allTasks.filter(
-          (task) => task.currentStatus === "IN_FINAL"
-        );
+       
       })
       .addCase(fetchTasksAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -183,7 +213,33 @@ const kanbanSlice = createSlice({
       .addCase(fetchInterviewersAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
+      .addCase(fetchFinalDataByIdAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchFinalDataByIdAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Assuming the fetched data is an object containing the fields you need
+        // You can update the state accordingly based on the structure of the API response
+        state.finalData = action.payload;
+      })
+      .addCase(fetchFinalDataByIdAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchFinalDataAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchFinalDataAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Assuming the fetched data is an object containing the fields you need
+        // You can update the state accordingly based on the structure of the API response
+        state.tasks.Waiting = action.payload;
+      })
+      .addCase(fetchFinalDataAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
   },
 });
 
