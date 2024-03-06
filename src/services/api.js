@@ -85,7 +85,7 @@
 // src/api.js
 import axios from "axios";
 
-const BASE_URL = "http://172.235.10.116:9090"; // Replace with your API base URL
+const BASE_URL = "http://172.235.10.116:7000"; // Replace with your API base URL
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -110,4 +110,3 @@ api.interceptors.request.use(
 );
 
 export default api;
-

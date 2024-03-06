@@ -5,9 +5,8 @@ import { notification } from "antd";
 
 const HRRHeader = () => {
   const handleAssignClick = async () => {
-   
     try {
-      const apiUrl = "http://172.235.10.116:9090/hiring/entryLevel/assignRole/";
+      const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/assignRole/";
 
       // Make a POST request to the API
       const response = await axios.post(apiUrl);

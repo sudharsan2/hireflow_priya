@@ -4,10 +4,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url('../../../public/img/bg_17.jpg');
-  background-size:cover;
-background-position: center;
-  background-color:  #2a3c4a;
+  background-image: url("../../../public/img/bg_17.jpg");
+  background-size: cover;
+  background-position: center;
+  background-color: #2a3c4a;
   color: #fff;
 }
 
@@ -16,14 +16,13 @@ background-position: center;
   align-items: center;
   display: flex;
 }
-.navbar-logo{
-height: 30px;
-width: auto;
-
+.navbar-logo {
+  height: 30px;
+  width: auto;
 }
 
 .navbar-left h2 {
-margin-top: 5px;
+  margin-top: 5px;
   padding-left: 10px;
   align-items: center;
   font-size: 20px;
@@ -46,6 +45,10 @@ margin-top: 5px;
   display: flex;
 }
 
+.ant-avatar {
+  margin-right: 10px; /* Adjust the value as needed */
+}
+
 .nav-button {
   margin-left: 10px;
   padding: 8px 16px;
@@ -60,22 +63,21 @@ margin-top: 5px;
   background-color: #45a049;
 }
 
-
 .nav-span {
   display: flex;
   cursor: pointer;
   color: #ffffff;
   align-items: center;
   justify-content: center;
-  margin-right:20px;
+  margin-right: 20px;
+  margin-left: 10px; /* Adjust the value as needed */
 }
 
 .nav-span:hover {
   color: #848383;
-  
 }
 
-.nav-drop{
+.nav-drop {
   background-color: #121e24;
   color: #fff;
   height: 30px;
@@ -84,9 +86,8 @@ margin-top: 5px;
   width: 100px;
   margin-right: 20px;
   border-color: #2a3c4a00;
-  margin-left:20px;
+  margin-left: 20px;
   padding-top: 2px;
   border-radius: 5px;
   text-align: center;
 }
-  
