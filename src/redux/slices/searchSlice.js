@@ -43,3 +43,4 @@ const searchSlice = createSlice({
 });
 
 export default searchSlice.reducer;
+

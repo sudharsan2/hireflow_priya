@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 import { notification } from "antd";
+import { notification } from "antd";
 
 //////////////////////////////////////////////////////////////////
 
@@ -59,6 +60,52 @@ export const updateWaitingTaskAsync = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("Error updating task:", error);
+      return rejectWithValue(error.data); // Use rejectWithValue to pass the error data
+    }
+  }
+);
+
+export const updateWaitingTaskAsync = createAsyncThunk(
+  "kanban/updateWaitingTask",
+  async (updatedData) => {
+    try {
+      const response = await api.post(
+        "/hiring/evaluationLevel/finalEvaluation/",
+        updatedData
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      throw error;
+    }
+  }
+);
+
+export const fetchFinalDataByIdAsync = createAsyncThunk(
+  "kanban/fetchFinalDataById",
+  async (resumeId) => {
+    try {
+      const response = await api.get(
+        `/hiring/evaluationLevel/finalEvalById/${resumeId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching interviewer data by ID:", error);
+      throw error;
+    }
+  }
+);
+
+export const fetchFinalDataAsync = createAsyncThunk(
+  "kanban/fetchFinalData",
+  async (resumeId) => {
+    try {
+      const response = await api.get(
+        '/hiring/evaluationLevel/CandidateForFinalEval'
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching interviewer data by ID:", error);
       throw error;
     }
   }
@@ -183,7 +230,7 @@ const kanbanSlice = createSlice({
       .addCase(fetchInterviewersAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
   },
 });
 

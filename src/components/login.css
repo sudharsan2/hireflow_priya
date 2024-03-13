@@ -106,6 +106,9 @@ input:hover {
   display:flex;
   align-items: center;
   justify-content: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 .log-button:hover {
