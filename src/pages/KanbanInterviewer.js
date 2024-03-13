@@ -128,11 +128,7 @@ export default function KanbanInterviewer() {
     setSelectedTasks({});
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    dispatch(logoutAction());
-    navigate("/", { replace: true });
-  };
+
 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
 

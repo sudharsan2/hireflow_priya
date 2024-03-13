@@ -1,0 +1,36 @@
+.user-list-container {
+  width: 250px;
+  max-height: 90vh; /* Set a maximum height relative to the viewport height */
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.user-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-list li {
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+/* Hide scrollbar */
+.user-list-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

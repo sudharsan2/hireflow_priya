@@ -5,7 +5,7 @@ import "./usernav.css";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Input } from "antd";
+import { Avatar, Badge, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { logoutAction } from "../../redux/slices/authSlice";
 import ResultPage from "./ResultsPage";
@@ -13,24 +13,29 @@ import { useSelector } from "react-redux";
 import { fetchSearchResults } from "../../redux/slices/searchSlice";
 
 const Kanbannav = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const searchResults = useSelector((state) => state.search.searchResults);
-    const loading = useSelector((state) => state.search.loading);
-  
-    const [searchInput, setSearchInput] = useState("");
-  
-    const handleLogout = () => {
-      localStorage.clear();
-      dispatch(logoutAction());
-      navigate("/", { replace: true });
-    };
-  
-    const handleSearch = () => {
-      dispatch(fetchSearchResults(searchInput));
-      navigate('/results-page')
-    };
-  
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const loading = useSelector((state) => state.search.loading);
+
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logoutAction());
+    navigate("/", { replace: true });
+  };
+
+  const handleSearch = () => {
+    // Only navigate when loading is true
+    navigate("/results-page");
+    dispatch(fetchSearchResults(searchInput));
+  };
+
+  const handleBadgeClick = () => {
+    navigate("/chat-msg");
+  };
+
   const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
@@ -44,6 +49,15 @@ const Kanbannav = () => {
           </div>
         </div>
         <div className="navbar-right">
+          <div onClick={handleBadgeClick}>
+            <Badge color="gold" count={500}>
+              <Avatar
+                shape="square"
+                size="medium"
+                style={{ backgroundColor: "yellowgreen", cursor: "pointer" }}
+              />
+            </Badge>
+          </div>
           <Input.Search
             placeholder="Search"
             value={searchInput}
@@ -57,7 +71,6 @@ const Kanbannav = () => {
           </span>
         </div>
       </nav>
-     
     </>
   );
 };

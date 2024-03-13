@@ -7,6 +7,7 @@ import {
   updateTaskAsync,
   fetchInterviewersAsync,
   updateWaitingTaskAsync,
+  fetchFinalDataAsync,
 } from "../redux/slices/kanbanSlice";
 import "../pages/kanban.css";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ import {
   Select,
   Tooltip,
   Typography,
+  notification,
 } from "antd";
 import CardDetails from "../components/kanban/CardDetails";
 import api from "../services/api";
@@ -40,14 +42,7 @@ export default function Kanban() {
   const [isModalWaitingVisible, setIsModalWaitingVisible] = useState(false);
   // Add a state variable to track save status
   const [isSaved, setIsSaved] = useState(false);
-  const [waitingValues, setWaitingValues] = useState({
-    longTermAssocaition: "",
-    joinDate: "",
-    specialRequest: "",
-    hrFeedback: "",
-    shortlistStatus: "",
-    remarks: "",
-  });
+ 
 
   const handleCardClick = async (cardData) => {
     try {
@@ -56,12 +51,12 @@ export default function Kanban() {
         setIsModalVisible(false);
       } else if (cardData.currentStatus === "IN_FINAL") {
         // If the card is in the "Final" column, open the modal with specific fields
+        setIsModalWaitingVisible(true);
         const response = await api.get(
-          `/hiring/entryLevel/getACandidate/${cardData.id}`
+          `/hiring/evaluationLevel/finalEvalById/${cardData.resumeId}`
         );
         setSelectedCard(response.data);
         // setSelectedCard(modalData);
-        setIsModalWaitingVisible(true);
       } else {
         // If the card is in other columns, fetch the card details from the API
         const response = await api.get(
@@ -79,6 +74,7 @@ export default function Kanban() {
   useEffect(() => {
     dispatch(fetchTasksAsync());
     dispatch(fetchInterviewersAsync());
+    dispatch(fetchFinalDataAsync());
   }, [dispatch, moveTask, isSaved]);
 
   const handleDrop = (result) => {
@@ -129,8 +125,61 @@ export default function Kanban() {
     setIsModalWaitingVisible(false);
   };
 
+  const validateFields = (fields) => {
+    const errors = {};
+
+    // Check if any required fields are empty
+    const requiredFields = [
+      "location",
+      "qualification",
+      "domainExperience",
+      "reason",
+      "travelConstraint",
+      "referenceName",
+      "referenceEmail",
+      "notificationPeriod",
+      "fatherOccupation",
+      "motherOccupation",
+      "shortlistStatus",
+      "interviewer",
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!fields[field]) {
+        errors[field] = `${field} is required.`;
+      }
+    });
+
+    // Additional validation for domainExperience and notificationPeriod
+    if (!/^\d+$/.test(fields.domainExperience)) {
+      errors.domainExperience = "Domain Experience should be a valid integer.";
+    }
+
+    if (!/^\d+$/.test(fields.notificationPeriod)) {
+      errors.notificationPeriod =
+        "Notification Period should be a valid integer.";
+    }
+
+    // Email validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.referenceEmail)) {
+      errors.referenceEmail =
+        "Reference Email should be in a valid email format.";
+    }
+
+    return errors;
+  };
+
   const handleSave = async () => {
     try {
+      const validationErrors = validateFields(selectedCard);
+
+      if (Object.keys(validationErrors).length > 0) {
+        // Display error messages to the user
+        Object.values(validationErrors).forEach((errorMsg) => {
+          notification.error({ message: errorMsg });
+        });
+        return;
+      }
       // Dispatch the update action with the editedDetails and submissionStatus as 'SAVED'
       await dispatch(
         updateTaskAsync({ ...selectedCard, recruiterSubmissionStatus: "SAVED" })
@@ -153,12 +202,12 @@ export default function Kanban() {
       // Prepare the payload for the API call
       const apiPayload = {
         resumeId: selectedCard.resumeId, // Use the resumeId from the selectedCard
-        longTermAssocaition: waitingValues.longTermAssocaition,
-        joinDate: waitingValues.joinDate,
-        specialRequest: waitingValues.specialRequest,
-        hrFeedback: waitingValues.hrFeedback,
-        shortlistStatus: waitingValues.shortlistStatus,
-        remarks: waitingValues.remarks,
+        longTermAssocaition: selectedCard.longTermAssocaition,
+        joinDate: selectedCard.joinDate,
+        specialRequest: selectedCard.specialRequest,
+        hrFeedback: selectedCard.hrFeedback,
+        shortlistStatus: selectedCard.shortlistStatus,
+        remarks: selectedCard.remarks,
         submissionStatus: "SAVED",
       };
 
@@ -173,12 +222,6 @@ export default function Kanban() {
       console.error("Error updating task:", error);
       // Handle the error as needed
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.clear(); // Clear all items in local storage
-    dispatch(logoutAction());
-    navigate("/", { replace: true });
   };
 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
@@ -468,15 +511,26 @@ export default function Kanban() {
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-            <Typography>Name: {selectedCard.resumeId}</Typography>
+             <Tooltip title="ResumeId">
+              <Input
+                placeholder="ResumeId"
+                value={selectedCard.resumeId}
+                onChange={(e) =>
+                  setSelectedCard({
+                    ...selectedCard,
+                    resumeId: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
 
             <Tooltip title="LongTermAssocaition">
               <Input
                 placeholder="LongTermAssocaition"
-                value={waitingValues.longTermAssocaition}
+                value={selectedCard.longTermAssocaition}
                 onChange={(e) =>
-                  setWaitingValues({
-                    ...waitingValues,
+                  setSelectedCard({
+                    ...selectedCard,
                     longTermAssocaition: e.target.value,
                   })
                 }
@@ -487,13 +541,13 @@ export default function Kanban() {
                 placeholder="JoinDate"
                 format="YYYY-MM-DD"
                 value={
-                  waitingValues.joinDate
-                    ? moment(waitingValues.joinDate, "YYYY-MM-DD")
+                  selectedCard.joinDate
+                    ? moment(selectedCard.joinDate, "YYYY-MM-DD")
                     : null
                 }
                 onChange={(date, dateString) =>
-                  setWaitingValues({
-                    ...waitingValues,
+                  setSelectedCard({
+                    ...selectedCard,
                     joinDate: dateString,
                   })
                 }
@@ -503,10 +557,10 @@ export default function Kanban() {
             <Tooltip title="SpecialRequest">
               <Input
                 placeholder="SpecialRequest"
-                value={waitingValues.specialRequest}
+                value={selectedCard.specialRequest}
                 onChange={(e) =>
-                  setWaitingValues({
-                    ...waitingValues,
+                  setSelectedCard({
+                    ...selectedCard,
                     specialRequest: e.target.value,
                   })
                 }
@@ -515,10 +569,10 @@ export default function Kanban() {
             <Tooltip title="HrFeedback">
               <Input
                 placeholder="HrFeedback"
-                value={waitingValues.hrFeedback}
+                value={selectedCard.hrFeedback}
                 onChange={(e) =>
-                  setWaitingValues({
-                    ...waitingValues,
+                  setSelectedCard({
+                    ...selectedCard,
                     hrFeedback: e.target.value,
                   })
                 }
@@ -527,10 +581,10 @@ export default function Kanban() {
             <Tooltip title="ShortlistStatus">
               <Input
                 placeholder="ShortlistStatus"
-                value={waitingValues.shortlistStatus}
+                value={selectedCard.shortlistStatus}
                 onChange={(e) =>
-                  setWaitingValues({
-                    ...waitingValues,
+                  setSelectedCard({
+                    ...selectedCard,
                     shortlistStatus: e.target.value,
                   })
                 }
@@ -539,10 +593,10 @@ export default function Kanban() {
             <Tooltip title="Remarks">
               <Input
                 placeholder="Remarks"
-                value={waitingValues.remarks}
+                value={selectedCard.remarks}
                 onChange={(e) =>
-                  setWaitingValues({
-                    ...waitingValues,
+                  setSelectedCard({
+                    ...selectedCard,
                     remarks: e.target.value,
                   })
                 }
@@ -554,8 +608,6 @@ export default function Kanban() {
           Save
         </Button>
       </Modal>
-
-    
     </>
   );
 }

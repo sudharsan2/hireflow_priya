@@ -5,16 +5,14 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 
 const UserCard = ({ user, onClick }) => {
   const getAvatarUrl = () => {
-    return process.env.PUBLIC_URL + "./img/avtr3.jpg";;
+    return process.env.PUBLIC_URL + "./img/avtr3.jpg";
   };
 
   return (
     <div className="user-card-can" onClick={() => onClick(user)}>
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <h3>{user.name}</h3>
-      <div>
-
-      </div>
+      <div></div>
       <p>Job Role: {user.jobRole}</p>
 
       <p>Experience: {user.yearsOfExperience}</p>
@@ -49,7 +47,7 @@ const UserDetailsModal = ({ user, onClose, onDelete }) => {
       <p>Score: {user.resumeScore}</p>
       <p>Verified: {user.Verified}</p>
       <p>Experience: {user.yearsOfExperience}</p>
-      
+
       <div className="button-container">
         <button onClick={onDelete}>Delete</button>
         <button>Pause</button>
@@ -72,7 +70,7 @@ const Candidatecon = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://172.235.10.116:9090/hiring/entryLevel/getAllCandidates",
+          "http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates",
           {
             headers: {
               "Content-Type": "application/json",

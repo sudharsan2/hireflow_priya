@@ -18,7 +18,7 @@ const Cannav = () => {
     const token = localStorage.getItem("accessToken");
     console.log("Token", token);
     axios
-      .get("http://172.235.10.116:9090/hiring/auth/getAllRoles", {
+      .get("http://172.235.10.116:7000/hiring/auth/getAllRoles", {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -32,8 +32,6 @@ const Cannav = () => {
       });
   }, []); // Empty dependency array to run only once when the component mounts
 
-  
-
   const handleLogout = () => {
     localStorage.clear(); // Clear all items in local storage
     dispatch(logoutAction());
@@ -41,31 +39,24 @@ const Cannav = () => {
   };
 
   const handleHome = () => {
-    
     navigate("/admin-page");
   };
 
-  const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
+  const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <img className="navbar-logo"src={imgurl2}/>
-        <div>
         <h2>HireFlow</h2>
         <p>by FocusR AI</p>
-        </div>
-        
       </div>
       <div className="navbar-right">
-      <span onClick= {handleHome} className="nav-span">
+        <span onClick={handleHome} className="nav-span">
           Home
         </span>
-        
+
         <span onClick={handleLogout} className="nav-span">
           Logout
         </span>
-        
-        
       </div>
     </nav>
   );

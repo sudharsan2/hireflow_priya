@@ -5,7 +5,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 
 const UserCard = ({ user, onClick }) => {
   const getAvatarUrl = () => {
-    return process.env.PUBLIC_URL + "./img/avtr1.jpg";;
+    return process.env.PUBLIC_URL + "./img/avtr1.jpg";
   };
 
   return (
@@ -13,8 +13,7 @@ const UserCard = ({ user, onClick }) => {
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <h3>{user.username}</h3>
       <div>
-      <p>{user.empId}</p>
-
+        <p>{user.empId}</p>
       </div>
       <p>completed: {user.Completed}</p>
     </div>
@@ -69,7 +68,7 @@ const HRRContainer = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://172.235.10.116:9090/hiring/auth/getAllUsers",
+          "http://172.235.10.116:7000/hiring/auth/getAllUsers",
           {
             headers: {
               "Content-Type": "application/json",

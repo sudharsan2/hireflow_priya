@@ -83,8 +83,8 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const imgurl1 = "../../static/media/bg_3.ba4b7c64be3fcc73736f.mp4";
-  const imgurl2 = "../../static/media/login3.5db10cf50a7703c04407.jpg";
+  const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/login3.jpg";
 
   return (
     <div className="Login">
@@ -154,5 +154,4 @@ const Login = () => {
   );
 };
 
-export default Login;
 export default Login;

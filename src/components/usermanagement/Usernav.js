@@ -34,7 +34,7 @@ const Usernav = () => {
     const token = localStorage.getItem("accessToken");
     console.log("Token", token);
     axios
-      .get("http://172.235.10.116:9090/hiring/auth/getAllRoles", {
+      .get("http://172.235.10.116:7000/hiring/auth/getAllRoles", {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -91,7 +91,7 @@ const Usernav = () => {
     };
 
     axios
-      .post("http://172.235.10.116:9090/hiring/auth/register/", postData, {
+      .post("http://172.235.10.116:7000/hiring/auth/register/", postData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("accessToken"),

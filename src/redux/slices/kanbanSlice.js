@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 import { notification } from "antd";
-import { notification } from "antd";
 
 //////////////////////////////////////////////////////////////////
 
@@ -39,22 +38,6 @@ export const updateTaskAsync = createAsyncThunk(
     try {
       const response = await api.put(
         `/hiring/entryLevel/updatedata/${updatedData.resumeId}/`,
-        updatedData
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error updating task:", error);
-      return rejectWithValue(error.data); // Use rejectWithValue to pass the error data
-    }
-  }
-);
-
-export const updateWaitingTaskAsync = createAsyncThunk(
-  "kanban/updateWaitingTask",
-  async (updatedData) => {
-    try {
-      const response = await api.post(
-        "/hiring/evaluationLevel/finalEvaluation/",
         updatedData
       );
       return response.data;
@@ -122,6 +105,8 @@ const kanbanSlice = createSlice({
     },
     interviewers: [],
     updatedData: [],
+    finalData: [],
+    EvaluationData: [],
     status: "idle",
     msg: "",
     error: "",
@@ -172,9 +157,7 @@ const kanbanSlice = createSlice({
         state.tasks.Tech = allTasks.filter(
           (task) => task.currentStatus === "IN_TECH"
         );
-        state.tasks.Waiting = allTasks.filter(
-          (task) => task.currentStatus === "IN_FINAL"
-        );
+       
       })
       .addCase(fetchTasksAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -228,6 +211,32 @@ const kanbanSlice = createSlice({
         state.interviewers = action.payload;
       })
       .addCase(fetchInterviewersAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchFinalDataByIdAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchFinalDataByIdAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Assuming the fetched data is an object containing the fields you need
+        // You can update the state accordingly based on the structure of the API response
+        state.finalData = action.payload;
+      })
+      .addCase(fetchFinalDataByIdAsync.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(fetchFinalDataAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchFinalDataAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Assuming the fetched data is an object containing the fields you need
+        // You can update the state accordingly based on the structure of the API response
+        state.tasks.Waiting = action.payload;
+      })
+      .addCase(fetchFinalDataAsync.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })
