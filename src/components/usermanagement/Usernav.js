@@ -148,11 +148,15 @@ const Usernav = () => {
   };
 
   const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
+  const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <h2>HireFlow</h2>
-        <p>by FocusR AI</p>
+        <img className="navbar-logo" src={imgurl2} />
+        <div>
+          <h2>HireFlow</h2>
+          <p>by FocusR AI</p>
+        </div>
       </div>
       <div className="navbar-right">
         <select className="nav-drop">

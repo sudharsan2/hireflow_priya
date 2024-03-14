@@ -43,6 +43,7 @@ import KanbanInterviewer from "./pages/KanbanInterviewer";
 import ResultPage from "./components/usermanagement/ResultsPage";
 import Chats from "./pages/Chats";
 import CustomLayout from "./layout/CustomLayout";
+import AdminSummary from "./pages/summary/AdminSummary";
 
 const App = () => {
 
@@ -57,7 +58,7 @@ const App = () => {
         <Route path="/candidate" element={<CustomLayout><Candidate /></CustomLayout>} />
         <Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
-
+        <Route path="/admin-summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>
