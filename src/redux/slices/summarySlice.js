@@ -59,7 +59,10 @@ export const updateCandidateDataAsync = createAsyncThunk(
   "summary/updateCandidateData",
   async (requestData) => {
     try {
-      const response = await api.put(`/hiring/entryLevel/updatedata/${requestData.resumeId}/`, requestData);
+      const response = await api.put(
+        `/hiring/entryLevel/updatedata/${requestData.resumeId}/`,
+        requestData
+      );
       return response.data;
     } catch (error) {
       console.error("Error updating candidate data:", error);
@@ -68,6 +71,20 @@ export const updateCandidateDataAsync = createAsyncThunk(
   }
 );
 
+export const fetchInterviewerRemarksAsync = createAsyncThunk(
+  "summary/fetchInterviewerRemarks",
+  async (resumeId) => {
+    try {
+      const response = await api.get(
+        `/hiring/auth/getinterviewerremarks/${resumeId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error fetching interviewer remarks:", error);
+      throw error;
+    }
+  }
+);
 
 const summarySlice = createSlice({
   name: "summary",
@@ -76,6 +93,7 @@ const summarySlice = createSlice({
     recruiters: [],
     source: [],
     candidateDetails: null,
+    interviewerRemarks: null,
     msg: "",
     error: "",
   },
@@ -146,7 +164,19 @@ const summarySlice = createSlice({
       .addCase(updateCandidateDataAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(fetchInterviewerRemarksAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchInterviewerRemarksAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.interviewerRemarks = action.payload;
+      })
+      .addCase(fetchInterviewerRemarksAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
+      
   },
 });
 
@@ -155,5 +185,5 @@ export default summarySlice.reducer;
 
 // Selectors
 export const getCandidateDetails = (state) => state.summary.candidateDetails;
-export const getErrorFromUser = (state) => state.summary.error;
-export const getMsgFromUser = (state) => state.summary.msg;
+export const getLoadingState = (state) => state.summary.loading;
+export const getErrorState = (state) => state.summary.error;
