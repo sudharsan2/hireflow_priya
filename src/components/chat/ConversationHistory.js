@@ -26,18 +26,13 @@ export default function ConversationHistory({
   };
  
   const sendMail = async (payload) => {
-    const token = localStorage.getItem('accessToken');
     const apiUrl = 'http://172.235.10.116:7000/hiring/entryLevel/sendemail';
+ 
     try {
-      await axios.post(apiUrl,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }, payload});
+      await axios.post(apiUrl, payload);
       console.log('Mail sent');
       message.success('Mail sent');
-      }
-     catch (error) {
+    } catch (error) {
       console.error('Mail sent Failure', error);
       message.error('Unable to send mail');
     }
@@ -89,7 +84,7 @@ export default function ConversationHistory({
     <>
       <div className="conversation-header">
         <div className="conversation-avatar">
-          {user && Object.keys(user).length > 0 && (
+          {Object.keys(user).length > 0 && (
             <UserAvatar username={user.username} />
           )}
         </div>
@@ -106,7 +101,7 @@ export default function ConversationHistory({
           <div className="spinner-container">
             {flag && <Spin style={{ transform: 'scale(2)' }} />}
           </div>
- 
+            
           {(!selectedUser || !Object.values(selectedUser).length) && !flag && (
             <div className="default-quote" style={{ padding: '20px', marginTop: '170px', marginLeft: '120px' }}>
               <h1>Click on a chat to start the conversation.</h1>
@@ -139,7 +134,7 @@ export default function ConversationHistory({
  
         {showCompose && (
           <Modal
-            title={`Compose Email - ${user ? user.username : ''}`}
+            title={`Compose Email - ${user.username}`}
             visible={showCompose}
             onCancel={() => setShowCompose(false)}
             footer={null}

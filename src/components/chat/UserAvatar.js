@@ -3,7 +3,6 @@ import React from 'react';
 const UserAvatar = ({ username }) => {
   // Get the first letter of the username
   const firstLetter = username.charAt(0).toUpperCase();
-  // const firstLetter=username.charAt(0);
   
 //   Style for the avatar container
   const avatarContainerStyle = {

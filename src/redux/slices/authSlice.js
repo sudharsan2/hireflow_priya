@@ -52,6 +52,7 @@ export const fetchLoginDetailsAsync = createAsyncThunk(
       );
 
       setSession(response.data.tokens.access_token);
+      
       console.log(response.data.tokens.access_token);
 
       return response.data;
