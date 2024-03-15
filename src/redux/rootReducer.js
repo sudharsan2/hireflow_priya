@@ -5,7 +5,8 @@ import storage from "redux-persist/lib/storage";
 import authReducer from "../redux/slices/authSlice";
 import kanbanReducer from "../redux/slices/kanbanSlice";
 import interviewerReducer from "../redux/slices/interviewerSlice";
-import searchListReducer from '../redux/slices/searchSlice';
+import searchListReducer from "../redux/slices/searchSlice";
+import summaryReducer from "../redux/slices/summarySlice";
 // ----------------------------------------------------------------------
 
 const authPersistConfig = {
@@ -40,11 +41,20 @@ const searchListConfig = {
   blacklist: ["isLoading"],
 };
 
+const summaryPersistConfig = {
+  key: "summary",
+  storage,
+  keyPrefix: "redux-",
+  whitelist: [],
+  blacklist: ["isLoading"],
+};
+
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   kanban: persistReducer(kanbanPersistConfig, kanbanReducer),
   interviewer: persistReducer(interviewerPersistConfig, interviewerReducer),
-  search: persistReducer(searchListConfig,searchListReducer)
+  search: persistReducer(searchListConfig, searchListReducer),
+  summary: persistReducer(summaryPersistConfig, summaryReducer),
 });
 
 const persistedReducer = persistReducer({ key: "root", storage }, rootReducer);
