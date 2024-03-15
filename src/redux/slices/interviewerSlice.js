@@ -103,6 +103,9 @@ const interviewerSlice = createSlice({
         state.tasks.Waiting = allTasks.filter(
           (task) => task.currentStatus === "IN_FINAL"
         );
+        state.tasks.Selected = allTasks.filter(
+          (task) => task.currentStatus === "COMPLETED"
+        );
       })
       .addCase(fetchTasksAsync.rejected, (state, action) => {
         state.status = "failed";

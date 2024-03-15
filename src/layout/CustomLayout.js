@@ -18,7 +18,7 @@ const roles = {
         {
           key: "userManagement",
           label: "User Management",
-          linkTo: "/user-management",
+          linkTo: "/admin-page",
         },
       ],
     },
@@ -52,11 +52,11 @@ const roles = {
       subMenu: [
         {
           key: "addCandidate",
-          label: "New Candidates",
-          linkTo: "/add-candidate",
+          label: "Chats",
+          linkTo: "/chat-msg",
         },
 
-        { key: "summary", label: "Summary", linkTo: "/summary" },
+        { key: "summary", label: "Summary", linkTo: "/admin-summary" },
       ],
     },
   ],
@@ -117,7 +117,7 @@ const CustomLayout = ({ children }) => {
           }}
         >
           {!collapsed && (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", padding:"10px"}}>
               <img className="navbar-logo" src={imgurl2} alt="logo" />
               <h2 style={{ margin: "0 10px" }}>HireFlow</h2>
               
@@ -139,10 +139,10 @@ const CustomLayout = ({ children }) => {
         {!collapsed && (
           <div
             style={{
-              backgroundColor: "green",
+              backgroundColor: "rgb(16 51 85)",
               display: "flex",
               alignItems: "center",
-              marginTop: 22,
+              marginTop: 1,
               marginLeft: 7,
               marginRight: 7,
               padding: 5,

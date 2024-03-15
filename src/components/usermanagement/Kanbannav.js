@@ -42,14 +42,14 @@ const Kanbannav = () => {
     <>
       <nav className="navbar">
         <div className="navbar-left">
-          <img className="navbar-logo" src={imgurl2} />
+          {/* <img className="navbar-logo" src={imgurl2} />
           <div>
             <h2>HireFlow</h2>
             <p>by FocusR AI</p>
-          </div>
+          </div> */}
         </div>
         <div className="navbar-right">
-          <div onClick={handleBadgeClick}>
+          {/* <div onClick={handleBadgeClick}>
             <Badge color="gold" count={500}>
               <Avatar
                 shape="square"
@@ -57,7 +57,7 @@ const Kanbannav = () => {
                 style={{ backgroundColor: "yellowgreen", cursor: "pointer" }}
               />
             </Badge>
-          </div>
+          </div> */}
           <Input.Search
             placeholder="Search"
             value={searchInput}

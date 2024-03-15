@@ -109,7 +109,7 @@ body {
 
 .user-card h3 {
   text-align: center;
-
+  z-index: 200;
 }
 
 .user-details-modal {
@@ -193,11 +193,9 @@ body {
   position: absolute;
   top: 0;
   right: 5%;
-  width: 50px; /* Adjust the width as needed */
-  height: 50px; /* Adjust the height as needed */
-  
+  width: 25px; /* Adjust the width as needed */
+  height: 25px;
   border-radius: 50%;
-
 }
 
 .avatarkanin {

@@ -1,0 +1,76 @@
+.meeting {
+    width: 90%; /* Adjust width as needed */
+    max-width: 400px; /* Limit maximum width */
+    margin: 0 auto; /* Center the component horizontally */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .meeting h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .meeting label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .meeting input,
+  .meeting textarea,
+  .ant-picker-input > input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .meeting textarea {
+    resize: vertical;
+  }
+  
+  .meeting Button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0 20px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    padding-bottom: 30px;
+    padding-top: 6px;
+  }
+  
+  .meeting Button:hover {
+    background-color: #0056b3;
+  }
+  
+  .fromTime {
+    margin-right: 10px;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .meeting {
+        width: 90%;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .meeting {
+        width: 100%;
+        padding: 10px;
+    }
+  
+    .meeting Button {
+        margin: 0 auto;
+    }
+  }
+  

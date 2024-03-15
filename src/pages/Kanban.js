@@ -28,6 +28,8 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { UpdatedDataTask } from "../redux/slices/interviewerSlice";
 import moment from "moment";
 import Kanbannav from "../components/usermanagement/Kanbannav";
+import WalkInCandidate from "./WalkinCandidate";
+import Meeting from "../components/meet/Meet";
 
 const { Option } = Select;
 
@@ -42,7 +44,26 @@ export default function Kanban() {
   const [isModalWaitingVisible, setIsModalWaitingVisible] = useState(false);
   // Add a state variable to track save status
   const [isSaved, setIsSaved] = useState(false);
- 
+  const [isWalkinUpload, setIsWalkinUpload]=useState(false);
+  const [newCandidate, setNewCandidate] = useState(false);
+  const [isModalMeet, setIsModalMeet] = useState(false);
+  const handleModalOpen = () => {
+    setIsModalMeet(true);
+  }
+  const handleModalMeet = () => {
+    setIsModalMeet(false);
+  }
+  const handleIsWalkinUpload=()=>{
+    console.log("yes it works");
+    setIsWalkinUpload(true);
+  }
+  const handleNewCandidate = () => {
+    setNewCandidate(false);
+  }
+  const handleNewCandidateBtn = () => {
+    console.log('btn clicked')
+    setNewCandidate(true);
+  }
 
   const handleCardClick = async (cardData) => {
     try {
@@ -53,7 +74,7 @@ export default function Kanban() {
         // If the card is in the "Final" column, open the modal with specific fields
         setIsModalWaitingVisible(true);
         const response = await api.get(
-          `/hiring/evaluationLevel/finalEvalById/${cardData.resumeId}`
+          `/hiring/entryLevel/getACandidate/${cardData.id}`
         );
         setSelectedCard(response.data);
         // setSelectedCard(modalData);
@@ -75,7 +96,7 @@ export default function Kanban() {
     dispatch(fetchTasksAsync());
     dispatch(fetchInterviewersAsync());
     dispatch(fetchFinalDataAsync());
-  }, [dispatch, moveTask, isSaved]);
+  }, [dispatch, moveTask, isSaved, isWalkinUpload]);
 
   const handleDrop = (result) => {
     const { source, destination } = result;
@@ -228,6 +249,12 @@ export default function Kanban() {
   return (
     <>
       <Kanbannav />
+      <Button
+        className="ncbtn"
+        onClick={handleNewCandidateBtn}
+      >
+        Walkin
+      </Button>
       <DragDropContext onDragEnd={handleDrop}>
         <div className="kanban-board">
           {Object.keys(tasks).map((column) => (
@@ -305,6 +332,18 @@ export default function Kanban() {
           ))}
         </div>
       </DragDropContext>
+
+      <Modal
+          open={newCandidate}
+          onCancel={handleNewCandidate}
+          width={540}
+          footer={
+            [
+            ]
+          }
+        >
+          <WalkInCandidate isWalkinUpload={handleIsWalkinUpload}/>
+        </Modal>
 
       <Modal
         title="Candidate Details"
@@ -454,10 +493,10 @@ export default function Kanban() {
               <Select
                 placeholder="Shortlist Status"
                 value={selectedCard.shortlistStatus}
-                onChange={(e) =>
+                onChange={(value) =>
                   setSelectedCard({
                     ...selectedCard,
-                    shortlistStatus: e.target.value,
+                    shortlistStatus: value,
                   })
                 }
               >
@@ -488,6 +527,22 @@ export default function Kanban() {
         <Button key="save" type="primary" onClick={handleSave}>
           Save
         </Button>
+        <Button key="meet" type="primary" onClick={handleModalOpen}
+          style={{ marginLeft: '10px', marginTop: '10px'}}
+        >
+          Meet
+        </Button>
+        <Modal
+          open={isModalMeet}
+          onCancel={handleModalMeet}
+          width={530}
+          footer={
+            [
+            ]
+          }
+        >
+          <Meeting onSave={handleModalMeet}/>
+        </Modal>
       </Modal>
 
       <Modal
@@ -604,7 +659,7 @@ export default function Kanban() {
             </Tooltip>
           </div>
         )}
-        <Button key="save" type="primary" onClick={handleWaitSave}>
+        <Button key="save" type="primary" onClick={handleSave}>
           Save
         </Button>
       </Modal>

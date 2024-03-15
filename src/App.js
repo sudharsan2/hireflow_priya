@@ -44,6 +44,10 @@ import ResultPage from "./components/usermanagement/ResultsPage";
 import Chats from "./pages/Chats";
 import CustomLayout from "./layout/CustomLayout";
 import AdminSummary from "./pages/summary/AdminSummary";
+import HrrSummary from "./pages/summary/HrrSummary";
+import { Newcandidate } from "./components/usermanagement/NewCandidateAdmin";
+import Piechart from "./pages/Piechart";
+import Admineval from "./pages/Admineval";
 
 const App = () => {
 
@@ -59,6 +63,10 @@ const App = () => {
         <Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
         <Route path="/admin-summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
+        <Route path="/admin-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />
+        <Route path="/add-candidate" element={<CustomLayout><Newcandidate /></CustomLayout>} />
+        <Route path="/dashboard" element={<CustomLayout><Piechart /></CustomLayout>} />
+        <Route path="/evaluation" element={<CustomLayout><Admineval /></CustomLayout>} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>

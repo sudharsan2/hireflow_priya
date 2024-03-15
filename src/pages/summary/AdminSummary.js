@@ -5,6 +5,7 @@ import {
   Card,
   Col,
   DatePicker,
+  Divider,
   Empty,
   Input,
   Modal,
@@ -18,12 +19,17 @@ import { SyncOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCandidateDetailsAsync,
+  fetchInterviewerRemarksAsync,
   fetchListofInterviewerAsync,
   fetchListofRecruiterAsync,
   fetchListofSourceAsync,
   updateCandidateDataAsync,
   setErrorMessage,
+  getLoadingState,
+  getErrorState,
 } from "../../redux/slices/summarySlice";
+import { Typography } from "@mui/material";
+import Usernav from "../../components/usermanagement/Usernav";
 
 ////////////////////////////////////////////////////////////
 
@@ -31,12 +37,22 @@ const { Option } = Select;
 
 const AdminSummary = () => {
   const [loadings, setLoadings] = useState(false);
+  const loading = useSelector(getLoadingState);
+  const error = useSelector(getErrorState);
+
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [selectedSkill, setSelectedSkill] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const dispatch = useDispatch();
   const interviewers = useSelector((state) => state.summary.interviewers);
   const recruiters = useSelector((state) => state.summary.recruiters);
   const source = useSelector((state) => state.summary.source);
+  const interviewerRemarks = useSelector(
+    (state) => state.summary.interviewerRemarks
+  );
+  console.log("remarks", interviewerRemarks);
   const [formData, setFormData] = useState({
     resumeId: "",
     candidateName: "",
@@ -134,6 +150,11 @@ const AdminSummary = () => {
       key: "role",
     },
     {
+      title: "Recruiter",
+      dataIndex: "assigned",
+      key: "recruiter",
+    },
+    {
       title: "Recruit Status",
       dataIndex: "recruiterSubmissionStatus",
       key: "recruitStatus",
@@ -149,6 +170,15 @@ const AdminSummary = () => {
       render: (_, record) => (
         <Button type="primary" onClick={() => handleEdit(record)}>
           Edit
+        </Button>
+      ),
+    },
+    {
+      title: "Interviewer",
+      key: "interviewer",
+      render: (_, record) => (
+        <Button type="primary" onClick={() => handleInterviewerClick(record)}>
+          Interviewer
         </Button>
       ),
     },
@@ -189,9 +219,24 @@ const AdminSummary = () => {
       setLoadings(false);
     }
   };
+
+  const handleInterviewerClick = async (record) => {
+    try {
+      // Dispatch the fetchInterviewerRemarksAsync thunk with the resumeId
+      dispatch(fetchInterviewerRemarksAsync(record.resumeId));
+
+      // Open the modal with the response data or handle it as needed
+      setSelectedCandidate(record);
+      setModalVisible(true);
+    } catch (error) {
+      // Handle errors
+      console.error("Error fetching interviewer remarks:", error);
+      // Optionally, display an error message to the user
+    }
+  };
   return (
     <>
-      <Cannav />
+      <Usernav />
       <Card
         title="Find Candidate Details"
         bordered={false}
@@ -486,6 +531,25 @@ const AdminSummary = () => {
               <Option value="Fresher">Fresher</Option>
             </Select>
           </Tooltip>
+          <Tooltip title="Recruiter">
+            <Select
+              style={{ width: "100%" }}
+              placeholder="Recruiter Name"
+              value={editFormData.assigned}
+              onChange={(value) =>
+                setEditFormData({
+                  ...editFormData,
+                  assigned: value,
+                })
+              }
+            >
+              {recruiters.map((recruiter) => (
+                <Option key={recruiter.id} value={recruiter.empId}>
+                  {recruiter.username}
+                </Option>
+              ))}
+            </Select>
+          </Tooltip>
           <Tooltip title="Recruiter Status">
             <Select
               style={{ width: "100%" }}
@@ -522,6 +586,57 @@ const AdminSummary = () => {
             </Select>
           </Tooltip>
         </div>
+      </Modal>
+      {/* Interviewer Remarks Modal */}
+
+      <Modal
+        title="Interviewer Remarks"
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        footer={null}
+      >
+        <Divider />
+        <p>
+          <strong>Interviewer:</strong> {interviewerRemarks?.interviewerName}
+        </p>
+        <p>
+          <strong>Date And Time:</strong> {interviewerRemarks?.dateTime}
+        </p>
+        <p>
+          <strong>Overall Rating:</strong> {interviewerRemarks?.overall_rating}
+        </p>
+
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {" "}
+          {interviewerRemarks?.skills.map((skill, index) => (
+            <li key={index} style={{ marginBottom: "10px" }}>
+              {" "}
+              <a onClick={() => setSelectedSkill(skill)}>View Skill Details</a>
+              <Modal
+                title="Skill Details"
+                visible={!!selectedSkill}
+                onCancel={() => setSelectedSkill(null)}
+                footer={null}
+              >
+                <Card>
+                  <p>
+                    <strong>Skill:</strong> {selectedSkill?.skills}
+                  </p>
+                  <p>
+                    <strong>Proficiency:</strong> {selectedSkill?.proficiency}
+                  </p>
+                  <p>
+                    <strong>Rating out of 10:</strong>{" "}
+                    {selectedSkill?.ratingoutof10}
+                  </p>
+                  <p>
+                    <strong>Comments:</strong> {selectedSkill?.comments}
+                  </p>
+                </Card>
+              </Modal>
+            </li>
+          ))}
+        </ul>
       </Modal>
     </>
   );

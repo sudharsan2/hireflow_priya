@@ -10,8 +10,9 @@ const UserCard = ({ user, onClick }) => {
 
   return (
     <div className="user-card-hrr" onClick={() => onClick(user)}>
-      <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
+      
       <h3>{user.username}</h3>
+      <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <div>
         <p>{user.empId}</p>
       </div>
