@@ -1,4 +1,5 @@
 
+ 
 import React, { useState } from "react";
 import Usernav from "./Usernav";
 import { Stats } from "./NewCandidateStat";
@@ -6,12 +7,34 @@ import { Candidatecards } from "./NewCandidateCards";
 import FilterPopup from "./NewCandidateFilter";
 import './NewCandidateAdmin.css';
  
+import axios from "axios";
+import { notification } from "antd";
+ 
 export function Newcandidate() {
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [selectedFilters, setSelectedFilters] = useState([]);
  
-    const handleAssignClick = () => {
-        console.log("Assign clicked!");
+    const handleAssignClick = async () => {
+        try {
+        const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/assignRole/";
+   
+        // Make a POST request to the API
+        const response = await axios.post(apiUrl);
+   
+        // Handle the response as needed (e.g., show a success message)
+        console.log("Assign API response:", response.data);
+        notification.success({
+            message: response.data.message,
+            description: "You have successfully Assigned .",
+        });
+        } catch (error) {
+        console.error("Error triggering Assign API:", error.message);
+        notification.error({
+            message: error.response.data.message,
+            description: `Server responded with ${error.response.status}`,
+        });
+        // Handle the error (e.g., show an error message)
+        }
     };
  
     const toggleFilterModal = () => {

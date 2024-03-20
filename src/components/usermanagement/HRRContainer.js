@@ -10,18 +10,22 @@ const UserCard = ({ user, onClick }) => {
 
   return (
     <div className="user-card-hrr" onClick={() => onClick(user)}>
-      
+
       <h3>{user.username}</h3>
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <div>
         <p>{user.empId}</p>
       </div>
-      <p>completed: {user.Completed}</p>
+      <p>completed: 0</p>
     </div>
   );
 };
 
-const UserDetailsModal = ({ user, onClose, onDelete }) => {
+const UserDetailsModal = ({ user, onClose, onDelete, onPause, hRCount, handleCount}) => {
+  const isPaused = user.pause;
+  // const [isPaused, setIsPaused]=useState(user.pause);
+  handleCount();
+  console.log(hRCount);
   const modalRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -39,28 +43,27 @@ const UserDetailsModal = ({ user, onClose, onDelete }) => {
   }, [onClose]);
 
   return (
+
     <div className="user-details-modal" ref={modalRef}>
       <h3>{user.name}</h3>
       <p>Role: {user.roles}</p>
-      <p>New Applicants: {user.NewApplicants}</p>
-      <p>Verified: {user.Verified}</p>
-      <p>Assigned to tech: {user.AssignedToTech}</p>
-      <p>waiting for approval: {user.WaitingForApproval}</p>
-      <p>completed: {user.Completed}</p>
+      <p>New Applicants: {hRCount.newApplicants}</p>
+      <p>Assigned to tech: {hRCount.assignedToTech}</p>
+      <p>waiting for approval: {hRCount.waitingForApproval}</p>
+      <p>completed: {hRCount.completed}</p>
       <div className="button-container">
-        <button onClick={onDelete}>Delete</button>
-        <button>Pause</button>
+        <button onClick={onDelete} >Delete</button>
+        <button onClick={onPause}>{isPaused ? 'Unpause' : 'Pause'}</button>
       </div>
-      <span>
-        <BarChartIcon />
-        Show Analytics
-      </span>
+
     </div>
   );
 };
 
+
 const HRRContainer = () => {
   const [users, setUsers] = useState([]);
+  const [hrCount, setHrCount] = useState({});
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
@@ -77,7 +80,12 @@ const HRRContainer = () => {
             },
           }
         );
+
+
         setUsers(response.data);
+        
+        
+
       } catch (error) {
         console.error("Failed to fetch users:", error.message);
       }
@@ -95,17 +103,74 @@ const HRRContainer = () => {
     setSelectedUser(null);
   };
 
-  const handleDeleteUser = () => {
-    // Implement your delete logic here
-    console.log("Deleting user:", selectedUser);
-    // Update users state after deletion if needed
-    // setUsers(users.filter(user => user.username !== selectedUser.username));
+  const handleDeleteUser = async () => {
+    const is_active = selectedUser.is_active
+    const id = selectedUser.id;
+    try {
+      const response = await axios.put(`http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`, {
+        is_active: !is_active
+      });
+      const token = localStorage.getItem("accessToken");
+      const response1 = await axios.get(
+        "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      setUsers(response1.data);
+    } catch (error) {
+      console.error("Error pausing user:", error.response.data);
+    }
+    handleCloseModal();
+
+  };
+
+  const handlePauseUser = async () => {
+    const id = selectedUser.id;
+    const isPause = selectedUser.pause;
+    try {
+      const response = await axios.put(`http://172.235.10.116:7000/hiring/auth/pauseResumeUser/${id}`, {
+        pause: !isPause
+      });
+      const token = localStorage.getItem("accessToken");
+      const response1 = await axios.get(
+        "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      setUsers(response1.data);
+
+    } catch (error) {
+      console.error("Error pausing user:", error.response.data);
+    }
     handleCloseModal();
   };
+
+  const handleCountHrUser = async () => {
+    const empId = selectedUser.empId;
+    try {
+      const response = await axios.get(
+        `http://172.235.10.116:7000/hiring/auth/statsofhr/${empId}`,
+      );
+      setHrCount(response.data);
+    }
+    catch (error) {
+
+    }
+    
+  }
 
   const hrrUsers = users.filter((user) => user.roles === 2);
 
   return (
+    
     <div className="container">
       {hrrUsers.map((user) => (
         <UserCard key={user.id} user={user} onClick={handleCardClick} />
@@ -118,6 +183,9 @@ const HRRContainer = () => {
             user={selectedUser}
             onClose={handleCloseModal}
             onDelete={handleDeleteUser}
+            onPause={handlePauseUser}
+            hRCount={hrCount}
+            handleCount={handleCountHrUser}
           />
         </>
       )}

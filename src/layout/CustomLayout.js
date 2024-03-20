@@ -56,7 +56,7 @@ const roles = {
           linkTo: "/chat-msg",
         },
 
-        { key: "summary", label: "Summary", linkTo: "/admin-summary" },
+        { key: "summary", label: "Summary", linkTo: "/hrr-summary" },
       ],
     },
   ],
@@ -73,7 +73,7 @@ const roles = {
       key: "candidates",
       label: "Candidates",
       icon: <TeamOutlined />,
-      subMenu: [{ key: "summary", label: "Summary", linkTo: "/summary" }],
+      subMenu: [{ key: "summary", label: "Summary", linkTo: "/tech-summary" }],
     },
   ],
 };
@@ -88,6 +88,7 @@ const CustomLayout = ({ children }) => {
     setUserRole(storedRole);
   }, []);
   const username = localStorage.getItem("username");
+  const jobRole = localStorage.getItem("role");
 //   const role = localStorage.getItem("role");
 
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
@@ -150,8 +151,10 @@ const CustomLayout = ({ children }) => {
             }}
           >
             <Avatar icon={<UserOutlined />} />
-
-            <span style={{ marginLeft: 10, color: "white" }}>{username}</span>
+            <div style={{display:'flex', flexDirection:'column', marginLeft:10, color:'white'}}>
+            <span>{username}</span>
+            </div>
+            
           </div>
         )}
          {collapsed && (

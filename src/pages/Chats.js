@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import UserList from "../components/chat/UserList";
 import ConversationHistory from "../components/chat/ConversationHistory";
+import Kanbannav from "../components/usermanagement/Kanbannav";
 
 // ////////////////////////////////////////////////////////////////
 
@@ -45,6 +46,8 @@ export default function Chats() {
       
     };
     return (
+      <>
+      <Kanbannav/>
       <div style={{ display: "flex", height: "100vh"}}>
         <div style={{ flex: "0.8", backgroundColor: "#edf0f5" }}>
           <UserList onUserClick={handleUserClick}/>
@@ -55,6 +58,8 @@ export default function Chats() {
         </div>
 
       </div>
+      </>
+      
     );
   }
   

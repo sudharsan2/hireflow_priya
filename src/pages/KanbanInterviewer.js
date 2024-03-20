@@ -186,7 +186,8 @@ export default function KanbanInterviewer() {
                               <div>
                                 <h2>{task.name}</h2>
                                 <p>Job Role: {task.jobRole}</p>
-                                
+                                <p>Mail:{task.email}</p>
+                                <p>phone:{task.phoneNo}</p>
                                 <p className="score">{task.resumeScore}</p>
                               </div>
                             </div>

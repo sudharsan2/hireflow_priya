@@ -19,9 +19,9 @@ const UserCard = ({ user, onClick }) => {
   );
 };
 
-const UserDetailsModal = ({ user, onClose, onDelete }) => {
+const UserDetailsModal = ({ user, onClose, onDelete, hRCount, handleCount}) => {
   const modalRef = useRef(null);
-
+  handleCount();
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       onClose();
@@ -39,26 +39,34 @@ const UserDetailsModal = ({ user, onClose, onDelete }) => {
   return (
     <div className="user-details-modal" ref={modalRef}>
       <h3>{user.name}</h3>
-      <p>Role: {user.roles}</p>
-      <p>New Applicants: {user.NewApplicants}</p>
-      <p>Verified: {user.Verified}</p>
-      <p>Assigned to tech: {user.AssignedToTech}</p>
-      <p>waiting for approval: {user.WaitingForApproval}</p>
-      <p>completed: {user.Completed}</p>
+      <p>Role: Interviewer</p>
+      <p>New Applicants: {hRCount.assignedCandidates}</p>
+      <p>completed: {hRCount.completed}</p>
       <div className="button-container">
         <button onClick={onDelete}>Delete</button>
-        <button>Pause</button>
+        
       </div>
-      <span>
-        <BarChartIcon />
-        Show Analytics
-      </span>
+      
     </div>
   );
 };
 const Techcontainer = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [hrCount, setHrCount] = useState({});
+
+  const handleCountHrUser = async () => {
+    const empId = selectedUser.empId;
+    try {
+      const response = await axios.get(
+        `http://172.235.10.116:7000/hiring/auth/statsofinterviewer/${empId}`,
+      );
+      setHrCount(response.data);
+    }
+    catch (error) {
+
+    }
+  }
 
   useEffect(() => {
     // Fetch users from the API using Axios
@@ -92,17 +100,40 @@ const Techcontainer = () => {
     setSelectedUser(null);
   };
 
-  const handleDeleteUser = () => {
-    // Implement your delete logic here
-    console.log("Deleting user:", selectedUser);
-    // Update users state after deletion if needed
-    // setUsers(users.filter(user => user.name !== selectedUser.name));
+  const handleDeleteUser = async () => {
+    const is_active = selectedUser.is_active
+    const id = selectedUser.id;
+    try {
+      const response = await axios.put(`http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`, {
+        is_active: !is_active
+      });
+      const token = localStorage.getItem("accessToken");
+      const response1 = await axios.get(
+        "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      setUsers(response1.data);
+    } catch (error) {
+      console.error("Error pausing user:", error.response.data);
+    }
     handleCloseModal();
+
   };
+  
 
   const hrrUsers = users.filter((user) => user.roles === 3);
 
   return (
+    <>
+    <div className="header">
+  <h2>Technical Interviewer</h2>
+  
+    </div>
     <div className="container">
       {hrrUsers.map((user) => (
         <UserCard key={user.id} user={user} onClick={handleCardClick} />
@@ -115,10 +146,13 @@ const Techcontainer = () => {
             user={selectedUser}
             onClose={handleCloseModal}
             onDelete={handleDeleteUser}
+            hRCount={hrCount}
+            handleCount={handleCountHrUser}
           />
         </>
       )}
     </div>
+    </>
   );
 };
 

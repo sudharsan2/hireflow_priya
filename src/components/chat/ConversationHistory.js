@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import './conversation.css';
 import ReactQuill from 'react-quill';
@@ -21,19 +20,29 @@ export default function ConversationHistory({
   const [attachments, setAttachments] = useState(null);
   const [showCompose, setShowCompose] = useState(false);
  
+  const handleUserClick = (user) => {
+    // Handle user selection
+    console.log("Selected user:", user);
+  };
+ 
   const appendText = (html) => {
     setQuillText(html);
   };
  
   const sendMail = async (payload) => {
-    const apiUrl = 'http://172.235.10.116:7000/hiring/entryLevel/sendemail';
+    const token = localStorage.getItem('accessToken');
+    const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/sendemail";
  
     try {
-      await axios.post(apiUrl, payload);
+      const response = await axios.post(apiUrl, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log('Mail sent');
       message.success('Mail sent');
     } catch (error) {
-      console.error('Mail sent Failure', error);
+      console.error('Mail sent Failure:', error);
       message.error('Unable to send mail');
     }
   };
@@ -43,10 +52,17 @@ export default function ConversationHistory({
   };
  
   const handleComposeButtonClick = () => {
+ 
     if (subject !== '' && quillText !== '') {
+      const displayMessage = {
+        emailContent: quillText,
+        emailAddress: user.email,
+        dateAndTime: '01-12-2023'
+      };
+ 
       const payload = {
         subject: subject,
-        from: localStorage.getItem('mail'),
+        from: localStorage.getItem('email'),
         to: [user.email],
         body: quillText,
         cclist: [cc],
@@ -54,26 +70,21 @@ export default function ConversationHistory({
         attachments: attachments,
       };
  
-      sendMail(payload);
-      const displayMessage = {
-        emailContent: quillText,
- 
-        emailAddress: user.email,
-        dateAndTime: '01-12-2023',
-      };
       setQuillText('');
-      const message = { ...selectedUser };
-      message.sent = displayMessage;
-      history(message);
- 
       setCC('');
       setSubject('');
-      setAttachments(null);
-      setShowCompose(false);
+ 
+      const messageData = { ...selectedUser };
+      messageData.sent = displayMessage;
+      history(messageData);
+ 
+      console.log(payload);
+      sendMail(payload);
     } else {
       message.error('Please fill in the subject and message.');
     }
   };
+ 
  
   const handleFileChange = (e) => {
     const files = e.target.files;
@@ -84,8 +95,10 @@ export default function ConversationHistory({
     <>
       <div className="conversation-header">
         <div className="conversation-avatar">
-          {Object.keys(user).length > 0 && (
-            <UserAvatar username={user.username} />
+          {user && Object.keys(user).length > 0 && (
+            <>
+              <UserAvatar username={user.username} />
+            </>
           )}
         </div>
         <Button
@@ -101,7 +114,7 @@ export default function ConversationHistory({
           <div className="spinner-container">
             {flag && <Spin style={{ transform: 'scale(2)' }} />}
           </div>
-            
+ 
           {(!selectedUser || !Object.values(selectedUser).length) && !flag && (
             <div className="default-quote" style={{ padding: '20px', marginTop: '170px', marginLeft: '120px' }}>
               <h1>Click on a chat to start the conversation.</h1>
@@ -134,7 +147,7 @@ export default function ConversationHistory({
  
         {showCompose && (
           <Modal
-            title={`Compose Email - ${user.username}`}
+            title={`Compose Email - ${user ? user.username : ''}`}
             visible={showCompose}
             onCancel={() => setShowCompose(false)}
             footer={null}
@@ -196,4 +209,3 @@ export default function ConversationHistory({
     </>
   );
 }
- 

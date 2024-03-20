@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Typography, Button, Input, Form} from "antd";
+import { Modal, Typography, Button, Input, Form } from "antd";
 import axios from "axios";
 
 const { TextArea } = Input;
@@ -10,7 +10,7 @@ const CanCard = ({ user, onModalOpen }) => {
   };
 
   return (
-    <div className="user-card-can" style={{cursor:"pointer"}} onClick={() => onModalOpen(user)}>
+    <div className="user-card-can" style={{ cursor: "pointer" }} onClick={() => onModalOpen(user)}>
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <h3>{user.name}</h3>
       <p>Job Role: {user.jobRole}</p>
@@ -21,12 +21,12 @@ const CanCard = ({ user, onModalOpen }) => {
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [userData, setUserData] = useState(null); 
-  const [candidates, setCandidates] = useState([]); 
-  const [finalRemarks, setFinalRemarks] = useState(""); 
+  const [userData, setUserData] = useState(null);
+  const [candidates, setCandidates] = useState([]);
+  const [finalRemarks, setFinalRemarks] = useState("");
 
   useEffect(() => {
-    
+
     axios.get("http://172.235.10.116:7000/hiring/auth/getallcadidatesforevaluation")
       .then(response => {
         setCandidates(response.data);
@@ -37,7 +37,7 @@ const App = () => {
   }, []);
 
   const handleModalOpen = (user) => {
-    
+
     axios.get(`http://172.235.10.116:7000/hiring/auth/getallcadidatesforevalutaionbyid/${user.resumeId}`)
       .then(response => {
         setUserData(response.data);
@@ -53,13 +53,13 @@ const App = () => {
   };
 
   const handleFormSubmit = (status) => {
-    
+
     console.log("Form values:", { ...userData.candidateData, finalRemarks });
 
     // Call the API
     axios.post("http://172.235.10.116:7000/hiring/auth/selectcandidatesstatus", {
       resumeId: userData.candidateData.resumeId,
-      currentStatus: status 
+      currentStatus: status
     })
       .then(response => {
         console.log("API response:", response.data);
@@ -68,16 +68,17 @@ const App = () => {
         console.error("Error calling API:", error);
       });
 
-    
+
     setModalVisible(false);
   };
 
   return (
     <div>
       <div className="container">
-        {candidates.map((user, index) => (
+        {candidates.length > 0 ? candidates.map((user, index) => (
           <CanCard key={user.id} user={user} onModalOpen={handleModalOpen} />
-        ))}
+        )) : <div style={{ marginLeft:'250px',marginTop:'50px', color:'#808c83'}}><h1>No candidates for Evaluation</h1></div>}
+
       </div>
       <Modal
         title="User Details"
@@ -89,7 +90,8 @@ const App = () => {
           <div style={{
             display: "grid",
             gap: "10px",
-            gridTemplateColumns: "1fr"}} >
+            gridTemplateColumns: "1fr"
+          }} >
             <Typography.Text>Experience : {userData.candidateData.yearsOfExperience}</Typography.Text>
             <Typography.Text>Role : {userData.candidateData.jobRole}</Typography.Text>
             <Typography.Text>Resume Score : {userData.candidateData.resumeScore}</Typography.Text>
@@ -100,13 +102,13 @@ const App = () => {
               <Input value={finalRemarks} onChange={(e) => setFinalRemarks(e.target.value)} />
             </Form.Item>
             <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "20%", paddingRight: "20%" }}>
-              <Button type="primary" onClick={()=>handleFormSubmit("SELECTED")}>
+              <Button type="primary" onClick={() => handleFormSubmit("SELECTED")}>
                 Select
               </Button>
-              <Button type="primary" onClick={()=>handleFormSubmit("ON_HOLD")}>
+              <Button type="primary" onClick={() => handleFormSubmit("ON_HOLD")}>
                 On Hold
               </Button>
-              <Button type="primary" onClick={()=>handleFormSubmit("REJECTED")}>
+              <Button type="primary" onClick={() => handleFormSubmit("REJECTED")}>
                 Reject
               </Button>
             </div>

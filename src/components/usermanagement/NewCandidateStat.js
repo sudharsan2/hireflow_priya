@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './NewCandidateStat.css';
 import axios from 'axios';
@@ -8,7 +9,7 @@ const StatisticComponent = ({ label, value }) => {
     return (
         <tr>
             <td>{label} :</td>
-            <td>{value || 'null'}</td>
+            <td>{value || '0'}</td>
         </tr>
     );
 };

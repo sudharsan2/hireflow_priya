@@ -1,4 +1,5 @@
 
+ 
 .stats-table {
  
     width: 400px;
@@ -16,13 +17,15 @@
     border-top-width: 3px;
   }
  
+  .stats-table:hover{
+    transform: scale(1.01);
+  }
+ 
   .stats-table td,
   .stats-table tr{
     padding: 3px;
   }
  
  
-  .stats-table tr:hover {
-    background-color: #ddd;
-  }
+ 
  

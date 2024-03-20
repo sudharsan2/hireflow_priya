@@ -40,7 +40,7 @@ const Kanbannav = () => {
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
     <>
-      <nav className="navbar">
+      <nav className="navbar" style={{height:"50px"}}>
         <div className="navbar-left">
           {/* <img className="navbar-logo" src={imgurl2} />
           <div>
@@ -58,13 +58,13 @@ const Kanbannav = () => {
               />
             </Badge>
           </div> */}
-          <Input.Search
+          {/* <Input.Search
             placeholder="Search"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onSearch={handleSearch}
             loading={loading}
-          />
+          /> */}
 
           <span onClick={handleLogout} className="nav-span">
             Logout

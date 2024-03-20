@@ -99,11 +99,11 @@ const Usernav = () => {
   };
   const handleNotificationModalClose = () => {
     setShowNotificationModal(false);
+    setNotificationCount(0);
   };
 
   const handleNotificationClick = () => {
     setShowNotificationModal(true);
-    setNotificationCount(0);
   };
 
   const handleAddUser = () => {
@@ -189,13 +189,13 @@ const Usernav = () => {
           <option value="model4">Gemini Pro</option>
         </select>
 
-        <span onClick={handleAddUserClick} className="nav-span">
+        {/* <span onClick={handleAddUserClick} className="nav-span">
           <PersonAddAlt1Icon style={{ marginRight: "5px" }} />
           Add user
-        </span>
-        <span onClick={handleCandidate} className="nav-span">
+        </span> */}
+        {/* <span onClick={handleCandidate} className="nav-span">
           Candidate
-        </span>
+        </span> */}
         <span onClick={handleNotificationClick} className="nav-span">
           <NotificationsNoneOutlinedIcon />
           {notificationCount > 0 && (

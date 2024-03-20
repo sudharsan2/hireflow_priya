@@ -28,7 +28,7 @@ function formatDate(date) {
     return year + '-' + formattedMonth + '-' + formattedDay;
 }
 
-export default function Meeting({ onSave, details}) {
+export default function Meeting({ onSave, prevData}) {
 
     const [messageApi, contextHolder] = message.useMessage();
     const success = () => {
@@ -62,7 +62,7 @@ export default function Meeting({ onSave, details}) {
     };
     const [meeting, setMeeting] = useState({
         "meetingURL": "",
-        "candidate": "",
+        "candidate": prevData.candidate,
         "interviewer": "",
         "date": "",
         "startTime": "",
@@ -72,17 +72,11 @@ export default function Meeting({ onSave, details}) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setMeeting({ ...meeting, [name]: value });
-
-
     }
 
     const validationForm = () => {
         if (!meeting.meetingURL.trim()) {
             failure('Meeting URL is required');
-            return false;
-        }
-        if (!meeting.candidate.trim()) {
-            failure('candidate is required');
             return false;
         }
         if (!meeting.interviewer.trim()) {
@@ -156,35 +150,35 @@ export default function Meeting({ onSave, details}) {
     return (
         <div className='meeting'>
             <h1>Schedule a Meet</h1>
-            <label>Meeting URL:</label>
+            {/* <label>Meeting URL:</label> */}
             <Input
                 name="meetingURL"
-                placeholder="URL"
+                placeholder="MeetingURL"
                 value={meeting.meetingURL}
                 onChange={handleChange}
             />
-            <label>Candidate:</label>
-            <Input
+            {/* <label>Candidate:</label> */}
+            {/* <Input
                 name="candidate"
                 placeholder="Candidate"
-                value={meeting.candidate}
+                value={prevData.name}
                 onChange={handleChange}
-            />
-            <label>Interviewer:</label>
+            /> */}
+            <label>{prevData.name}</label>
             <Input
                 name="interviewer"
-                value={meeting.interviewer}
+                value={prevData.interviewer}
                 placeholder="Interviewer"
                 onChange={handleChange}
             />
-            <label>Date:</label>
+            {/* <label>Date:</label> */}
             <DatePicker
                 onChange={onDateChange}
                 format={dateFormat}
                 // value={meeting.date}
             />
-            <div>
-                <label>Time</label>
+            <div className='timePicker'>
+                {/* <label>Time</label> */}
                 <TimePicker
                     // value={meeting.startTime}
                     format={timeFormat}
@@ -202,7 +196,7 @@ export default function Meeting({ onSave, details}) {
             </div>
 
 
-            <label>Description</label>
+            {/* <label>Description</label> */}
             <TextArea
                 name="description"
                 value={meeting.description}

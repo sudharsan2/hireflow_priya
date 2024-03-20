@@ -48,6 +48,7 @@ import HrrSummary from "./pages/summary/HrrSummary";
 import { Newcandidate } from "./components/usermanagement/NewCandidateAdmin";
 import Piechart from "./pages/Piechart";
 import Admineval from "./pages/Admineval";
+import TechSummary from "./pages/summary/TechSummary";
 
 const App = () => {
 
@@ -63,7 +64,8 @@ const App = () => {
         <Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
         <Route path="/admin-summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
-        <Route path="/admin-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />
+        <Route path="/hrr-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />
+        <Route path="/tech-summary" element={<CustomLayout><TechSummary/></CustomLayout>} />
         <Route path="/add-candidate" element={<CustomLayout><Newcandidate /></CustomLayout>} />
         <Route path="/dashboard" element={<CustomLayout><Piechart /></CustomLayout>} />
         <Route path="/evaluation" element={<CustomLayout><Admineval /></CustomLayout>} />

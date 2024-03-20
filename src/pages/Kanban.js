@@ -20,6 +20,7 @@ import {
   Select,
   Tooltip,
   Typography,
+  message,
   notification,
 } from "antd";
 import CardDetails from "../components/kanban/CardDetails";
@@ -30,6 +31,8 @@ import moment from "moment";
 import Kanbannav from "../components/usermanagement/Kanbannav";
 import WalkInCandidate from "./WalkinCandidate";
 import Meeting from "../components/meet/Meet";
+import { DownloadOutlined } from '@ant-design/icons';
+import axios from "axios";
 
 const { Option } = Select;
 
@@ -44,7 +47,7 @@ export default function Kanban() {
   const [isModalWaitingVisible, setIsModalWaitingVisible] = useState(false);
   // Add a state variable to track save status
   const [isSaved, setIsSaved] = useState(false);
-  const [isWalkinUpload, setIsWalkinUpload]=useState(false);
+  const [isWalkinUpload, setIsWalkinUpload] = useState(false);
   const [newCandidate, setNewCandidate] = useState(false);
   const [isModalMeet, setIsModalMeet] = useState(false);
   const handleModalOpen = () => {
@@ -53,9 +56,10 @@ export default function Kanban() {
   const handleModalMeet = () => {
     setIsModalMeet(false);
   }
-  const handleIsWalkinUpload=()=>{
+  const handleIsWalkinUpload = () => {
     console.log("yes it works");
     setIsWalkinUpload(true);
+    setNewCandidate(false);
   }
   const handleNewCandidate = () => {
     setNewCandidate(false);
@@ -64,6 +68,42 @@ export default function Kanban() {
     console.log('btn clicked')
     setNewCandidate(true);
   }
+  const handleDownload = async () => {
+    console.log(selectedCard.resumeId);
+    const resumeId=selectedCard.resumeId;
+    try {
+      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+        responseType: 'blob', 
+      });
+      console.log(response.headers);
+      // const match = /filename="([^"]+)"/.exec(disposition);
+      
+      const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+      console.log(disposition);
+      const match = /filename="([^"]+)"/.exec(disposition);
+      console.log(match);
+      const filename = match ? match[1] : `resume-${resumeId}.pdf`;
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+
+      
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename); 
+
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      message.error('File not found!');
+      console.error('Error downloading file:', error);
+    }
+  };
 
   const handleCardClick = async (cardData) => {
     try {
@@ -191,6 +231,7 @@ export default function Kanban() {
   };
 
   const handleSave = async () => {
+    setSaveButtonLoading(true);
     try {
       const validationErrors = validateFields(selectedCard);
 
@@ -212,10 +253,16 @@ export default function Kanban() {
       // window.location.reload();
       // Close the modal
       setIsModalVisible(false);
+      handleModalClose();
+      
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
     }
+    finally{
+      setSaveButtonLoading(false);
+    }
+    
   };
 
   const handleWaitSave = async () => {
@@ -244,6 +291,8 @@ export default function Kanban() {
       // Handle the error as needed
     }
   };
+  const [saveButtonLoading, setSaveButtonLoading] = useState(false);
+
 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   return (
@@ -309,7 +358,9 @@ export default function Kanban() {
                               />
 
                               <div>
-                                <h2>{task.name}</h2>
+                                <h3>{task.name}</h3>
+                                <p>Phone:{task.phoneNo}</p>
+                                {/* <p>Mail:{task.email}</p> */}
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Experience: {task.yearsOfExperience}</p>
                                 <p className="score">{task.resumeScore}</p>
@@ -334,16 +385,16 @@ export default function Kanban() {
       </DragDropContext>
 
       <Modal
-          open={newCandidate}
-          onCancel={handleNewCandidate}
-          width={540}
-          footer={
-            [
-            ]
-          }
-        >
-          <WalkInCandidate isWalkinUpload={handleIsWalkinUpload}/>
-        </Modal>
+        open={newCandidate}
+        onCancel={handleNewCandidate}
+        width={540}
+        footer={
+          [
+          ]
+        }
+      >
+        <WalkInCandidate isWalkinUpload={handleIsWalkinUpload} />
+      </Modal>
 
       <Modal
         title="Candidate Details"
@@ -365,13 +416,32 @@ export default function Kanban() {
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-            <Typography>Name: {selectedCard.name}</Typography>
-            <Typography>Email: {selectedCard.email}</Typography>
+            {/* <Typography>Name: {selectedCard.name}</Typography> */}
+            {/* <Typography>Email: {selectedCard.email}</Typography> */}
             <Typography>Resume ID: {selectedCard.resumeId}</Typography>
-            <Typography>
-              Current Status: {selectedCard.currentStatus}
-            </Typography>
             <Typography>Resume Score: {selectedCard.resumeScore}</Typography>
+            <Typography>Current Status: {selectedCard.currentStatus}</Typography>
+            <Tooltip title="Name">
+            <Input
+                placeholder="Name"
+                value={selectedCard.name}
+                onChange={(e) =>
+                  setSelectedCard({ ...selectedCard, name: e.target.value })
+                }
+              />
+            </Tooltip>
+            <Tooltip title="Email">
+            <Input
+                placeholder="Email"
+                value={selectedCard.email}
+                onChange={(e) =>
+                  setSelectedCard({ ...selectedCard, email: e.target.value })
+                }
+              />
+            </Tooltip>
+            
+            
+            
             <Tooltip title="Location">
               <Input
                 placeholder="Location"
@@ -380,7 +450,18 @@ export default function Kanban() {
                   setSelectedCard({ ...selectedCard, location: e.target.value })
                 }
               />
+              
             </Tooltip>
+            <Tooltip title="Job Role">
+            <Input
+                placeholder="Job Role"
+                value={selectedCard.jobRole}
+                onChange={(e) =>
+                  setSelectedCard({ ...selectedCard, jobRole: e.target.value })
+                }
+              />
+            </Tooltip>
+            
             <Tooltip title="Location">
               <Input
                 placeholder="Qualification"
@@ -395,12 +476,24 @@ export default function Kanban() {
             </Tooltip>
             <Tooltip title="Candidate's Domain Experience">
               <Input
-                placeholder="Domain"
+                placeholder="Candidate's Domain Experience"
                 value={selectedCard.domainExperience}
                 onChange={(e) =>
                   setSelectedCard({
                     ...selectedCard,
                     domainExperience: e.target.value,
+                  })
+                }
+              />
+            </Tooltip>
+            <Tooltip title="phoneNo">
+              <Input
+                placeholder="phoneNo"
+                value={selectedCard.phoneNo}
+                onChange={(e) =>
+                  setSelectedCard({
+                    ...selectedCard,
+                    phoneNo: e.target.value,
                   })
                 }
               />
@@ -522,16 +615,28 @@ export default function Kanban() {
                 ))}
               </Select>
             </Tooltip>
+
           </div>
         )}
-        <Button key="save" type="primary" onClick={handleSave}>
-          Save
-        </Button>
-        <Button key="meet" type="primary" onClick={handleModalOpen}
-          style={{ marginLeft: '10px', marginTop: '10px'}}
-        >
-          Meet
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+          <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
+            Save
+          </Button>
+
+          <Button
+            key="meet"
+            type="primary"
+            onClick={handleModalOpen}
+            style={{ marginLeft: '10px' }}
+          >
+            Meet
+          </Button>
+
+          <div style={{ marginLeft: 'auto' }}>
+            <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
+          </div>
+        </div>
+
         <Modal
           open={isModalMeet}
           onCancel={handleModalMeet}
@@ -541,7 +646,7 @@ export default function Kanban() {
             ]
           }
         >
-          <Meeting onSave={handleModalMeet}/>
+          <Meeting onSave={handleModalMeet} prevData={selectedCard}/>
         </Modal>
       </Modal>
 
@@ -566,7 +671,7 @@ export default function Kanban() {
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-             <Tooltip title="ResumeId">
+            <Tooltip title="ResumeId">
               <Input
                 placeholder="ResumeId"
                 value={selectedCard.resumeId}
@@ -659,7 +764,12 @@ export default function Kanban() {
             </Tooltip>
           </div>
         )}
-        <Button key="save" type="primary" onClick={handleSave}>
+        <Button 
+        key="save" type="primary" 
+        onClick={handleSave} 
+        loading={saveButtonLoading}
+        style={{marginTop:'10px'}}
+        >
           Save
         </Button>
       </Modal>

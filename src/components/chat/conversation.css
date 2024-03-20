@@ -28,7 +28,6 @@
  
 .header {
   flex-grow: 1;
-  text-align: center;
   font-size: 20px;
 }
  
@@ -65,6 +64,7 @@
  
 .email-content {
   font-size: 16px;
+  width:inherit;
   color: #333;
 }
  

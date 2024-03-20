@@ -1,4 +1,5 @@
 
+ 
 import React, { useEffect, useState } from "react";
 import './NewCandidateCards.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -78,7 +79,7 @@ export const Candidatecards = ({ selectedFilters }) => {
                     {filteredData.map((profile, index) => (
                         <ProfileCard key={index} profile={profile} />
                     ))}
-                </div> : <center><h2 className="profile-card-container">No Cards to Display</h2></center>
+                </div> : <center><h2 className="profile-card-container">No New Candidates</h2></center>
                 }
  
             </div>

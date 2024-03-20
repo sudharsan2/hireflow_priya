@@ -32,6 +32,7 @@
   
   .meeting textarea {
     resize: vertical;
+    margin-top: 10px;
   }
   
   .meeting Button {
@@ -54,6 +55,10 @@
   }
   
   .fromTime {
+    margin-right: 10px;
+  }
+  .timePicker{
+    margin-top: 10px;
     margin-right: 10px;
   }
   

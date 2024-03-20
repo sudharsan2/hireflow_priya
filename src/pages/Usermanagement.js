@@ -11,9 +11,9 @@ const Usermanagement = () => {
   return (
     <div>
         <Usernav />
-        <HRRHeader />
+        <HRRHeader/>
        <HRRContainer />
-       <Techheader />
+       {/* <Techheader /> */}
        <Techcontainer />
       
     </div>

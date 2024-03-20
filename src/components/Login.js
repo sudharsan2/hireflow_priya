@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -15,6 +15,7 @@ import {
 } from "../redux/slices/authSlice";
 import useIsMountedRef from "../hooks/useIsMountedRef";
 import { useSelector } from "react-redux";
+import {EyeOutlined } from '@ant-design/icons';
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -25,16 +26,19 @@ const Login = () => {
   const isLoading = useSelector(getIsLoadingFromAuth);
   const isAuthenticated = useSelector(getIsAuthenticatedFromAuth);
   const isError = useSelector(getErrorFromAuth);
+  const [showPassword, setShowPassword]=useState(false);
   const LoginSchema = Yup.object({
     username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required"),
   });
+  
 
   const formik = useFormik({
     initialValues: {
       username: "",
       password: "",
     },
+    
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
@@ -86,6 +90,10 @@ const Login = () => {
   const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
   const imgurl2 = process.env.PUBLIC_URL + "./img/login3.jpg";
 
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="Login">
       <video autoPlay loop muted className="background-video" playsInline>
@@ -116,14 +124,17 @@ const Login = () => {
                 )}
               </div>
               <div className="form-group">
+                
                 <input
-                  type="password"
+                  type={showPassword?'text':'password'}
                   id="password"
                   name="password"
                   placeholder="Enter your password"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                 />
+                <EyeOutlined onClick={handleTogglePassword} style={{cursor:'pointer', position:"absolute", top:'53.9%', right:'19.5%', color:'#808c83'}}/>
+                
                 {formik.touched.password && formik.errors.password && (
                   <div className="error">{formik.errors.password}</div>
                 )}
@@ -136,7 +147,7 @@ const Login = () => {
                 <a href="#forgot-password" className="forgot-password">
                   Forgot Password?
                 </a>
-              </div>
+              </div>   
               <Button
               className="log-button"
                 type="primary"

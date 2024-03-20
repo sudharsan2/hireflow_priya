@@ -30,12 +30,13 @@ import {
 } from "../../redux/slices/summarySlice";
 import { Typography } from "@mui/material";
 import Usernav from "../../components/usermanagement/Usernav";
+import Kanbannav from "../../components/usermanagement/Kanbannav";
 
 ////////////////////////////////////////////////////////////
 
 const { Option } = Select;
 
-const AdminSummary = () => {
+const HrrSummary = () => {
   const [loadings, setLoadings] = useState(false);
   const loading = useSelector(getLoadingState);
   const error = useSelector(getErrorState);
@@ -164,15 +165,15 @@ const AdminSummary = () => {
       dataIndex: "currentStatus",
       key: "currentStatus",
     },
-    {
-      title: "Edit",
-      key: "edit",
-      render: (_, record) => (
-        <Button type="primary" onClick={() => handleEdit(record)}>
-          Edit
-        </Button>
-      ),
-    },
+    // {
+    //   title: "Edit",
+    //   key: "edit",
+    //   render: (_, record) => (
+    //     <Button type="primary" onClick={() => handleEdit(record)}>
+    //       Edit
+    //     </Button>
+    //   ),
+    // },
     {
       title: "Interviewer",
       key: "interviewer",
@@ -236,7 +237,7 @@ const AdminSummary = () => {
   };
   return (
     <>
-      <Usernav />
+      <Kanbannav />
       <Card
         title="Find Candidate Details"
         bordered={false}
@@ -328,7 +329,7 @@ const AdminSummary = () => {
                 <Option value="Fresher">Fresher</Option>
               </Select>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Select
                 style={{ width: "100%" }}
                 placeholder="Recruiter Name"
@@ -341,7 +342,8 @@ const AdminSummary = () => {
                   </Option>
                 ))}
               </Select>
-            </Col>
+            </Col> */}
+            
             <Col span={8}>
               <Select
                 style={{ width: "100%" }}
@@ -352,6 +354,18 @@ const AdminSummary = () => {
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
                 <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
                 <Option value="HOLD">HOLD</Option>
+              </Select>
+            </Col>
+            <Col span={8}>
+              <Select
+                style={{ width: "100%" }}
+                placeholder="Interviewer Status"
+                value={formData.interviewerStatus || undefined}
+                onChange={(value) => handleChange("interviewerStatus", value)}
+              >
+                <Option value="SHORTLISTED">SHORTLISTED</Option>
+                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                {/* Add more options as needed */}
               </Select>
             </Col>
           </Row>
@@ -378,7 +392,7 @@ const AdminSummary = () => {
                 ))}
               </Select>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Status"
@@ -386,10 +400,10 @@ const AdminSummary = () => {
                 onChange={(value) => handleChange("interviewerStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option> */}
                 {/* Add more options as needed */}
-              </Select>
-            </Col>
+              {/* </Select>
+            </Col> */}
           </Row>
           <Row gutter={[16, 16]}>
             <Col span={8}>
@@ -447,7 +461,7 @@ const AdminSummary = () => {
         </Card>
       )}
       {/* Edit Modal */}
-      <Modal
+      {/* <Modal
         title="Edit Candidate Details"
         visible={editModalVisible}
         onCancel={() => setEditModalVisible(false)}
@@ -531,7 +545,7 @@ const AdminSummary = () => {
               <Option value="Fresher">Fresher</Option>
             </Select>
           </Tooltip>
-          <Tooltip title="Recruiter">
+          {/* <Tooltip title="Recruiter">
             <Select
               style={{ width: "100%" }}
               placeholder="Recruiter Name"
@@ -549,8 +563,8 @@ const AdminSummary = () => {
                 </Option>
               ))}
             </Select>
-          </Tooltip>
-          <Tooltip title="Recruiter Status">
+          </Tooltip> */}
+          {/* <Tooltip title="Recruiter Status">
             <Select
               style={{ width: "100%" }}
               placeholder="Recruiter Status"
@@ -586,7 +600,7 @@ const AdminSummary = () => {
             </Select>
           </Tooltip>
         </div>
-      </Modal>
+      </Modal> */} 
       {/* Interviewer Remarks Modal */}
 
       <Modal
@@ -642,4 +656,4 @@ const AdminSummary = () => {
   );
 };
 
-export default AdminSummary;
+export default HrrSummary;

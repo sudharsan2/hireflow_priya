@@ -107,6 +107,7 @@ const AdminSummary = () => {
       );
       const data = await dispatch(fetchCandidateDetailsAsync(filteredData));
       console.log("Data", data.payload);
+      console.log("again");
       const value = data.payload;
       setCandidates(value);
     } catch (error) {
@@ -210,7 +211,7 @@ const AdminSummary = () => {
       // Close the modal or handle any other actions upon successful update
       setEditModalVisible(false);
       // Optionally, fetch updated candidate details
-      fetchCandidateDetails();
+      // fetchCandidateDetails();
     } catch (error) {
       // Handle errors
       console.error("Error updating candidate data:", error);
@@ -265,7 +266,7 @@ const AdminSummary = () => {
                 onChange={(value) => handleChange("source", value)}
               >
                 {source.map((src) => (
-                  <Option key={src.id} value={src.name}>
+                  <Option key={src.id} value={src.id}>
                     {src.name}
                   </Option>
                 ))}
@@ -360,7 +361,7 @@ const AdminSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Recruiter Date"
-                value={formData.recruiterDate}
+                value={formData.recruiterDate || undefined}
                 onChange={(date) => handleChange("recruiterDate", date)}
               />
             </Col>
