@@ -6,7 +6,7 @@ import { Spin, message, Modal, Form, Input, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import UserAvatar from './UserAvatar';
 import axios from 'axios';
- 
+
 export default function ConversationHistory({
   selectedUser,
   flag,
@@ -19,20 +19,21 @@ export default function ConversationHistory({
   const [subject, setSubject] = useState('');
   const [attachments, setAttachments] = useState(null);
   const [showCompose, setShowCompose] = useState(false);
- 
+  const [mailSending, setMailsending] = useState(false);
   const handleUserClick = (user) => {
     // Handle user selection
     console.log("Selected user:", user);
+    
   };
- 
+
   const appendText = (html) => {
     setQuillText(html);
   };
- 
+
   const sendMail = async (payload) => {
     const token = localStorage.getItem('accessToken');
     const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/sendemail";
- 
+
     try {
       const response = await axios.post(apiUrl, payload, {
         headers: {
@@ -45,52 +46,58 @@ export default function ConversationHistory({
       console.error('Mail sent Failure:', error);
       message.error('Unable to send mail');
     }
+    finally {
+      setShowCompose(false);
+    }
   };
- 
+
   const handleButtonClick = () => {
     setShowCompose(!showCompose);
   };
- 
+
   const handleComposeButtonClick = () => {
- 
+    
+
     if (subject !== '' && quillText !== '') {
+      setMailsending(!mailSending);
       const displayMessage = {
         emailContent: quillText,
         emailAddress: user.email,
         dateAndTime: '01-12-2023'
       };
- 
+
       const payload = {
         subject: subject,
-        from: localStorage.getItem('email'),
+        from: localStorage.getItem('mail'),
         to: [user.email],
         body: quillText,
         cclist: [cc],
         bcclist: [bcc],
         attachments: attachments,
       };
- 
+
       setQuillText('');
       setCC('');
       setSubject('');
- 
+
       const messageData = { ...selectedUser };
       messageData.sent = displayMessage;
       history(messageData);
- 
+
       console.log(payload);
       sendMail(payload);
+      setMailsending(false);
     } else {
       message.error('Please fill in the subject and message.');
     }
   };
- 
- 
+
+
   const handleFileChange = (e) => {
     const files = e.target.files;
     setAttachments(files);
   };
- 
+
   return (
     <>
       <div className="conversation-header">
@@ -108,19 +115,19 @@ export default function ConversationHistory({
           {showCompose ? 'Compose Mail' : 'Compose Mail'}
         </Button>
       </div>
- 
+
       <div className="conversation-history-container">
         <div className="email-list">
           <div className="spinner-container">
             {flag && <Spin style={{ transform: 'scale(2)' }} />}
           </div>
- 
+
           {(!selectedUser || !Object.values(selectedUser).length) && !flag && (
             <div className="default-quote" style={{ padding: '20px', marginTop: '170px', marginLeft: '120px' }}>
               <h1>Click on a chat to start the conversation.</h1>
             </div>
           )}
- 
+
           {selectedUser &&
             Object.values(selectedUser)
               .sort(
@@ -144,7 +151,7 @@ export default function ConversationHistory({
                 </div>
               ))}
         </div>
- 
+
         {showCompose && (
           <Modal
             title={`Compose Email - ${user ? user.username : ''}`}
@@ -186,7 +193,7 @@ export default function ConversationHistory({
                   />
                 </Form.Item>
               </Form>
- 
+
               <ReactQuill
                 theme="snow"
                 className="custom-quill-editor"
@@ -194,14 +201,13 @@ export default function ConversationHistory({
                 onChange={appendText}
                 value={quillText}
               />
- 
-              <Button
-                type="primary"
-                onClick={handleComposeButtonClick}
-              >
-                Send
-                <SendOutlined />
-              </Button>
+              {!mailSending ? (
+                <Button type="primary" onClick={handleComposeButtonClick}>
+                  Send <SendOutlined />
+                </Button>
+              ) : (
+                <Button disabled>sending...</Button>
+              )}
             </div>
           </Modal>
         )}

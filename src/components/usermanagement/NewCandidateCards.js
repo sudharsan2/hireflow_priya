@@ -10,49 +10,50 @@ const ProfileCard = ({ profile }) => {
         <div className="profile-card">
             <AccountCircleIcon className="profile-icon" />
             <h2>{profile.name || 'null'}</h2>
-            <p>Experience: {profile.experience || 'null'} years</p>
+            <p>Experience: {profile.yearsOfExperience} years</p>
             <p>Job Role: {profile.jobRole || 'null'}</p>
-            <p>AI Score: {profile.aiScore || 'null'}</p>
+            <p>AI Score: {profile.resumeScore || 'null'}</p>
         </div>
     );
 };
  
-export const Candidatecards = ({ selectedFilters }) => {
+export const Candidatecards = ({ selectedFilters, candidateCards}) => {
     const [profileData, setProfileData] = useState([]);
  
-    useEffect(() => {
-        const token = localStorage.getItem('accessToken');
+    // useEffect(() => {
+    //     const token = localStorage.getItem('accessToken');
  
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
-                // Extracting only required fields from the response and handling null values
-                const extractedData = response.data.map(profile => ({
-                    name: profile.name || 'null',
-                    experience: profile.experience || 'null',
-                    jobRole: profile.jobRole || 'null',
-                    aiScore: profile.resumeScore || 'null'
-                }));
-                console.log(response.data)
-                setProfileData(extractedData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await axios.get('http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates', {
+    //                 headers: {
+    //                     Authorization: `Bearer ${token}`,
+    //                 }
+    //             });
+    //             // Extracting only required fields from the response and handling null values
+    //             const extractedData = response.data.map(profile => ({
+    //                 name: profile.name || 'null',
+    //                 experience: profile.experience || 'null',
+    //                 jobRole: profile.jobRole || 'null',
+    //                 aiScore: profile.resumeScore || 'null'
+    //             }));
+    //             console.log(response.data)
+    //             setProfileData(extractedData);
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error);
+    //         }
+    //     };
  
-        if (token) {
-            fetchData();
-        } else {
-            console.error('Access token not found in localStorage.');
-        }
-    }, []);
+    //     if (token) {
+    //         fetchData();
+    //     } else {
+    //         console.error('Access token not found in localStorage.');
+    //     }
+    // }, []);
  
  
-    let filteredData = [...profileData];
+    let filteredData = [...candidateCards];
+    console.log(filteredData);
     selectedFilters.forEach(filter => {
         if (filter === "AI Score Ascending") {
             filteredData.sort((a, b) => a.aiScore - b.aiScore);

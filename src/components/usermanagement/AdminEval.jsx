@@ -11,7 +11,7 @@ const CanCard = ({ user, onModalOpen }) => {
 
   return (
     <div className="user-card-can" style={{ cursor: "pointer" }} onClick={() => onModalOpen(user)}>
-      <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
+      {/* <img className="avatar" src={getAvatarUrl()} alt="User Avatar" /> */}
       <h3>{user.name}</h3>
       <p>Job Role: {user.jobRole}</p>
       <p>Resume Score: {user.resumeScore}</p>
@@ -25,16 +25,19 @@ const App = () => {
   const [candidates, setCandidates] = useState([]);
   const [finalRemarks, setFinalRemarks] = useState("");
 
-  useEffect(() => {
+  useEffect(()=>{
+    getFinalCandidates();
+  },[]);
 
+  const getFinalCandidates=async()=>{
     axios.get("http://172.235.10.116:7000/hiring/auth/getallcadidatesforevaluation")
-      .then(response => {
-        setCandidates(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching candidates data:", error);
-      });
-  }, []);
+    .then(response => {
+      setCandidates(response.data);
+    })
+    .catch(error => {
+      console.error("Error fetching candidates data:", error);
+    });
+  }
 
   const handleModalOpen = (user) => {
 
@@ -63,12 +66,13 @@ const App = () => {
     })
       .then(response => {
         console.log("API response:", response.data);
+        getFinalCandidates();
       })
       .catch(error => {
         console.error("Error calling API:", error);
       });
 
-
+    
     setModalVisible(false);
   };
 

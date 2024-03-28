@@ -14,9 +14,11 @@ import {
   Space,
   Table,
   Tooltip,
+  message
 } from "antd";
 import { SyncOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import {
   fetchCandidateDetailsAsync,
   fetchInterviewerRemarksAsync,
@@ -31,7 +33,8 @@ import {
 import { Typography } from "@mui/material";
 import Usernav from "../../components/usermanagement/Usernav";
 import Kanbanintnav from "../../components/usermanagement/Kanbanintnav";
-
+import axios from "axios";
+import { DownloadOutlined } from '@ant-design/icons';
 ////////////////////////////////////////////////////////////
 
 const { Option } = Select;
@@ -86,12 +89,62 @@ const TechSummary = () => {
   });
   // State to hold fetched candidate details
   const [candidates, setCandidates] = useState([]);
+  const handleDownload = async (record) => {
+    console.log(record.resumeId);
+    const resumeId = record.resumeId;
+    try {
+      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+        responseType: 'blob',
+      });
+      console.log(response.headers);
+      // const match = /filename="([^"]+)"/.exec(disposition);
 
+      const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+      console.log(disposition);
+      const match = /filename="([^"]+)"/.exec(disposition);
+      console.log(match);
+      const filename = match ? match[1] : `resume-${resumeId}.pdf`;
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      message.error('File not found!');
+      console.error('Error downloading file:', error);
+    }
+  };
   const handleChange = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+    if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
+      const forvalue=value
+      value = value ? value.format("YYYY-MM-DD") : null;
+      setFormData({
+        ...formData,
+        ["unformated"+field]: forvalue,
+        [field]:value
+      });
+    }
+    else {
+      console.log("value outside if", value);
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
+    }
+
+
+    console.log(formData);
   };
 
   const handleEdit = (record) => {
@@ -164,6 +217,16 @@ const TechSummary = () => {
       title: "Current Status",
       dataIndex: "currentStatus",
       key: "currentStatus",
+    },
+    {
+      title: "Resume",
+      key: "downloadResume",
+      render: (_, record) => (
+        // <Button type="primary" onClick={() => handleDownload(record)}>
+        //   download
+        // </Button>
+        <DownloadOutlined onClick={()=>handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}/>
+      )
     },
     // {
     //   title: "Edit",
@@ -293,12 +356,16 @@ const TechSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="From Date"
+                value={formData.unformatedfromDate ? formData.unformatedfromDate : null}
+                onChange={(date) => handleChange("fromDate", date)}
               />
             </Col>
             <Col span={8}>
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="To Date"
+                value={formData.unformatedtoDate ? formData.unformatedtoDate : null}
+                onChange={(date) => handleChange("toDate", date)}
               />
             </Col>
           </Row>
@@ -361,7 +428,7 @@ const TechSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Recruiter Date"
-                value={formData.recruiterDate}
+                value={formData.unformatedrecruiterDate ? formData.unformatedrecruiterDate : null}
                 onChange={(date) => handleChange("recruiterDate", date)}
               />
             </Col>
@@ -383,7 +450,7 @@ const TechSummary = () => {
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Status"
-                value={formData.interviewerStatus || undefined}
+                value={formData.unformatedinterviewerDate ? formData.unFormatedinterviewerDate : null}
                 onChange={(value) => handleChange("interviewerStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
@@ -397,7 +464,7 @@ const TechSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Interviewer Date"
-                value={formData.interviewerDate}
+                value={formData.unformatedinterviewerDate ? formData.unFormatedinterviewerDate : null}
                 onChange={(value) => handleChange("interviewerDate", value)}
               />
             </Col>
@@ -438,7 +505,7 @@ const TechSummary = () => {
         <Card
           title="Candidate Details"
           bordered={false}
-          style={{ margin: "70px" }}
+          style={{ margin: "70px", overflow:"auto"}}
         >
           {candidates.length > 0 ? (
             <Table dataSource={candidates} columns={columns} />

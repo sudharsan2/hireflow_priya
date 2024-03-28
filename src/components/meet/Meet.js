@@ -4,31 +4,7 @@ import { useState } from 'react';
 import axios from "axios";
 import moment from 'moment';
 
-
-function formatTime(time) {
-    const date = new Date(time);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    // Add leading zeros if necessary
-    const formattedHours = hours < 10 ? '0' + hours : hours;
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
-    return formattedHours + ':' + formattedMinutes;
-}
-
-function formatDate(date) {
-    const dateObject = new Date(date);
-    const day = dateObject.getDate();
-    const month = dateObject.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month index
-    const year = dateObject.getFullYear();
-
-    // Pad single digit day and month with leading zeros if needed
-    const formattedDay = day < 10 ? '0' + day : day;
-    const formattedMonth = month < 10 ? '0' + month : month;
-
-    return year + '-' + formattedMonth + '-' + formattedDay;
-}
-
-export default function Meeting({ onSave, prevData}) {
+export default function Meeting({ onSave, prevData }) {
 
     const [messageApi, contextHolder] = message.useMessage();
     const success = () => {
@@ -48,25 +24,34 @@ export default function Meeting({ onSave, prevData}) {
     const timeFormat = 'h:mm A';
     const dateFormat = "DD/MM/YYYY";
 
-    const onDateChange = (dateobj) => {
-        const date = formatDate(dateobj);
-        setMeeting({ ...meeting, date });
+    const onDateChange = (value) => {
+        // const date = formatDate(dateobj);
+        value = value ? value.format("YYYY-MM-DD") : null;
+        setMeeting({ ...meeting, date: value });
     };
 
     const onStartTimeChange = (time) => {
-        setMeeting({ ...meeting, startTime: formatTime(time) });
+        
+        
+        const formatTime=time?time.format(timeFormat):null;
+        console.log("formatTime", formatTime);
+        
+        setMeeting({ ...meeting, startTime: formatTime });
     };
 
     const onEndTimeChange = (time) => {
-        setMeeting({ ...meeting, endTime: formatTime(time) });
+        const formatTime=time?time.format(timeFormat):null;
+        console.log("formatTime", formatTime);
+        setMeeting({ ...meeting, endTime: formatTime });
     };
     const [meeting, setMeeting] = useState({
         "meetingURL": "",
-        "candidate": prevData.candidate,
-        "interviewer": "",
+        "candidate": prevData.resumeId,
+        // "resumeId":prevData.resumeId,
+        "interviewer": prevData.interviewer,
         "date": "",
-        "startTime": "",
-        "endTime": "",
+        "startTime": null,
+        "endTime": null,
         "description": ""
     })
     const handleChange = (e) => {
@@ -102,12 +87,24 @@ export default function Meeting({ onSave, prevData}) {
 
         return true;
     };
-
+    const [meetLoading, setMeetLoading] = useState(false);
     const handleSubmit = async () => {
         console.log("meeting", meeting)
+        setMeetLoading(true);
         // console.log("details", details)
         if (!validationForm()) {
             // Validation failed, stop form submission
+            setMeeting({
+                "meetingURL": "",
+                "candidate": prevData.resumeId,
+                "interviewer": prevData.interviewer,
+                "date": "",
+                "startTime": null,
+                "endTime": null,
+                "description": ""
+            });
+            setMeetLoading(false);
+            onSave();
             return;
         }
         try {
@@ -123,25 +120,32 @@ export default function Meeting({ onSave, prevData}) {
             if (response.status = 201) {
                 success();
 
-                setMeeting({
-                    "meetingURL": "",
-                    "candidate": "",
-                    "interviewer": "",
-                    "date": "",
-                    "startTime": "",
-                    "endTime": "",
-                    "description": ""
-                });
-                setMeeting({
-                    ...meeting,
-                    date: "",
-                    startTime: "",
-                    endTime: ""
-                });
+                // setMeeting({
+                //     "meetingURL": "",
+                //     "candidate": "",
+                //     "interviewer": "",
+                //     "date": "",
+                //     "startTime": "",
+                //     "endTime": "",
+                //     "description": ""
+                // });
+
                 onSave();
             }
         } catch (error) {
             console.error("Failed to fetch users:", error.message);
+        }
+        finally {
+            setMeetLoading(false);
+            setMeeting({
+                "meetingURL": "",
+                "candidate": prevData.resumeId,
+                "interviewer": prevData.interviewer,
+                "date": "",
+                "startTime": null,
+                "endTime": null,
+                "description": ""
+            });
         }
 
     };
@@ -151,6 +155,7 @@ export default function Meeting({ onSave, prevData}) {
         <div className='meeting'>
             <h1>Schedule a Meet</h1>
             {/* <label>Meeting URL:</label> */}
+            <label style={{ fontSize: '20px', paddingBottom: "20px" }}>{prevData.name}</label>
             <Input
                 name="meetingURL"
                 placeholder="MeetingURL"
@@ -164,23 +169,26 @@ export default function Meeting({ onSave, prevData}) {
                 value={prevData.name}
                 onChange={handleChange}
             /> */}
-            <label>{prevData.name}</label>
+
+            {/* <label>{prevData.resumeId}</label> */}
             <Input
                 name="interviewer"
                 value={prevData.interviewer}
                 placeholder="Interviewer"
-                onChange={handleChange}
+            // onChange={handleChange}
             />
             {/* <label>Date:</label> */}
             <DatePicker
                 onChange={onDateChange}
                 format={dateFormat}
                 // value={meeting.date}
+                value={meeting.date ? moment(meeting.date, "YYYY-MM-DD") : null}
+
             />
             <div className='timePicker'>
                 {/* <label>Time</label> */}
                 <TimePicker
-                    // value={meeting.startTime}
+                    value={meeting.startTime ? moment(meeting.startTime, timeFormat) : null}
                     format={timeFormat}
                     placeholder="From"
                     className='fromTime'
@@ -188,7 +196,7 @@ export default function Meeting({ onSave, prevData}) {
                 />
 
                 <TimePicker
-                    // value={meeting.endTime}
+                    value={meeting.endTime ? moment(meeting.endTime, timeFormat) : null}
                     format={timeFormat}
                     placeholder="To"
                     onChange={onEndTimeChange}
@@ -209,6 +217,7 @@ export default function Meeting({ onSave, prevData}) {
             <div style={{ margin: '24px 0', backgroundColor: "black" }} />
             {contextHolder}
             <Button
+                loading={meetLoading}
                 onClick={handleSubmit}
             >Schedule Meet
             </Button>

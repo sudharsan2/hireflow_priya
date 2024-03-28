@@ -1,6 +1,6 @@
 
  
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Usernav from "./Usernav";
 import { Stats } from "./NewCandidateStat";
 import { Candidatecards } from "./NewCandidateCards";
@@ -13,6 +13,7 @@ import { notification } from "antd";
 export function Newcandidate() {
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [selectedFilters, setSelectedFilters] = useState([]);
+    const [profileData, setProfileData] = useState([]);
  
     const handleAssignClick = async () => {
         try {
@@ -23,10 +24,12 @@ export function Newcandidate() {
    
         // Handle the response as needed (e.g., show a success message)
         console.log("Assign API response:", response.data);
+        fetchData();
         notification.success({
             message: response.data.message,
             description: "You have successfully Assigned .",
         });
+
         } catch (error) {
         console.error("Error triggering Assign API:", error.message);
         notification.error({
@@ -36,6 +39,31 @@ export function Newcandidate() {
         // Handle the error (e.g., show an error message)
         }
     };
+    const fetchData = async () => {
+        const token = localStorage.getItem('accessToken');
+        try {
+            const response = await axios.get('http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            // Extracting only required fields from the response and handling null values
+            const extractedData = response.data.map(profile => ({
+                name: profile.name || 'null',
+                experience: profile.experience || 'null',
+                jobRole: profile.jobRole || 'null',
+                aiScore: profile.resumeScore || 'null'
+            }));
+            console.log(response.data)
+            setProfileData(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+    useEffect(()=>{
+        fetchData();
+    },[]);
+    
  
     const toggleFilterModal = () => {
         setShowFilterModal(!showFilterModal);
@@ -80,7 +108,7 @@ export function Newcandidate() {
  
             <div className="footer" style={{ backgroundColor: "transparent" }}>
  
-                <Candidatecards selectedFilters={selectedFilters} />
+                <Candidatecards selectedFilters={selectedFilters} candidateCards={profileData}/>
             </div>
  
             {showFilterModal && (

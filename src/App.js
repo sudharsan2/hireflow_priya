@@ -57,13 +57,15 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/admin-summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
         <Route path="/admin-page" element={<CustomLayout><Usermanagement /></CustomLayout>} />
+        
         <Route path="/kanban-recurit" element={<CustomLayout><Kanban /></CustomLayout>} />
         <Route path="/kanban-Interviewer" element={<CustomLayout><KanbanInterviewer /></CustomLayout>} />
         <Route path="/candidate" element={<CustomLayout><Candidate /></CustomLayout>} />
         <Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
-        <Route path="/admin-summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
+        
         <Route path="/hrr-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />
         <Route path="/tech-summary" element={<CustomLayout><TechSummary/></CustomLayout>} />
         <Route path="/add-candidate" element={<CustomLayout><Newcandidate /></CustomLayout>} />

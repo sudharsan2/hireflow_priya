@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cannav from "../../components/usermanagement/Cannav";
+import moment from "moment";
 import {
   Button,
   Card,
@@ -14,6 +15,7 @@ import {
   Space,
   Table,
   Tooltip,
+  message
 } from "antd";
 import { SyncOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +33,8 @@ import {
 import { Typography } from "@mui/material";
 import Usernav from "../../components/usermanagement/Usernav";
 import Kanbannav from "../../components/usermanagement/Kanbannav";
-
+import axios from "axios";
+import { DownloadOutlined } from '@ant-design/icons';
 ////////////////////////////////////////////////////////////
 
 const { Option } = Select;
@@ -87,16 +90,80 @@ const HrrSummary = () => {
   // State to hold fetched candidate details
   const [candidates, setCandidates] = useState([]);
 
+  const handleFromDateChange = (date) => {
+    handleChange("fromDate", date);
+  };
+  const handleRecruiterDateChange = (date) => {
+    handleChange("recruiterDate", date);
+  };
+  const handleInterviewerDateChange = (date) => {
+    handleChange("interviewerDate", date);
+  };
+  const handleToDateChange = (date) => {
+    handleChange("toDate", date);
+  };
+
   const handleChange = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+    if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
+      const forvalue=value
+      value = value ? value.format("YYYY-MM-DD") : null;
+      setFormData({
+        ...formData,
+        ["unformated"+field]: forvalue,
+        [field]:value
+      });
+    }
+    else {
+      console.log("value outside if", value);
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
+    }
+
+
+    console.log(formData);
   };
 
   const handleEdit = (record) => {
     setEditFormData(record);
     setEditModalVisible(true);
+  };
+  const handleDownload = async (record) => {
+    console.log(record.resumeId);
+    const resumeId = record.resumeId;
+    try {
+      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+        responseType: 'blob',
+      });
+      console.log(response.headers);
+      // const match = /filename="([^"]+)"/.exec(disposition);
+
+      const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+      console.log(disposition);
+      const match = /filename="([^"]+)"/.exec(disposition);
+      console.log(match);
+      const filename = match ? match[1] : `resume-${resumeId}.pdf`;
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      message.error('File not found!');
+      console.error('Error downloading file:', error);
+    }
   };
 
   const fetchCandidateDetails = async () => {
@@ -157,8 +224,8 @@ const HrrSummary = () => {
     },
     {
       title: "Recruit Status",
-      dataIndex: "recruiterSubmissionStatus",
-      key: "recruitStatus",
+      dataIndex: "shortlistStatus",
+      key: "shortlistStatus",
     },
     {
       title: "Current Status",
@@ -174,6 +241,16 @@ const HrrSummary = () => {
     //     </Button>
     //   ),
     // },
+    {
+      title: "Resume",
+      key: "downloadResume",
+      render: (_, record) => (
+        // <Button type="primary" onClick={() => handleDownload(record)}>
+        //   download
+        // </Button>
+        <DownloadOutlined onClick={()=>handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}/>
+      )
+    },
     {
       title: "Interviewer",
       key: "interviewer",
@@ -293,12 +370,16 @@ const HrrSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="From Date"
+                value={formData.unformatedfromDate ? formData.unformatedfromDate : null}
+                onChange={handleFromDateChange}
               />
             </Col>
             <Col span={8}>
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="To Date"
+                value={formData.unformatedtoDate ? formData.unformatedtoDate : null}
+                onChange={handleToDateChange}
               />
             </Col>
           </Row>
@@ -374,15 +455,15 @@ const HrrSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Recruiter Date"
-                value={formData.recruiterDate}
-                onChange={(date) => handleChange("recruiterDate", date)}
+                value={formData.unformatedrecruiterDate ? formData.unformatedrecruiterDate : null}
+                onChange={(date) => handleRecruiterDateChange(date)}
               />
             </Col>
             <Col span={8}>
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Name"
-                value={formData.interviewerName || undefined}
+                
                 onChange={(value) => handleChange("interviewerName", value)}
               >
                 {interviewers.map((interviewer) => (
@@ -410,8 +491,8 @@ const HrrSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Interviewer Date"
-                value={formData.interviewerDate}
-                onChange={(value) => handleChange("interviewerDate", value)}
+                value={formData.unformatedinterviewerDate ? formData.unFormatedinterviewerDate : null}
+                onChange={(value) => handleInterviewerDateChange(value)}
               />
             </Col>
             <Col span={8}>
@@ -451,7 +532,7 @@ const HrrSummary = () => {
         <Card
           title="Candidate Details"
           bordered={false}
-          style={{ margin: "70px" }}
+          style={{ margin: "70px", overflow: "auto", width:"auto"}}
         >
           {candidates.length > 0 ? (
             <Table dataSource={candidates} columns={columns} />
@@ -614,10 +695,23 @@ const HrrSummary = () => {
           <strong>Interviewer:</strong> {interviewerRemarks?.interviewerName}
         </p>
         <p>
-          <strong>Date And Time:</strong> {interviewerRemarks?.dateTime}
+          <strong>Date And Time: </strong> {interviewerRemarks?.dateTime}
+        </p>
+        
+        <p>
+          <strong>Shortlist Status: </strong>{interviewerRemarks?.shortlistStatus}
         </p>
         <p>
-          <strong>Overall Rating:</strong> {interviewerRemarks?.overall_rating}
+          <strong>Strength: </strong>{interviewerRemarks?.strength}
+        </p>
+        <p>
+          <strong>Weakness: </strong>{interviewerRemarks?.weakness}
+        </p>
+        <p>
+          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_rating}
+        </p>
+        <p>
+          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_comments}
         </p>
 
         <ul style={{ listStyle: "none", padding: 0 }}>

@@ -145,3 +145,11 @@ input:hover {
 .additional-options a.forgot-password {
   margin-left: 15px;
 }
+/* .eye-icon {
+  position: absolute;
+  top: 56%;
+  right: 20%; 
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #808c83;
+} */

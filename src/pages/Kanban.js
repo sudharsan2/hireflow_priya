@@ -70,28 +70,28 @@ export default function Kanban() {
   }
   const handleDownload = async () => {
     console.log(selectedCard.resumeId);
-    const resumeId=selectedCard.resumeId;
+    const resumeId = selectedCard.resumeId;
     try {
       const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
-        responseType: 'blob', 
+        responseType: 'blob',
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
-      
+
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-      
+
       const blob = new Blob([response.data], { type: 'application/pdf' });
 
-      
+
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', filename); 
+      link.setAttribute('download', filename);
 
       document.body.appendChild(link);
       link.click();
@@ -232,10 +232,16 @@ export default function Kanban() {
 
   const handleSave = async () => {
     setSaveButtonLoading(true);
-    try {
-      const validationErrors = validateFields(selectedCard);
 
-      if (Object.keys(validationErrors).length > 0) {
+    try {
+
+      const validationErrors = validateFields(selectedCard);
+      if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate) {
+        notification.error({ message: 'joinDate is required' });
+        return;
+      }
+
+      if ((selectedCard.recruiterSubmissionStatus == 'SAVED' || selectedCard.recruiterSubmissionStatus == null) && Object.keys(validationErrors).length > 0) {
         // Display error messages to the user
         Object.values(validationErrors).forEach((errorMsg) => {
           notification.error({ message: errorMsg });
@@ -249,20 +255,22 @@ export default function Kanban() {
       console.log("Save clicked with data:", selectedCard);
       // Close the card details modal
       dispatch(UpdatedDataTask(selectedCard));
+      // dispatch(fetchTasksAsync());
       setIsSaved(true); // Set isSaved to true after saving
       // window.location.reload();
       // Close the modal
+      dispatch(fetchTasksAsync());
       setIsModalVisible(false);
       handleModalClose();
-      
+
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
     }
-    finally{
+    finally {
       setSaveButtonLoading(false);
     }
-    
+
   };
 
   const handleWaitSave = async () => {
@@ -351,11 +359,11 @@ export default function Kanban() {
                             }}
                           >
                             <div style={{ position: "relative" }}>
-                              <img
+                              {/* <img
                                 className="avatarkan"
                                 src={avatarUrl}
                                 alt="User Avatar"
-                              />
+                              /> */}
 
                               <div>
                                 <h3>{task.name}</h3>
@@ -422,7 +430,7 @@ export default function Kanban() {
             <Typography>Resume Score: {selectedCard.resumeScore}</Typography>
             <Typography>Current Status: {selectedCard.currentStatus}</Typography>
             <Tooltip title="Name">
-            <Input
+              <Input
                 placeholder="Name"
                 value={selectedCard.name}
                 onChange={(e) =>
@@ -431,7 +439,7 @@ export default function Kanban() {
               />
             </Tooltip>
             <Tooltip title="Email">
-            <Input
+              <Input
                 placeholder="Email"
                 value={selectedCard.email}
                 onChange={(e) =>
@@ -439,9 +447,9 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
-            
-            
-            
+
+
+
             <Tooltip title="Location">
               <Input
                 placeholder="Location"
@@ -450,19 +458,30 @@ export default function Kanban() {
                   setSelectedCard({ ...selectedCard, location: e.target.value })
                 }
               />
-              
+
             </Tooltip>
             <Tooltip title="Job Role">
-            <Input
+              <Select
                 placeholder="Job Role"
                 value={selectedCard.jobRole}
-                onChange={(e) =>
-                  setSelectedCard({ ...selectedCard, jobRole: e.target.value })
+                onChange={(value) =>
+                  setSelectedCard({
+                    ...selectedCard,
+                    jobRole: value,
+                  })
                 }
-              />
+              >
+                <Option value="Oracle Apps Technical Consultant">Oracle Apps Technical Consultant</Option>
+                <Option value="Java Full Stack developer">Java Full Stack developer</Option>
+                <Option value="Oracle Apps DBA">Oracle Apps DBA</Option>
+                <Option value="Oracle Finance Functional Consultant">Oracle Finance Functional Consultant</Option>
+                <Option value="Oracle HRMS consultant">Oracle HRMS consultant</Option>
+                <Option value="Oracle SCM consultant">Oracle SCM consultant</Option>
+                <Option value="Fresher">Fresher</Option>
+              </Select>
             </Tooltip>
-            
-            <Tooltip title="Location">
+
+            <Tooltip title="Qualification">
               <Input
                 placeholder="Qualification"
                 value={selectedCard.qualification}
@@ -597,7 +616,8 @@ export default function Kanban() {
                 <Option value="NOTSHORTLISTED">Not Shortlisted</Option>
               </Select>
             </Tooltip>
-            <Tooltip title="Interviewer">
+            {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null:
+              <Tooltip title="Interviewer">
               <Select
                 placeholder="Interviewer"
                 value={selectedCard.interviewer}
@@ -615,23 +635,26 @@ export default function Kanban() {
                 ))}
               </Select>
             </Tooltip>
+            }
+            
 
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-          <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
+          {selectedCard && selectedCard.currentStatus == "ASSIGNED" && <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
             Save
-          </Button>
-
-          <Button
-            key="meet"
-            type="primary"
-            onClick={handleModalOpen}
-            style={{ marginLeft: '10px' }}
-          >
-            Meet
-          </Button>
-
+          </Button>}
+          {selectedCard&&!selectedCard.interviewer?null:
+            selectedCard && selectedCard.currentStatus == "ASSIGNED" &&
+            <Button
+              key="meet"
+              type="primary"
+              onClick={handleModalOpen}
+              style={{ marginLeft: '10px' }}
+            >
+              Meet
+            </Button>
+          }
           <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
@@ -646,7 +669,7 @@ export default function Kanban() {
             ]
           }
         >
-          <Meeting onSave={handleModalMeet} prevData={selectedCard}/>
+          <Meeting onSave={handleModalMeet} prevData={selectedCard} />
         </Modal>
       </Modal>
 
@@ -738,7 +761,7 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
-            <Tooltip title="ShortlistStatus">
+            {/* <Tooltip title="ShortlistStatus">
               <Input
                 placeholder="ShortlistStatus"
                 value={selectedCard.shortlistStatus}
@@ -749,7 +772,7 @@ export default function Kanban() {
                   })
                 }
               />
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Remarks">
               <Input
                 placeholder="Remarks"
@@ -764,11 +787,11 @@ export default function Kanban() {
             </Tooltip>
           </div>
         )}
-        <Button 
-        key="save" type="primary" 
-        onClick={handleSave} 
-        loading={saveButtonLoading}
-        style={{marginTop:'10px'}}
+        <Button
+          key="save" type="primary"
+          onClick={handleSave}
+          loading={saveButtonLoading}
+          style={{ marginTop: '10px' }}
         >
           Save
         </Button>

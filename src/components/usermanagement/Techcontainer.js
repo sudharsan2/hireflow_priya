@@ -4,9 +4,9 @@ import "./hrrcontainer.css"; // Import the CSS file
 import BarChartIcon from "@mui/icons-material/BarChart";
 import axios from "axios";
 
-const UserCard = ({ user, onClick }) => {
+const UserCard = ({ user, onClick, hrCount }) => {
   const getAvatarUrl = () => {
-    return process.env.PUBLIC_URL + "./img/avtr2.jpg";
+    return process.env.PUBLIC_URL + "/img/avtr2.jpg";
   };
 
   return (
@@ -14,14 +14,14 @@ const UserCard = ({ user, onClick }) => {
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <h3>{user.username}</h3>
       <p>{user.empId}</p>
-      <p>completed: {user.Completed}</p>
+      {/* <p>completed: {hrCount.completed}</p> */}
     </div>
   );
 };
 
-const UserDetailsModal = ({ user, onClose, onDelete, hRCount, handleCount}) => {
+const UserDetailsModal = ({ user, onClose, onDelete, hrCount }) => {
   const modalRef = useRef(null);
-  handleCount();
+
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       onClose();
@@ -38,62 +38,71 @@ const UserDetailsModal = ({ user, onClose, onDelete, hRCount, handleCount}) => {
 
   return (
     <div className="user-details-modal" ref={modalRef}>
-      <h3>{user.name}</h3>
-      <p>Role: Interviewer</p>
-      <p>New Applicants: {hRCount.assignedCandidates}</p>
-      <p>completed: {hRCount.completed}</p>
+
+      <p><strong><u>Role Interviewer</u></strong></p>
+      {/* <h3>{user.username}</h3> */}
+      {hrCount && (
+        <>
+          <p>New Applicants: {hrCount.assignedCandidates}</p>
+          <p>completed: {hrCount.completed}</p>
+        </>
+      )}
       <div className="button-container">
         <button onClick={onDelete}>Delete</button>
-        
       </div>
-      
     </div>
   );
 };
-const Techcontainer = () => {
-  const [users, setUsers] = useState([]);
+
+const Techcontainer = ({ users, fetchData }) => {
+  // const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [hrCount, setHrCount] = useState({});
 
-  const handleCountHrUser = async () => {
+  const handleCountHrUser = async (selectedUser) => {
+    console.log("stat method called ");
+    // if (!selectedUser) return;
+
     const empId = selectedUser.empId;
+
     try {
       const response = await axios.get(
-        `http://172.235.10.116:7000/hiring/auth/statsofinterviewer/${empId}`,
+        `http://172.235.10.116:7000/hiring/auth/statsofinterviewer/${empId}`
       );
       setHrCount(response.data);
+      console.log("responsedate", response.data)
+      console.log("state", hrCount)
+    } catch (error) {
+      console.error("Error counting HR user:", error);
     }
-    catch (error) {
+  };
 
-    }
-  }
+  // useEffect(() => {
+  //   const token = localStorage.getItem("accessToken");
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: "Bearer " + token,
+  //           },
+  //         }
+  //       );
+  //       setUsers(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch users:", error.message);
+  //     }
+  //   };
 
-  useEffect(() => {
-    // Fetch users from the API using Axios
-    const token = localStorage.getItem("accessToken");
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "http://172.235.10.116:7000/hiring/auth/getAllUsers",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
-        setUsers(response.data);
-      } catch (error) {
-        console.error("Failed to fetch users:", error.message);
-      }
-    };
-
-    // Call the fetchUsers function
-    fetchUsers();
-  }, []); // Empty dependency array means this effect will run only once, similar to componentDidMount
+  //   fetchUsers();
+  // }, []);
 
   const handleCardClick = (user) => {
+    console.log("card Clicked")
     setSelectedUser(user);
+    handleCountHrUser(user);
   };
 
   const handleCloseModal = () => {
@@ -101,57 +110,59 @@ const Techcontainer = () => {
   };
 
   const handleDeleteUser = async () => {
-    const is_active = selectedUser.is_active
+    if (!selectedUser) return;
+
+    const is_active = selectedUser.is_active;
     const id = selectedUser.id;
     try {
-      const response = await axios.put(`http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`, {
-        is_active: !is_active
-      });
-      const token = localStorage.getItem("accessToken");
-      const response1 = await axios.get(
-        "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+      await axios.put(
+        `http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
+          is_active: !is_active,
         }
       );
-      setUsers(response1.data);
+      // const token = localStorage.getItem("accessToken");
+      // const response = await axios.get(
+      //   "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: "Bearer " + token,
+      //     },
+      //   }
+      // );
+      // setUsers(response.data);
+      fetchData();
     } catch (error) {
       console.error("Error pausing user:", error.response.data);
     }
     handleCloseModal();
-
   };
-  
 
   const hrrUsers = users.filter((user) => user.roles === 3);
 
   return (
     <>
-    <div className="header">
-  <h2>Technical Interviewer</h2>
-  
-    </div>
-    <div className="container">
-      {hrrUsers.map((user) => (
-        <UserCard key={user.id} user={user} onClick={handleCardClick} />
-      ))}
+      <div className="header">
+        <h2>Technical Interviewer</h2>
+      </div>
+      <div className="container">
+        {hrrUsers.map((user) => (
+          <UserCard key={user.id} user={user} onClick={handleCardClick} hrCount={hrCount} />
+        ))}
 
-      {selectedUser && (
-        <>
-          <div className="modal-backdrop" onClick={handleCloseModal}></div>
-          <UserDetailsModal
-            user={selectedUser}
-            onClose={handleCloseModal}
-            onDelete={handleDeleteUser}
-            hRCount={hrCount}
-            handleCount={handleCountHrUser}
-          />
-        </>
-      )}
-    </div>
+        {selectedUser && (
+          <>
+            <div className="modal-backdrop" onClick={handleCloseModal}></div>
+            <UserDetailsModal
+              user={selectedUser}
+              onClose={handleCloseModal}
+              onDelete={handleDeleteUser}
+              hrCount={hrCount}
+            />
+          </>
+        )}
+      </div>
     </>
   );
 };

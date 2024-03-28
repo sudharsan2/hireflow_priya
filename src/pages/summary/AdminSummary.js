@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import Cannav from "../../components/usermanagement/Cannav";
 import {
   Button,
@@ -14,6 +15,7 @@ import {
   Space,
   Table,
   Tooltip,
+  message,
 } from "antd";
 import { SyncOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,12 +26,15 @@ import {
   fetchListofRecruiterAsync,
   fetchListofSourceAsync,
   updateCandidateDataAsync,
+  updateAdminCandidateDataAsync,
   setErrorMessage,
   getLoadingState,
   getErrorState,
 } from "../../redux/slices/summarySlice";
 import { Typography } from "@mui/material";
 import Usernav from "../../components/usermanagement/Usernav";
+import { DownloadOutlined } from '@ant-design/icons';
+import axios from "axios";
 
 ////////////////////////////////////////////////////////////
 
@@ -66,15 +71,32 @@ const AdminSummary = () => {
     interviewerDate: null,
     status: "",
     source: "",
+    fromDate: null,
+    toDate: "",
+  });
+
+  const [showEditFormData, setShowEditFormData] = useState({
+    resumeId: "",
+    // candidateName: "",
+    resumeScore: "",
+    jobRole: "",
+    // recruiterName: "",
+    recruiterStatus: "",
+    recruiterDate: null,
+    interviewerName: "",
+    interviewerStatus: "",
+    interviewerDate: null,
+    status: "",
+    source: "",
   });
 
   const [editFormData, setEditFormData] = useState({
     // Initialize with empty values or values you want to start with
     resumeId: "",
-    candidateName: "",
+    // candidateName: "",
     resumeScore: "",
     jobRole: "",
-    recruiterName: "",
+    // recruiterName: "",
     recruiterStatus: "",
     recruiterDate: null,
     interviewerName: "",
@@ -87,15 +109,90 @@ const AdminSummary = () => {
   const [candidates, setCandidates] = useState([]);
 
   const handleChange = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+    if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
+      const forvalue = value
+      value = value ? value.format("YYYY-MM-DD") : null;
+      setFormData({
+        ...formData,
+        ["unformated" + field]: forvalue,
+        [field]: value
+      });
+    }
+    else {
+      console.log("value outside if", value);
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
+    }
+
+
+    console.log(formData);
+  };
+  const handleFromDateChange = (date) => {
+    handleChange("fromDate", date);
+    console.log("date", formData.fromDate);
+    console.log("moment", moment("2024-03-27", "YYYY-MM-DD"));
+    console.log("formData", formData);
   };
 
+  const handleToDateChange = (date) => {
+
+    handleChange("toDate", date);
+  };
+  const handleRecruiterDateChange = (date) => {
+    handleChange("recruiterDate", date);
+  };
+  const handleInterviewerDateChange = (date) => {
+    handleChange("interviewerDate", date);
+  };
+  const handleDownload = async (record) => {
+    console.log(record.resumeId);
+    const resumeId = record.resumeId;
+    try {
+      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+        responseType: 'blob',
+      });
+      console.log(response.headers);
+      // const match = /filename="([^"]+)"/.exec(disposition);
+
+      const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+      console.log(disposition);
+      const match = /filename="([^"]+)"/.exec(disposition);
+      console.log(match);
+      const filename = match ? match[1] : `resume-${resumeId}.pdf`;
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      message.error('File not found!');
+      console.error('Error downloading file:', error);
+    }
+  };
   const handleEdit = (record) => {
-    setEditFormData(record);
+    setShowEditFormData(record);
+    setEditFormData({
+      ...editFormData,
+      resumeId: record.resumeId,
+      resumeScore: record.resumeScore,
+      jobRole: record.jobRole,
+    })
     setEditModalVisible(true);
+    console.log('formDatashow', showEditFormData);
+
   };
 
   const fetchCandidateDetails = async () => {
@@ -157,13 +254,23 @@ const AdminSummary = () => {
     },
     {
       title: "Recruit Status",
-      dataIndex: "recruiterSubmissionStatus",
-      key: "recruitStatus",
+      dataIndex: "shortlistStatus",
+      key: "shortlistStatus",
     },
     {
       title: "Current Status",
       dataIndex: "currentStatus",
       key: "currentStatus",
+    },
+    {
+      title: "Resume",
+      key: "downloadResume",
+      render: (_, record) => (
+        // <Button type="primary" onClick={() => handleDownload(record)}>
+        //   download
+        // </Button>
+        <DownloadOutlined onClick={()=>handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}/>
+      )
     },
     {
       title: "Edit",
@@ -204,14 +311,15 @@ const AdminSummary = () => {
 
   const handleSave = async () => {
     try {
+      console.log(editFormData);
       setLoadings(true);
       // Dispatch the async thunk action to update the data
-      await dispatch(updateCandidateDataAsync(editFormData));
+      await dispatch(updateAdminCandidateDataAsync(editFormData));
 
       // Close the modal or handle any other actions upon successful update
       setEditModalVisible(false);
       // Optionally, fetch updated candidate details
-      // fetchCandidateDetails();
+      fetchCandidateDetails();
     } catch (error) {
       // Handle errors
       console.error("Error updating candidate data:", error);
@@ -234,6 +342,16 @@ const AdminSummary = () => {
       console.error("Error fetching interviewer remarks:", error);
       // Optionally, display an error message to the user
     }
+  };
+  const handleInputChange = (field, value) => {
+    setShowEditFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+    setEditFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
   };
   return (
     <>
@@ -293,12 +411,16 @@ const AdminSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="From Date"
+                value={formData.unformatedfromDate ? formData.unformatedfromDate : null}
+                onChange={handleFromDateChange}
               />
             </Col>
             <Col span={8}>
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="To Date"
+                value={formData.unformatedtoDate ? formData.unformatedtoDate : null}
+                onChange={handleToDateChange}
               />
             </Col>
           </Row>
@@ -361,7 +483,7 @@ const AdminSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Recruiter Date"
-                value={formData.recruiterDate || undefined}
+                value={formData.unformatedrecruiterDate ? formData.unformatedrecruiterDate : null}
                 onChange={(date) => handleChange("recruiterDate", date)}
               />
             </Col>
@@ -369,7 +491,7 @@ const AdminSummary = () => {
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Name"
-                value={formData.interviewerName || undefined}
+                // value={formData.interviewerName || undefined}
                 onChange={(value) => handleChange("interviewerName", value)}
               >
                 {interviewers.map((interviewer) => (
@@ -397,7 +519,7 @@ const AdminSummary = () => {
               <DatePicker
                 style={{ width: "100%", height: "32px" }}
                 placeholder="Interviewer Date"
-                value={formData.interviewerDate}
+                value={formData.unformatedinterviewerDate ? formData.unFormatedinterviewerDate : null}
                 onChange={(value) => handleChange("interviewerDate", value)}
               />
             </Col>
@@ -438,7 +560,8 @@ const AdminSummary = () => {
         <Card
           title="Candidate Details"
           bordered={false}
-          style={{ margin: "70px" }}
+          // style={{ margin: "70px", overflow: "auto", width: "auto", borderBottom:"1px solid #f0f0fo"}}
+          style={{ margin: "70px", overflow: "auto", width: "auto" }}
         >
           {candidates.length > 0 ? (
             <Table dataSource={candidates} columns={columns} />
@@ -465,42 +588,32 @@ const AdminSummary = () => {
           <Tooltip title="Resume Id">
             <Input
               placeholder="Resume Id"
-              value={editFormData.resumeId}
-              onChange={(e) =>
-                setEditFormData({ ...editFormData, resumeId: e.target.value })
-              }
+              value={showEditFormData.resumeId}
+            // onChange={(e) =>
+            //   handleInputChange('resumeId', e.target.value)
+            // }
             />
           </Tooltip>
           <Tooltip title="Candidate Name">
             <Input
               placeholder="Candidate Name"
-              value={editFormData.name}
-              onChange={(e) =>
-                setEditFormData({ ...editFormData, name: e.target.value })
-              }
+              value={showEditFormData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
             />
           </Tooltip>
           <Tooltip title="Resume Score">
             <Input
               placeholder="Resume Score"
-              value={editFormData.resumeScore}
-              onChange={(e) =>
-                setEditFormData({
-                  ...editFormData,
-                  resumeScore: e.target.value,
-                })
+              value={showEditFormData.resumeScore}
+              onChange={(e) => handleInputChange('resumeScore', e.target.value)
               }
             />
           </Tooltip>
           <Tooltip title="Experience">
             <Input
               placeholder="Experience"
-              value={editFormData.yearsOfExperience}
-              onChange={(e) =>
-                setEditFormData({
-                  ...editFormData,
-                  yearsOfExperience: e.target.value,
-                })
+              value={showEditFormData.yearsOfExperience}
+              onChange={(e) => handleInputChange('yearsOfExperience', e.target.value)
               }
             />
           </Tooltip>
@@ -508,9 +621,10 @@ const AdminSummary = () => {
             <Select
               style={{ width: "100%" }}
               placeholder="Job Role"
-              value={editFormData.jobRole}
+              value={showEditFormData.jobRole}
               onChange={(value) =>
-                setEditFormData({ ...editFormData, jobRole: value })
+                // setEditFormData({ ...editFormData, jobRole: value })
+                handleInputChange('jobRole', value)
               }
             >
               <Option value="Oracle Apps Technical Consultant">
@@ -536,12 +650,13 @@ const AdminSummary = () => {
             <Select
               style={{ width: "100%" }}
               placeholder="Recruiter Name"
-              value={editFormData.assigned}
+              value={showEditFormData.assigned}
               onChange={(value) =>
-                setEditFormData({
-                  ...editFormData,
-                  assigned: value,
-                })
+                // setEditFormData({
+                //   ...editFormData,
+                //   assigned: value,
+                // })
+                handleInputChange('assigned', value)
               }
             >
               {recruiters.map((recruiter) => (
@@ -555,12 +670,13 @@ const AdminSummary = () => {
             <Select
               style={{ width: "100%" }}
               placeholder="Recruiter Status"
-              value={editFormData.recruiterSubmissionStatus}
+              value={showEditFormData.recruiterSubmissionStatus}
               onChange={(value) =>
-                setEditFormData({
-                  ...editFormData,
-                  recruiterSubmissionStatus: value,
-                })
+                // setEditFormData({
+                //   ...editFormData,
+                //   recruiterSubmissionStatus: value,
+                // })
+                handleInputChange('recruiterSubmissionStatus', value)
               }
             >
               <Option value="SHORTLISTED">SHORTLISTED</Option>
@@ -572,14 +688,14 @@ const AdminSummary = () => {
             <Select
               placeholder="Status"
               style={{ width: "100%" }}
-              value={editFormData.currentStatus}
+              value={showEditFormData.currentStatus}
               onChange={(value) =>
-                setEditFormData({ ...editFormData, currentStatus: value })
+                // setEditFormData({ ...editFormData, currentStatus: value })
+                handleInputChange('currentStatus', value)
               }
             >
               <Option value="NOT_ASSIGNED">NOT ASSIGNED</Option>
               <Option value="ASSIGNED">ASSIGNED</Option>
-              <Option value="IN_ENTRY">IN ENTRY</Option>
               <Option value="IN_TECH">IN TECH</Option>
               <Option value="IN_FINAL">IN FINAL</Option>
               <Option value="SELECTED">SELECTED</Option>
@@ -601,10 +717,23 @@ const AdminSummary = () => {
           <strong>Interviewer:</strong> {interviewerRemarks?.interviewerName}
         </p>
         <p>
-          <strong>Date And Time:</strong> {interviewerRemarks?.dateTime}
+          <strong>Interviewer Time: </strong> {interviewerRemarks?.dateTime}
+        </p>
+
+        <p>
+          <strong>Shortlist Status: </strong>{interviewerRemarks?.shortlistStatus}
         </p>
         <p>
-          <strong>Overall Rating:</strong> {interviewerRemarks?.overall_rating}
+          <strong>Strength: </strong>{interviewerRemarks?.strength}
+        </p>
+        <p>
+          <strong>Weakness: </strong>{interviewerRemarks?.weakness}
+        </p>
+        <p>
+          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_rating}
+        </p>
+        <p>
+          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_comments}
         </p>
 
         <ul style={{ listStyle: "none", padding: 0 }}>
