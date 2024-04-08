@@ -49,6 +49,8 @@ import { Newcandidate } from "./components/usermanagement/NewCandidateAdmin";
 import Piechart from "./pages/Piechart";
 import Admineval from "./pages/Admineval";
 import TechSummary from "./pages/summary/TechSummary";
+import ForgetPassword from "./components/usermanagement/forgetPassword";
+import ResetPassword from "./components/usermanagement/resetPassword";
 
 const App = () => {
 
@@ -71,6 +73,8 @@ const App = () => {
         <Route path="/add-candidate" element={<CustomLayout><Newcandidate /></CustomLayout>} />
         <Route path="/dashboard" element={<CustomLayout><Piechart /></CustomLayout>} />
         <Route path="/evaluation" element={<CustomLayout><Admineval /></CustomLayout>} />
+        <Route path="/forgotPassword" element={<ForgetPassword/>} />
+        <Route path="/resetPassword/:token" element={<ResetPassword/>} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>

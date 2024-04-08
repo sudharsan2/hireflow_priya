@@ -56,13 +56,13 @@ export const Candidatecards = ({ selectedFilters, candidateCards}) => {
     console.log(filteredData);
     selectedFilters.forEach(filter => {
         if (filter === "AI Score Ascending") {
-            filteredData.sort((a, b) => a.aiScore - b.aiScore);
+            filteredData.sort((a, b) => a.resumeScore - b.resumeScore);
         } else if (filter === "AI Score Descending") {
-            filteredData.sort((a, b) => b.aiScore - a.aiScore);
+            filteredData.sort((a, b) => b.resumeScore - a.resumeScore);
         } else if (filter === "Experience Ascending") {
-            filteredData.sort((a, b) => a.experience - b.experience);
+            filteredData.sort((a, b) => a.yearsOfExperience - b.yearsOfExperience);
         } else if (filter === "Experience Descending") {
-            filteredData.sort((a, b) => b.experience - a.experience);
+            filteredData.sort((a, b) => b.yearsOfExperience - a.yearsOfExperience);
         } else if (filter === "Job Role Ascending") {
             filteredData.sort((a, b) => (a.jobRole || '').localeCompare(b.jobRole || ''));
         } else if (filter === "Job Role Descending") {

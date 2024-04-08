@@ -166,6 +166,7 @@ const TechSummary = () => {
     } catch (error) {
       console.log("Error fetching candidate details:", error);
       dispatch(setErrorMessage("Error fetching candidate details"));
+      return;
     } finally {
       setLoadings(false);
     }
@@ -329,7 +330,7 @@ const TechSummary = () => {
                 onChange={(value) => handleChange("source", value)}
               >
                 {source.map((src) => (
-                  <Option key={src.id} value={src.name}>
+                  <Option key={src.id} value={src.id}>
                     {src.name}
                   </Option>
                 ))}

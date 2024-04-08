@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link} from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
@@ -42,13 +42,19 @@ const Login = () => {
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
+        
         dispatch(fetchLoginDetailsAsync(values));
-
+        
+        
+        
         if (isMountedRef.current) {
           setSubmitting(false);
+          
         }
+        
       } catch (error) {
         console.error(error);
+        console.log("error")
         resetForm();
         if (isMountedRef.current) {
           setSubmitting(false);
@@ -63,6 +69,7 @@ const Login = () => {
   });
 
   useEffect(() => {
+    
     const role = localStorage.getItem("role");
     if (isAuthenticated) {
       switch (role) {
@@ -85,6 +92,7 @@ const Login = () => {
         description: "You have successfully logged in.",
       });
     }
+    
   }, [isAuthenticated, navigate]);
 
   const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
@@ -147,9 +155,9 @@ const Login = () => {
                   <input type="checkbox" name="rememberMe" />
                   Remember Me
                 </label>
-                <a href="#forgot-password" className="forgot-password">
+                <Link to="/forgotPassword" className="forgot-password"> {/* Use Link to navigate to the Forgot Password page */}
                   Forgot Password?
-                </a>
+                </Link>
               </div>
               <Button
                 className="log-button"

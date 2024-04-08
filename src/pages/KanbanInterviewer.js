@@ -62,6 +62,28 @@ export default function KanbanInterviewer() {
       // Prevent the drop action for cards from the "Waiting" column to  or "Selected"
       return;
     }
+    if (
+      source.droppableId === "Waiting" &&
+      destination.droppableId === "Tech"
+    ) {
+      // Prevent the drop action for cards from the "Waiting" column to   "tech"
+      return;
+    }
+    // if (
+    //   source.droppableId === "Selected" &&
+    //   destination.droppableId === "Waiting"
+    // ) {
+    //   // Prevent the drop action for cards from the "Waiting" column to   "tech"
+    //   return;
+    // }
+    if (
+      source.droppableId === "Selected" &&
+      destination.droppableId === "Tech" 
+      // || destination.droppableId === "Waiting"
+    ) {
+      // Prevent the drop action for cards from the "Selected" column to   "Tech"
+      return;
+    }
 
     dispatch(
       moveTask({
@@ -118,7 +140,8 @@ export default function KanbanInterviewer() {
 
   const handleModalSubmit = (updatedData) => {
     console.log("Updated data:", updatedData);
-    if (!updatedData || !updatedData.values || !updatedData.values.skills) {
+    // if (!updatedData || !updatedData.values || !updatedData.values.skills) {
+      if (!updatedData || !updatedData.values ) {
       console.error("Invalid updatedData object:", updatedData);
       return;
     }

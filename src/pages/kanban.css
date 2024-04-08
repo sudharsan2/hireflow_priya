@@ -2,7 +2,10 @@
 
 .kanban-board {
   display: flex;
-  gap: 20px;
+  /* position:relative; */
+  /* gap: 20px; */
+  overflow-x: scroll;
+  overflow-y: scroll;
   padding-left: 100px;
   padding-right: 100px;
   padding-top: 50px;

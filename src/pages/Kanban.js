@@ -178,7 +178,11 @@ export default function Kanban() {
         })
       );
     }
-    // window.location.reload();
+
+
+    setTimeout(() => {
+      dispatch(fetchTasksAsync());
+    }, 3000);
   };
 
   const handleModalClose = () => {
@@ -188,22 +192,42 @@ export default function Kanban() {
 
   const validateFields = (fields) => {
     const errors = {};
-
+    let requiredFields = [];
     // Check if any required fields are empty
-    const requiredFields = [
-      "location",
-      "qualification",
-      "domainExperience",
-      "reason",
-      "travelConstraint",
-      "referenceName",
-      "referenceEmail",
-      "notificationPeriod",
-      "fatherOccupation",
-      "motherOccupation",
-      "shortlistStatus",
-      "interviewer",
-    ];
+    console.log(fields.shortlistStatus);
+    if (fields.shortlistStatus == "SHORTLISTED") {
+      requiredFields = [
+        "location",
+        "qualification",
+        "domainExperience",
+
+        // "travelConstraint",
+
+
+        "notificationPeriod",
+        "fatherOccupation",
+        "motherOccupation",
+        "shortlistStatus",
+        "interviewer",
+      ];
+    }
+    else {
+      requiredFields = [
+        "location",
+        "qualification",
+        "domainExperience",
+
+        // "travelConstraint",
+
+
+        "notificationPeriod",
+        "fatherOccupation",
+        "motherOccupation",
+        "shortlistStatus",
+
+      ];
+    }
+
 
     requiredFields.forEach((field) => {
       if (!fields[field]) {
@@ -221,11 +245,13 @@ export default function Kanban() {
         "Notification Period should be a valid integer.";
     }
 
-    // Email validation
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.referenceEmail)) {
-      errors.referenceEmail =
-        "Reference Email should be in a valid email format.";
+    if (fields.referenceEmail) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.referenceEmail)) {
+        errors.referenceEmail =
+          "Reference Email should be in a valid email format.";
+      }
     }
+
 
     return errors;
   };
@@ -236,6 +262,7 @@ export default function Kanban() {
     try {
 
       const validationErrors = validateFields(selectedCard);
+      // condition for waiting
       if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate) {
         notification.error({ message: 'joinDate is required' });
         return;
@@ -260,6 +287,7 @@ export default function Kanban() {
       // window.location.reload();
       // Close the modal
       dispatch(fetchTasksAsync());
+      dispatch(fetchFinalDataAsync());
       setIsModalVisible(false);
       handleModalClose();
 
@@ -616,27 +644,27 @@ export default function Kanban() {
                 <Option value="NOTSHORTLISTED">Not Shortlisted</Option>
               </Select>
             </Tooltip>
-            {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null:
+            {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null :
               <Tooltip title="Interviewer">
-              <Select
-                placeholder="Interviewer"
-                value={selectedCard.interviewer}
-                onChange={(value) =>
-                  setSelectedCard({
-                    ...selectedCard,
-                    interviewer: value,
-                  })
-                }
-              >
-                {interviewers.map((interviewer) => (
-                  <Option key={interviewer.id} value={interviewer.empId}>
-                    {interviewer.username}
-                  </Option>
-                ))}
-              </Select>
-            </Tooltip>
+                <Select
+                  placeholder="Interviewer"
+                  value={selectedCard.interviewer}
+                  onChange={(value) =>
+                    setSelectedCard({
+                      ...selectedCard,
+                      interviewer: value,
+                    })
+                  }
+                >
+                  {interviewers.map((interviewer) => (
+                    <Option key={interviewer.id} value={interviewer.empId}>
+                      {interviewer.username}
+                    </Option>
+                  ))}
+                </Select>
+              </Tooltip>
             }
-            
+
 
           </div>
         )}
@@ -644,7 +672,7 @@ export default function Kanban() {
           {selectedCard && selectedCard.currentStatus == "ASSIGNED" && <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
             Save
           </Button>}
-          {selectedCard&&!selectedCard.interviewer?null:
+          {selectedCard && !selectedCard.interviewer ? null :
             selectedCard && selectedCard.currentStatus == "ASSIGNED" &&
             <Button
               key="meet"
@@ -720,18 +748,15 @@ export default function Kanban() {
               />
             </Tooltip>
             <Tooltip title="JoinDate">
-              <DatePicker
-                placeholder="JoinDate"
-                format="YYYY-MM-DD"
-                value={
-                  selectedCard.joinDate
-                    ? moment(selectedCard.joinDate, "YYYY-MM-DD")
-                    : null
-                }
-                onChange={(date, dateString) =>
+
+              <input
+                type="date"
+                placeholder="Join Date"
+                value={selectedCard.joinDate}
+                onChange={(e) =>
                   setSelectedCard({
                     ...selectedCard,
-                    joinDate: dateString,
+                    joinDate: e.target.value,
                   })
                 }
               />

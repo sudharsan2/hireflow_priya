@@ -16,7 +16,7 @@ const NotificationComponent = ({ candidate, isVisible }) => {
   ) : null;
 };
  
-export const Notification = () => {
+export const Notification = ({onClearNotification}) => {
   const [candidates, setCandidates] = useState([]);
  
   useEffect(() => {
@@ -54,6 +54,7 @@ export const Notification = () => {
       );
       console.log('Notifications cleared successfully:', response.data);
       setCandidates([]);
+      onClearNotification();
     } catch (error) {
       console.error('Error clearing notifications:', error);
     }

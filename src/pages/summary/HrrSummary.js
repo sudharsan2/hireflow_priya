@@ -105,12 +105,12 @@ const HrrSummary = () => {
 
   const handleChange = (field, value) => {
     if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
-      const forvalue=value
+      const forvalue = value
       value = value ? value.format("YYYY-MM-DD") : null;
       setFormData({
         ...formData,
-        ["unformated"+field]: forvalue,
-        [field]:value
+        ["unformated" + field]: forvalue,
+        [field]: value
       });
     }
     else {
@@ -179,7 +179,8 @@ const HrrSummary = () => {
       setCandidates(value);
     } catch (error) {
       console.log("Error fetching candidate details:", error);
-      dispatch(setErrorMessage("Error fetching candidate details"));
+      // dispatch(setErrorMessage("Error fetching candidate details"));
+      // setCandidates([]);
     } finally {
       setLoadings(false);
     }
@@ -248,7 +249,7 @@ const HrrSummary = () => {
         // <Button type="primary" onClick={() => handleDownload(record)}>
         //   download
         // </Button>
-        <DownloadOutlined onClick={()=>handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}/>
+        <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
       )
     },
     {
@@ -343,7 +344,7 @@ const HrrSummary = () => {
                 onChange={(value) => handleChange("source", value)}
               >
                 {source.map((src) => (
-                  <Option key={src.id} value={src.name}>
+                  <Option key={src.id} value={src.id}>
                     {src.name}
                   </Option>
                 ))}
@@ -424,7 +425,7 @@ const HrrSummary = () => {
                 ))}
               </Select>
             </Col> */}
-            
+
             <Col span={8}>
               <Select
                 style={{ width: "100%" }}
@@ -463,7 +464,7 @@ const HrrSummary = () => {
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Name"
-                
+
                 onChange={(value) => handleChange("interviewerName", value)}
               >
                 {interviewers.map((interviewer) => (
@@ -482,8 +483,8 @@ const HrrSummary = () => {
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
                 <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option> */}
-                {/* Add more options as needed */}
-              {/* </Select>
+            {/* Add more options as needed */}
+            {/* </Select>
             </Col> */}
           </Row>
           <Row gutter={[16, 16]}>
@@ -532,7 +533,7 @@ const HrrSummary = () => {
         <Card
           title="Candidate Details"
           bordered={false}
-          style={{ margin: "70px", overflow: "auto", width:"auto"}}
+          style={{ margin: "70px", overflow: "auto", width: "auto" }}
         >
           {candidates.length > 0 ? (
             <Table dataSource={candidates} columns={columns} />
@@ -645,7 +646,7 @@ const HrrSummary = () => {
               ))}
             </Select>
           </Tooltip> */}
-          {/* <Tooltip title="Recruiter Status">
+      {/* <Tooltip title="Recruiter Status">
             <Select
               style={{ width: "100%" }}
               placeholder="Recruiter Status"
@@ -681,7 +682,7 @@ const HrrSummary = () => {
             </Select>
           </Tooltip>
         </div>
-      </Modal> */} 
+      </Modal> */}
       {/* Interviewer Remarks Modal */}
 
       <Modal
@@ -697,7 +698,7 @@ const HrrSummary = () => {
         <p>
           <strong>Date And Time: </strong> {interviewerRemarks?.dateTime}
         </p>
-        
+
         <p>
           <strong>Shortlist Status: </strong>{interviewerRemarks?.shortlistStatus}
         </p>
@@ -716,34 +717,38 @@ const HrrSummary = () => {
 
         <ul style={{ listStyle: "none", padding: 0 }}>
           {" "}
-          {interviewerRemarks?.skills.map((skill, index) => (
-            <li key={index} style={{ marginBottom: "10px" }}>
-              {" "}
-              <a onClick={() => setSelectedSkill(skill)}>View Skill Details</a>
-              <Modal
-                title="Skill Details"
-                visible={!!selectedSkill}
-                onCancel={() => setSelectedSkill(null)}
-                footer={null}
-              >
-                <Card>
-                  <p>
-                    <strong>Skill:</strong> {selectedSkill?.skills}
-                  </p>
-                  <p>
-                    <strong>Proficiency:</strong> {selectedSkill?.proficiency}
-                  </p>
-                  <p>
-                    <strong>Rating out of 10:</strong>{" "}
-                    {selectedSkill?.ratingoutof10}
-                  </p>
-                  <p>
-                    <strong>Comments:</strong> {selectedSkill?.comments}
-                  </p>
-                </Card>
-              </Modal>
-            </li>
-          ))}
+          {interviewerRemarks && interviewerRemarks.skills && interviewerRemarks.skills.length > 0 && (
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {interviewerRemarks.skills.map((skill, index) => (
+                <li key={index} style={{ marginBottom: "10px" }}>
+                  <a onClick={() => setSelectedSkill(skill)}>View Skill Details</a>
+                  <Modal
+                    title="Skill Details"
+                    visible={!!selectedSkill}
+                    onCancel={() => setSelectedSkill(null)}
+                    footer={null}
+                  >
+                    <Card>
+                      <p>
+                        <strong>Skill:</strong> {selectedSkill?.skills}
+                      </p>
+                      <p>
+                        <strong>Proficiency:</strong> {selectedSkill?.proficiency}
+                      </p>
+                      <p>
+                        <strong>Rating out of 10:</strong>{" "}
+                        {selectedSkill?.ratingoutof10}
+                      </p>
+                      <p>
+                        <strong>Comments:</strong> {selectedSkill?.comments}
+                      </p>
+                    </Card>
+                  </Modal>
+                </li>
+              ))}
+            </ul>
+          )}
+
         </ul>
       </Modal>
     </>

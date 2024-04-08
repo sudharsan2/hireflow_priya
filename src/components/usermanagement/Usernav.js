@@ -99,12 +99,15 @@ const Usernav = () => {
   };
   const handleNotificationModalClose = () => {
     setShowNotificationModal(false);
-    setNotificationCount(0);
   };
 
   const handleNotificationClick = () => {
     setShowNotificationModal(true);
   };
+
+  const handleClearNotification =()=>{
+    setNotificationCount(0)
+  }
 
   const handleAddUser = () => {
     setLoading(true);
@@ -208,7 +211,7 @@ const Usernav = () => {
           onCancel={handleNotificationModalClose}
           footer={null}
         >
-          <Notification />
+          <Notification onClearNotification={handleClearNotification}/>
         </Modal>
         <span onClick={handleLogout} className="nav-span">
           Logout

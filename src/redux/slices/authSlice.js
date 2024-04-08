@@ -57,6 +57,7 @@ export const fetchLoginDetailsAsync = createAsyncThunk(
 
       return response.data;
     } catch (err) {
+      console.log("failure")
       return rejectWithValue(err.data);
     }
   }
