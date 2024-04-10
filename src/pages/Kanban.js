@@ -845,6 +845,9 @@ export default function Kanban() {
         >
           Save
         </Button>
+        <div style={{ marginLeft: 'auto' }}>
+            <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
+          </div>
       </Modal>
     </>
   );

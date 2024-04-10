@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,15 +10,14 @@ import {
 import "../pages/kanban.css";
 import { useNavigate } from "react-router-dom";
 import { logoutAction } from "../redux/slices/authSlice";
-import { Button, Modal, Form, Input, Rate, Select, Divider, message} from "antd";
+import { Button, Modal, Form, Input, Rate, Select, Divider, message } from "antd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
 import Kanbanintnav from "../components/usermanagement/Kanbanintnav";
 import { DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
-import { LocalLaundryService } from "@mui/icons-material";
 ////////////////////////////////////////////////////////////////////////////////////////////
-
+ 
 export default function KanbanInterviewer() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,29 +29,15 @@ export default function KanbanInterviewer() {
   const [interViewerId, setInterViewerId] = useState("");
   const [interViewerData, setInterViewerData] = useState([]);
   const [interViewerStatus, setInterViewerStatus] = useState("");
-  const generateStars = (resumeScore) => {
-    // Convert resumeScore to a number
-    const score = parseInt(resumeScore);
-  
-    // Array to hold the stars JSX elements
-    const stars = [];
-  
-    // Loop to create the stars based on the score
-    for (let i = 0; i < score; i++) {
-      stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
-    }
-  
-    return stars;
-  };
-
+ 
   useEffect(() => {
     dispatch(fetchTasksAsync());
     // dispatch(fetchInterviewerDataByIdAsync());
   }, [dispatch]);
-
+ 
   const handleDrop = (result) => {
     const { source, destination } = result;
-
+ 
     if (
       !destination ||
       (source.droppableId === destination.droppableId &&
@@ -59,7 +45,7 @@ export default function KanbanInterviewer() {
     ) {
       return;
     }
-
+ 
     // Check if the source column is "Tech" and the destination column is  "Selected"
     if (
       source.droppableId === "Tech" &&
@@ -68,7 +54,7 @@ export default function KanbanInterviewer() {
       // Prevent the drop action for cards from the "Assigned" column to  or "Selected"
       return;
     }
-
+ 
     // Check if the source column is "Waiting" and the destination column is  "Selected"
     if (
       source.droppableId === "Waiting" &&
@@ -93,13 +79,13 @@ export default function KanbanInterviewer() {
     // }
     if (
       source.droppableId === "Selected" &&
-      destination.droppableId === "Tech" 
+      destination.droppableId === "Tech"
       // || destination.droppableId === "Waiting"
     ) {
       // Prevent the drop action for cards from the "Selected" column to   "Tech"
       return;
     }
-
+ 
     dispatch(
       moveTask({
         sourceColumn: source.droppableId,
@@ -110,14 +96,14 @@ export default function KanbanInterviewer() {
     );
     const updatedTask = tasks[source.droppableId][source.index];
     console.log("updated task", updatedTask);
-
+ 
     if (source.droppableId !== destination.droppableId) {
       // Ensure interViewerData is updated with the latest data
       dispatch(fetchInterviewerDataByIdAsync(updatedTask.resumeId))
         .then((response) => {
           const data = response.payload;
           setInterViewerData(data);
-
+ 
           dispatch(
             updateTaskAsync({
               ...data, // Use the latest interViewerData
@@ -131,7 +117,7 @@ export default function KanbanInterviewer() {
         });
     }
   };
-
+ 
   const handleCardClick = async (task) => {
     try {
       const response = await dispatch(
@@ -147,36 +133,35 @@ export default function KanbanInterviewer() {
       // Handle error as needed
     }
   };
-
+ 
   const handleModalCancel = () => {
     setIsModalVisible(false);
     setSelectedTasks({});
   };
-
+ 
   const handleModalSubmit = (updatedData) => {
     console.log("Updated data:", updatedData);
     // if (!updatedData || !updatedData.values || !updatedData.values.skills) {
-      if (!updatedData || !updatedData.values ) {
+    if (!updatedData || !updatedData.values) {
       console.error("Invalid updatedData object:", updatedData);
       return;
     }
-
+ 
     const updatedTask = {
       ...updatedData.values,
       submissionStatus: "SAVED",
       candidateName: updatedData.values.name,
       id: interViewerId,
-      name : localStorage.getItem('empId'),
       skills: updatedData.values.skills || []
     };
-
+ 
     // delete updatedTask.name;
     // const skillsToDelete = updatedData.initialValues.skills.filter(skill => !updatedTask.skills.includes(skill.skills));
     // if (skillsToDelete.length > 0) {
     //   // Iterate over skills to delete and make API calls
     //   skillsToDelete.forEach(skill => {
     //     // Replace `<int:id>` with the actual ID value
-    //     fetch(`http://172.235.10.116:7000/hiring/interviewer/deleteskill/${skill.id}`, {
+    //     fetch(`https://hireflow.focusrtech.com:90/hiring/interviewer/deleteskill/${skill.id}`, {
     //       method: 'DELETE',
     //       headers: {
     //         'Content-Type': 'application/json'
@@ -195,7 +180,6 @@ export default function KanbanInterviewer() {
     //       });
     //   });
     // }
-
     console.log("before save");
     dispatch(updateTaskAsync(updatedTask));
     setIsModalVisible(false);
@@ -205,30 +189,30 @@ export default function KanbanInterviewer() {
     console.log(selectedTasks.resumeId);
     const resumeId = selectedTasks.resumeId;
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`https://hireflow.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
-
+ 
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-
+ 
       const blob = new Blob([response.data], { type: 'application/pdf' });
-
-
+ 
+ 
       const url = window.URL.createObjectURL(blob);
-
+ 
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
-
+ 
       document.body.appendChild(link);
       link.click();
-
+ 
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -237,10 +221,30 @@ export default function KanbanInterviewer() {
       console.error('Error downloading file:', error);
     }
   };
-
-
+ 
+ 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   const { Option } = Select;
+  const handleRemoveSkill = async (index, skills) => {
+    try {
+      // Get the skill to delete
+      console.log('index', index);
+      console.log('skills', skills.skills[index].id);
+     
+       
+      await axios.delete(`http://172.235.10.116:7000/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+ 
+    } catch (error) {
+      console.error('Error deleting skill:', error);
+     
+      message.error('unable to delete skill')
+      // Handle error as needed
+    }
+  };
   return (
     <>
       <Kanbanintnav />
@@ -291,13 +295,13 @@ export default function KanbanInterviewer() {
                                 src={avatarUrl}
                                 alt="User Avatar"
                               /> */}
-
+ 
                               <div>
                                 <h2>{task.name}</h2>
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Mail:{task.email}</p>
                                 <p>phone:{task.phoneNo}</p>
-                                <p>Score : {generateStars(task.resumeScore)}</p>
+                                <p className="score">{task.resumeScore}</p>
                               </div>
                             </div>
                           </li>
@@ -311,7 +315,7 @@ export default function KanbanInterviewer() {
           ))}
         </div>
       </DragDropContext>
-
+ 
       <Modal
         title={"Edit Candidate Details"}
         visible={isModalVisible}
@@ -401,7 +405,7 @@ export default function KanbanInterviewer() {
                         </Form.Item>
                         <Button
                           type="dashed"
-                          onClick={() => remove(name)}
+                          onClick={() => { remove(name); handleRemoveSkill(name, selectedTask); }}
                           style={{ width: "100%" }}
                         >
                           Remove Skill
@@ -421,17 +425,17 @@ export default function KanbanInterviewer() {
                 )}
               </Form.List>
               <Form.Item>
-                
+ 
                 <Button type="primary" htmlType="submit">
                   SAVE
                 </Button>
-                <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{marginLeft:"20px"}}/>
+                <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{ marginLeft: "20px" }} />
               </Form.Item>
             </Form>
           ))}
       </Modal>
-
-
+ 
+ 
     </>
   );
 }

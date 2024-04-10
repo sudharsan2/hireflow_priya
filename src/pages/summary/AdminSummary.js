@@ -35,16 +35,18 @@ import { Typography } from "@mui/material";
 import Usernav from "../../components/usermanagement/Usernav";
 import { DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
-
+ 
+ 
+ 
 ////////////////////////////////////////////////////////////
-
+ 
 const { Option } = Select;
-
+ 
 const AdminSummary = () => {
   const [loadings, setLoadings] = useState(false);
   const loading = useSelector(getLoadingState);
   const error = useSelector(getErrorState);
-
+ 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -74,7 +76,7 @@ const AdminSummary = () => {
     fromDate: null,
     toDate: "",
   });
-
+ 
   const [showEditFormData, setShowEditFormData] = useState({
     resumeId: "",
     // candidateName: "",
@@ -89,7 +91,7 @@ const AdminSummary = () => {
     status: "",
     source: "",
   });
-
+ 
   const [editFormData, setEditFormData] = useState({
     // Initialize with empty values or values you want to start with
     resumeId: "",
@@ -107,7 +109,7 @@ const AdminSummary = () => {
   });
   // State to hold fetched candidate details
   const [candidates, setCandidates] = useState([]);
-
+ 
   const handleChange = (field, value) => {
     if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
       const forvalue = value
@@ -125,8 +127,8 @@ const AdminSummary = () => {
         [field]: value,
       });
     }
-
-
+ 
+ 
     console.log(formData);
   };
   const handleFromDateChange = (date) => {
@@ -135,9 +137,9 @@ const AdminSummary = () => {
     console.log("moment", moment("2024-03-27", "YYYY-MM-DD"));
     console.log("formData", formData);
   };
-
+ 
   const handleToDateChange = (date) => {
-
+ 
     handleChange("toDate", date);
   };
   const handleRecruiterDateChange = (date) => {
@@ -150,30 +152,30 @@ const AdminSummary = () => {
     console.log(record.resumeId);
     const resumeId = record.resumeId;
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`https://hireflow.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
-
+ 
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-
+ 
       const blob = new Blob([response.data], { type: 'application/pdf' });
-
-
+ 
+ 
       const url = window.URL.createObjectURL(blob);
-
+ 
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
-
+ 
       document.body.appendChild(link);
       link.click();
-
+ 
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -192,9 +194,9 @@ const AdminSummary = () => {
     })
     setEditModalVisible(true);
     console.log('formDatashow', showEditFormData);
-
+ 
   };
-
+ 
   const fetchCandidateDetails = async () => {
     try {
       // Filter out fields with empty values
@@ -214,13 +216,107 @@ const AdminSummary = () => {
       setLoadings(false);
     }
   };
-
+ 
   useEffect(() => {
     dispatch(fetchListofInterviewerAsync());
     dispatch(fetchListofRecruiterAsync());
     dispatch(fetchListofSourceAsync());
   }, []);
-
+  //   Skill: Progrmming
+ 
+  // Proficiency: profiency
+ 
+  // Rating out of 10: 9
+ 
+  // Comments: comments
+  const [showSkillsModal, setShowSkillsModal] = useState(false);
+  const handleSkills = (record) => {
+    setShowSkillsModal(true);
+    console.log('record', record.skills);
+    setSkills(record.skills);
+  }
+  const skillsColumns = [
+    {
+      title: "Skill",
+      dataIndex: "skills",
+      key: "skills",
+    },
+    {
+      title: "Proficiency",
+      dataIndex: "proficiency",
+      key: "proficiency",
+    },
+    {
+      title: "Rating out of 10",
+      dataIndex: "ratingoutof10",
+      key: "ratingoutof10",
+    },
+    {
+      title: "Comments",
+      dataIndex: "comments",
+      key: "comments",
+    }
+  ]
+  const interviewerColumns = [
+    {
+      title: "interviewer",
+      dataIndex: "interviewerName",
+      key: "interviewerName",
+    },
+    {
+      title: "Interviewer Time",
+      dataIndex: "dateTime",
+      key: "dateTime",
+    },
+    {
+      title: "Shortlist Status",
+      dataIndex: "shortlistStatus",
+      key: "shortlistStatus",
+    },
+    {
+      title: "Strength",
+      dataIndex: "Strength",
+      key: "Strength",
+    },
+    {
+      title: "Weakness",
+      dataIndex: "weakness",
+      key: "weakness",
+    },
+    {
+      title: "Overall Rating",
+      dataIndex: "overall_rating",
+      key: "overall_rating",
+    },
+    {
+      title: "Overall comments",
+      dataIndex: "overall_comments",
+      key: "overall_comments",
+    },
+    {
+      title: "skills",
+      key: "skills",
+      render: (_, record) => (
+        <Button type="primary" onClick={() => handleSkills(record)}>
+          skills
+        </Button>
+      ),
+    },
+  ]
+  //   const skillsData = [
+  //     {
+  //         "id": 3,
+  //         "skills": "ewret",
+  //         "proficiency": "regtr",
+  //         "ratingoutof10": 10,
+  //         "comments": "rgetr",
+  //         "techReview": 7
+  //     }
+  // ];
+  const skillsData = interviewerRemarks ? interviewerRemarks.skills : '';
+  const [skills, setSkills] = useState([]);
+ 
+  const interviwewerData = interviewerRemarks;
   const columns = [
     {
       title: "Resume ID",
@@ -269,7 +365,7 @@ const AdminSummary = () => {
         // <Button type="primary" onClick={() => handleDownload(record)}>
         //   download
         // </Button>
-        <DownloadOutlined onClick={()=>handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}/>
+        <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
       )
     },
     {
@@ -292,7 +388,7 @@ const AdminSummary = () => {
     },
     // Add more columns as needed
   ];
-
+ 
   const clearForm = () => {
     setFormData({
       resumeId: "",
@@ -308,14 +404,14 @@ const AdminSummary = () => {
       status: "",
     });
   };
-
+ 
   const handleSave = async () => {
     try {
       console.log(editFormData);
       setLoadings(true);
       // Dispatch the async thunk action to update the data
       await dispatch(updateAdminCandidateDataAsync(editFormData));
-
+ 
       // Close the modal or handle any other actions upon successful update
       setEditModalVisible(false);
       // Optionally, fetch updated candidate details
@@ -328,12 +424,12 @@ const AdminSummary = () => {
       setLoadings(false);
     }
   };
-
+ 
   const handleInterviewerClick = async (record) => {
     try {
       // Dispatch the fetchInterviewerRemarksAsync thunk with the resumeId
       dispatch(fetchInterviewerRemarksAsync(record.resumeId));
-
+ 
       // Open the modal with the response data or handle it as needed
       setSelectedCandidate(record);
       setModalVisible(true);
@@ -705,71 +801,30 @@ const AdminSummary = () => {
         </div>
       </Modal>
       {/* Interviewer Remarks Modal */}
-
+ 
       <Modal
         title="Interviewer Remarks"
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
+        width={900}
       >
         <Divider />
-        <p>
-          <strong>Interviewer:</strong> {interviewerRemarks?.interviewerName}
-        </p>
-        <p>
-          <strong>Interviewer Time: </strong> {interviewerRemarks?.dateTime}
-        </p>
-
-        <p>
-          <strong>Shortlist Status: </strong>{interviewerRemarks?.shortlistStatus}
-        </p>
-        <p>
-          <strong>Strength: </strong>{interviewerRemarks?.strength}
-        </p>
-        <p>
-          <strong>Weakness: </strong>{interviewerRemarks?.weakness}
-        </p>
-        <p>
-          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_rating}
-        </p>
-        <p>
-          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_comments}
-        </p>
-
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {" "}
-          {interviewerRemarks?.skills.map((skill, index) => (
-            <li key={index} style={{ marginBottom: "10px" }}>
-              {" "}
-              <a onClick={() => setSelectedSkill(skill)}>View Skill Details</a>
-              <Modal
-                title="Skill Details"
-                visible={!!selectedSkill}
-                onCancel={() => setSelectedSkill(null)}
-                footer={null}
-              >
-                <Card>
-                  <p>
-                    <strong>Skill:</strong> {selectedSkill?.skills}
-                  </p>
-                  <p>
-                    <strong>Proficiency:</strong> {selectedSkill?.proficiency}
-                  </p>
-                  <p>
-                    <strong>Rating out of 10:</strong>{" "}
-                    {selectedSkill?.ratingoutof10}
-                  </p>
-                  <p>
-                    <strong>Comments:</strong> {selectedSkill?.comments}
-                  </p>
-                </Card>
-              </Modal>
-            </li>
-          ))}
-        </ul>
+        <Table columns={interviewerColumns} dataSource={interviwewerData} scroll={{ x: true }} />
+ 
+ 
+        <Modal
+          title="Skill Details"
+          visible={showSkillsModal}
+          onCancel={() => { setShowSkillsModal(false) }}
+          footer={null}
+        >
+          <Table columns={skillsColumns} dataSource={skills} scroll={{ x: true }} />
+        </Modal>
+ 
       </Modal>
     </>
   );
 };
-
+ 
 export default AdminSummary;
