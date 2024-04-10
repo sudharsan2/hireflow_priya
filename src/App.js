@@ -60,7 +60,7 @@ const App = () => {
         <Route path="/candidate" element={<CustomLayout><Candidate /></CustomLayout>} />
         {/*<Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />*/}
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
-        <Route path="/admin-summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
+        <Route path="/summary" element={<CustomLayout><AdminSummary /></CustomLayout>} />
         <Route path="/piechart" element={<CustomLayout><Piechart /></CustomLayout>} />
         <Route path="/admineval" element={<CustomLayout><Admineval /></CustomLayout>} />
 

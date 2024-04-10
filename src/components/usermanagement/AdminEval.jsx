@@ -1,105 +1,10 @@
-import React , { useState }from "react";
-import { Modal, Form, Input, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Modal, Typography, Button, Input, Form} from "antd";
+import axios from "axios";
 
 const { TextArea } = Input;
 
-const jsonData = [
-  {
-    id: 1,
-    name: "John Doe",
-    jobRole: "Software Engineer",
-    resumeScore: 90,
-    avatarUrl: "path/to/avatar1.jpg",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    jobRole: "Data Scientist",
-    resumeScore: 85,
-    avatarUrl: "path/to/avatar2.jpg",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    jobRole: "Product Manager",
-    resumeScore: 88,
-    avatarUrl: "path/to/avatar3.jpg",
-  },
-  {
-    id: 4,
-    name: "Bob Brown",
-    jobRole: "UX Designer",
-    resumeScore: 92,
-    avatarUrl: "path/to/avatar4.jpg",
-  },
-  {
-    id: 5,
-    name: "Eve Williams",
-    jobRole: "Frontend Developer",
-    resumeScore: 87,
-    avatarUrl: "path/to/avatar5.jpg",
-  },
-  {
-    id: 1,
-    name: "John Doe",
-    jobRole: "Software Engineer",
-    resumeScore: 90,
-    avatarUrl: "path/to/avatar1.jpg",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    jobRole: "Data Scientist",
-    resumeScore: 85,
-    avatarUrl: "path/to/avatar2.jpg",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    jobRole: "Product Manager",
-    resumeScore: 88,
-    avatarUrl: "path/to/avatar3.jpg",
-  },
-  {
-    id: 4,
-    name: "Bob Brown",
-    jobRole: "UX Designer",
-    resumeScore: 92,
-    avatarUrl: "path/to/avatar4.jpg",
-  },
-  {
-    id: 5,
-    name: "Eve Williams",
-    jobRole: "Frontend Developer",
-    resumeScore: 87,
-    avatarUrl: "path/to/avatar5.jpg",
-  },
-  // Add more task objects as needed
-];
-
-const simulatedApiData = {
-  1: {
-    experience: "5 years",
-    role: "Software Engineer",
-    resumeScore: 90,
-    hrr: "HRR Name",
-    interviews: [
-      { name: "Interviewer 1 Name", interviewTime: "Interview Time 1", rating: 5 },
-      { name: "Interviewer 2 Name", interviewTime: "Interview Time 2", rating: 4 }
-    ]
-  },
-  2: {
-    experience: "3 years",
-    role: "Data Scientist",
-    resumeScore: 85,
-    hrr: "HRR Name",
-    interviews: [
-      { name: "Interviewer 3 Name", interviewTime: "Interview Time 3", rating: 3 }
-    ]
-  },
-  // Add more user details as needed
-};
-const CanCard = ({ user, onClick, onModalOpen }) => {
+const CanCard = ({ user, onModalOpen }) => {
   const getAvatarUrl = () => {
     return process.env.PUBLIC_URL + "./img/avtr1.jpg";
   };
@@ -116,32 +21,61 @@ const CanCard = ({ user, onClick, onModalOpen }) => {
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [userData, setUserData] = useState(null); // State to store user data
+  const [userData, setUserData] = useState(null); 
+  const [candidates, setCandidates] = useState([]); 
+  const [finalRemarks, setFinalRemarks] = useState(""); 
+
+  useEffect(() => {
+    
+    axios.get("http://172.235.10.116:7000/hiring/auth/getallcadidatesforevaluation")
+      .then(response => {
+        setCandidates(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching candidates data:", error);
+      });
+  }, []);
 
   const handleModalOpen = (user) => {
-    // Set user data to be fetched
-    setUserData(simulatedApiData[user.id]);
-    // Open modal
-    setModalVisible(true);
+    
+    axios.get(`http://172.235.10.116:7000/hiring/auth/getallcadidatesforevalutaionbyid/${user.resumeId}`)
+      .then(response => {
+        setUserData(response.data);
+        setModalVisible(true);
+      })
+      .catch(error => {
+        console.error("Error fetching user data:", error);
+      });
   };
 
   const handleModalClose = () => {
-    // Close modal
     setModalVisible(false);
   };
 
-  const handleFormSubmit = (values) => {
-    // Handle form submission here
-    console.log("Form values:", values);
-    // Close modal after form submission
+  const handleFormSubmit = (status) => {
+    
+    console.log("Form values:", { ...userData.candidateData, finalRemarks });
+
+    // Call the API
+    axios.post("http://172.235.10.116:7000/hiring/auth/selectcandidatesstatus", {
+      resumeId: userData.candidateData.resumeId,
+      currentStatus: status 
+    })
+      .then(response => {
+        console.log("API response:", response.data);
+      })
+      .catch(error => {
+        console.error("Error calling API:", error);
+      });
+
+    
     setModalVisible(false);
   };
 
   return (
     <div>
-      
       <div className="container">
-        {jsonData.map((user, index) => (
+        {candidates.map((user, index) => (
           <CanCard key={user.id} user={user} onModalOpen={handleModalOpen} />
         ))}
       </div>
@@ -152,55 +86,31 @@ const App = () => {
         footer={null}
       >
         {userData && (
-          <Form onFinish={handleFormSubmit} initialValues={userData}>
-            <Form.Item label="Experience" name="experience">
-              <Input />
+          <div style={{
+            display: "grid",
+            gap: "10px",
+            gridTemplateColumns: "1fr"}} >
+            <Typography.Text>Experience : {userData.candidateData.yearsOfExperience}</Typography.Text>
+            <Typography.Text>Role : {userData.candidateData.jobRole}</Typography.Text>
+            <Typography.Text>Resume Score : {userData.candidateData.resumeScore}</Typography.Text>
+            <Typography.Text>Candidate Name : {userData.candidateData.name}</Typography.Text>
+            <Typography.Text>Feedback : {userData.candidateData.skills}</Typography.Text>
+            <Typography.Text>Overall Rating : {userData.interviewerData.overall_rating}</Typography.Text>
+            <Form.Item label="Final Remarks">
+              <Input value={finalRemarks} onChange={(e) => setFinalRemarks(e.target.value)} />
             </Form.Item>
-            <Form.Item label="Role" name="role">
-              <Input/>
-            </Form.Item>
-            <Form.Item label="Resume Score" name="resumeScore">
-              <Input  />
-            </Form.Item>
-            <Form.Item label="HRR" name="hrr">
-              <Input  />
-            </Form.Item>
-            <Form.Item>
-    {userData.interviews.map((interview, index) => (
-      <div key={index}>
-        <Form.Item label={["Interview ",index+1]} ></Form.Item>
-        <Form.Item name={['interviews', index, 'name']} noStyle>
-          <Input placeholder="Name" />
-        </Form.Item>
-        <Form.Item name={['interviews', index, 'interviewTime']} noStyle>
-          <Input placeholder="Interview Time" />
-        </Form.Item>
-        <Form.Item name={['interviews', index, 'rating']} noStyle>
-          <Input placeholder="Rating" />
-        </Form.Item>
-      </div>
-    ))}
-  </Form.Item>
-              
-            
-            <Form.Item label="Final Remarks" name="finalRemarks">
-              <TextArea />
-            </Form.Item>
-            <Form.Item >
-              <div style={{display:"flex",justifyContent:"space-between", paddingLeft:"20%", paddingRight:"20%"}}>
-              <Button type="primary" htmlType="submit">
+            <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "20%", paddingRight: "20%" }}>
+              <Button type="primary" onClick={()=>handleFormSubmit("SELECTED")}>
                 Select
               </Button>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" onClick={()=>handleFormSubmit("ON_HOLD")}>
                 On Hold
               </Button>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" onClick={()=>handleFormSubmit("REJECTED")}>
                 Reject
               </Button>
-              </div>
-              
-            </Form.Item>
-          </Form>
+            </div>
+          </div>
         )}
       </Modal>
     </div>
