@@ -1,0 +1,31 @@
+
+ 
+.stats-table {
+ 
+    width: 400px;
+    font-size: 16px;
+    margin-top: 45px;
+    /* margin-left: 45px; */
+    padding: 20px;
+    border-collapse:separate;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    position: relative;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-top-color: rgb(184, 48, 24);
+    border-top-width: 3px;
+  }
+ 
+  .stats-table:hover{
+    transform: scale(1.01);
+  }
+ 
+  .stats-table td,
+  .stats-table tr{
+    padding: 3px;
+  }
+ 
+ 
+ 
+ 

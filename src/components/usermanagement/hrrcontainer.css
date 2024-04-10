@@ -30,19 +30,34 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: 10px;
   padding: 10px;
-  padding-left: 20px;
+  padding-left: 80px; /* Increased padding to accommodate the avatar */
   width: calc(20.6%);
   border-radius: 10px;
   color: #434343;
   background-size: cover;
   background-position: center;
- 
   align-items: center; /* Center items vertically within the user card */
   transition: background-color 0.3s;
   overflow: hidden;
   border-top: 3px solid #fe7979;
-  
 }
+.user-card-hrr h3{
+  /* text-overflow: ellipsis; */
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%; /* Position from top */
+  transform: translateY(-50%); /* Center vertically */
+  left: 10px; /* Adjust as needed */
+  background-color: #ffffff;
+}
+
 
 .user-card-tech {
   position: relative;
@@ -50,7 +65,7 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: 10px;
   padding: 10px;
-  padding-left: 20px;
+  padding-left: 80px;
   width: calc(20.6%);
   border-radius: 10px;
   color: #434343;
@@ -84,15 +99,7 @@ body {
   
 }
 
-.avatar {
-  width: 50px; /* Adjust the size as needed */
-  height: 50px; /* Adjust the size as needed */
-  border-radius: 50%;
-  position: absolute;
-  align-items: center;
-  right: 5%;
-  background-color: #ffffff;
-}
+
 
 .user-card-hrr:hover {
   
@@ -109,7 +116,7 @@ body {
 
 .user-card h3 {
   text-align: center;
-
+  z-index: 200;
 }
 
 .user-details-modal {
@@ -193,11 +200,9 @@ body {
   position: absolute;
   top: 0;
   right: 5%;
-  width: 50px; /* Adjust the width as needed */
-  height: 50px; /* Adjust the height as needed */
-  
+  width: 25px; /* Adjust the width as needed */
+  height: 25px;
   border-radius: 50%;
-
 }
 
 .avatarkanin {

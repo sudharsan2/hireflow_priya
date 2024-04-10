@@ -18,7 +18,7 @@ const roles = {
         {
           key: "userManagement",
           label: "User Management",
-          linkTo: "/user-management",
+          linkTo: "/admin-page",
         },
       ],
     },
@@ -52,11 +52,11 @@ const roles = {
       subMenu: [
         {
           key: "addCandidate",
-          label: "New Candidates",
-          linkTo: "/add-candidate",
+          label: "Chats",
+          linkTo: "/chat-msg",
         },
 
-        { key: "summary", label: "Summary", linkTo: "/summary" },
+        { key: "summary", label: "Summary", linkTo: "/hrr-summary" },
       ],
     },
   ],
@@ -73,7 +73,7 @@ const roles = {
       key: "candidates",
       label: "Candidates",
       icon: <TeamOutlined />,
-      subMenu: [{ key: "summary", label: "Summary", linkTo: "/summary" }],
+      subMenu: [{ key: "summary", label: "Summary", linkTo: "/tech-summary" }],
     },
   ],
 };
@@ -88,6 +88,7 @@ const CustomLayout = ({ children }) => {
     setUserRole(storedRole);
   }, []);
   const username = localStorage.getItem("username");
+  const jobRole = localStorage.getItem("role");
 //   const role = localStorage.getItem("role");
 
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
@@ -117,14 +118,14 @@ const CustomLayout = ({ children }) => {
           }}
         >
           {!collapsed && (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", paddingLeft:"10px",paddingRight:"10px"}}>
               <img className="navbar-logo" src={imgurl2} alt="logo" />
-              <h2 style={{ margin: "0 10px" }}>HireFlow</h2>
+              <h2 style={{ marginLeft:"10px", marginTop:"30px" }}>HireFlow</h2>
               
             </div>
           )}
         </div>
-
+{/*  */}
         {collapsed && (
           <div
             style={{
@@ -139,10 +140,10 @@ const CustomLayout = ({ children }) => {
         {!collapsed && (
           <div
             style={{
-              backgroundColor: "green",
+              backgroundColor: "rgb(16 51 85)",
               display: "flex",
               alignItems: "center",
-              marginTop: 22,
+              marginTop: 1,
               marginLeft: 7,
               marginRight: 7,
               padding: 5,
@@ -150,8 +151,10 @@ const CustomLayout = ({ children }) => {
             }}
           >
             <Avatar icon={<UserOutlined />} />
-
-            <span style={{ marginLeft: 10, color: "white" }}>{username}</span>
+            <div style={{display:'flex', flexDirection:'column', marginLeft:10, color:'white'}}>
+            <span>{username}</span>
+            </div>
+            
           </div>
         )}
          {collapsed && (
@@ -163,7 +166,7 @@ const CustomLayout = ({ children }) => {
               
             }}
           >
-            <Avatar style={{ backgroundColor: "red"}} icon={<UserOutlined />} />
+            <Avatar style={{ backgroundColor: "rgb(112, 160, 209)", marginLeft:'10px'}} icon={<UserOutlined />} />
           </div>
         )}
 

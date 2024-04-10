@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link} from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
@@ -15,6 +15,7 @@ import {
 } from "../redux/slices/authSlice";
 import useIsMountedRef from "../hooks/useIsMountedRef";
 import { useSelector } from "react-redux";
+import { EyeOutlined } from '@ant-design/icons';
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -25,26 +26,35 @@ const Login = () => {
   const isLoading = useSelector(getIsLoadingFromAuth);
   const isAuthenticated = useSelector(getIsAuthenticatedFromAuth);
   const isError = useSelector(getErrorFromAuth);
+  const [showPassword, setShowPassword] = useState(false);
   const LoginSchema = Yup.object({
     username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required"),
   });
+
 
   const formik = useFormik({
     initialValues: {
       username: "",
       password: "",
     },
+
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
+        
         dispatch(fetchLoginDetailsAsync(values));
-
+        
+        
+        
         if (isMountedRef.current) {
           setSubmitting(false);
+          
         }
+        
       } catch (error) {
         console.error(error);
+        console.log("error")
         resetForm();
         if (isMountedRef.current) {
           setSubmitting(false);
@@ -59,6 +69,7 @@ const Login = () => {
   });
 
   useEffect(() => {
+    
     const role = localStorage.getItem("role");
     if (isAuthenticated) {
       switch (role) {
@@ -81,10 +92,15 @@ const Login = () => {
         description: "You have successfully logged in.",
       });
     }
+    
   }, [isAuthenticated, navigate]);
 
   const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
   const imgurl2 = process.env.PUBLIC_URL + "./img/login3.jpg";
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="Login">
@@ -116,14 +132,20 @@ const Login = () => {
                 )}
               </div>
               <div className="form-group">
+
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
                   placeholder="Enter your password"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                 />
+                {/* <EyeOutlined
+                  onClick={handleTogglePassword}
+                  className="eye-icon"
+                /> */}
+
                 {formik.touched.password && formik.errors.password && (
                   <div className="error">{formik.errors.password}</div>
                 )}
@@ -133,12 +155,12 @@ const Login = () => {
                   <input type="checkbox" name="rememberMe" />
                   Remember Me
                 </label>
-                <a href="#forgot-password" className="forgot-password">
+                <Link to="/forgotPassword" className="forgot-password"> {/* Use Link to navigate to the Forgot Password page */}
                   Forgot Password?
-                </a>
+                </Link>
               </div>
               <Button
-              className="log-button"
+                className="log-button"
                 type="primary"
                 htmlType="submit"
                 loading={isLoading} // Set loading state based on the isLoading value

@@ -47,11 +47,11 @@ const Cannav = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-      <img className="navbar-logo" src={imgurl2} />
+      {/* <img className="navbar-logo" src={imgurl2} />
         <div>
           <h2>HireFlow</h2>
           <p>by FocusR AI</p>
-        </div>
+        </div> */}
         </div>
       <div className="navbar-right">
         <span onClick={handleHome} className="nav-span">

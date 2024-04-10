@@ -1,13 +1,13 @@
-// Navbar.js
-
 import React, { useEffect, useState } from "react";
 import "./usernav.css";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button, Input, Select, notification } from "antd";
+import { Button, Input, Select, notification, Modal } from "antd";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { useDispatch } from "react-redux";
 import { logoutAction } from "../../redux/slices/authSlice";
+import { Notification } from "./Notification";
 
 const Usernav = () => {
   const navigate = useNavigate();
@@ -19,6 +19,8 @@ const Usernav = () => {
   const [roleError, setRoleError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [empIdError, setEmpIdError] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [showNotificationModal, setShowNotificationModal] = useState(false); 
 
   const [newUser, setNewUser] = useState({
     ROLE: "",
@@ -47,6 +49,22 @@ const Usernav = () => {
         console.log("Error in Lifecycle", err);
       });
   }, []); // Empty dependency array to run only once when the component mounts
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    axios
+      .get("http://172.235.10.116:7000/hiring/auth/notificationforadmin", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setNotificationCount(res.data.length);
+      })
+      .catch((err) => {
+        console.log("Error fetching notifications:", err);
+      });
+  }, []);
 
   const handleRoleChange = (value) => {
     setNewUser((prevUser) => ({ ...prevUser, ROLE: value }));
@@ -79,6 +97,17 @@ const Usernav = () => {
   const handleCloseAddUserModal = () => {
     setAddUserModalOpen(false);
   };
+  const handleNotificationModalClose = () => {
+    setShowNotificationModal(false);
+  };
+
+  const handleNotificationClick = () => {
+    setShowNotificationModal(true);
+  };
+
+  const handleClearNotification =()=>{
+    setNotificationCount(0)
+  }
 
   const handleAddUser = () => {
     setLoading(true);
@@ -147,16 +176,11 @@ const Usernav = () => {
     navigate("/candidate");
   };
 
-  const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
-  const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <img className="navbar-logo" src={imgurl2} />
-        <div>
-          <h2>HireFlow</h2>
-          <p>by FocusR AI</p>
-        </div>
+        {/* <h2>HireFlow</h2>
+        <p>by FocusR AI</p> */}
       </div>
       <div className="navbar-right">
         <select className="nav-drop">
@@ -168,16 +192,31 @@ const Usernav = () => {
           <option value="model4">Gemini Pro</option>
         </select>
 
-        <span onClick={handleAddUserClick} className="nav-span">
+        {/* <span onClick={handleAddUserClick} className="nav-span">
           <PersonAddAlt1Icon style={{ marginRight: "5px" }} />
           Add user
-        </span>
-        <span onClick={handleCandidate} className="nav-span">
+        </span> */}
+        {/* <span onClick={handleCandidate} className="nav-span">
           Candidate
+        </span> */}
+        <span onClick={handleNotificationClick} className="nav-span">
+          <NotificationsNoneOutlinedIcon />
+          {notificationCount > 0 && (
+            <span className="notification-count">{notificationCount}</span>
+          )}
         </span>
+        <Modal
+          title="Notifications"
+          visible={showNotificationModal}
+          onCancel={handleNotificationModalClose}
+          footer={null}
+        >
+          <Notification onClearNotification={handleClearNotification}/>
+        </Modal>
         <span onClick={handleLogout} className="nav-span">
           Logout
         </span>
+
         {isAddUserModalOpen && (
           <>
             <div

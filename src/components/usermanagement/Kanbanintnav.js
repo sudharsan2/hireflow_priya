@@ -46,16 +46,16 @@ const Kanbanintnav = () => {
 
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
   return (
-    <nav className="navbar">
+    <nav className="navbar" style={{height:'47px'}}>
       <div className="navbar-left">
-        <img className="navbar-logo" src={imgurl2} />
+        {/* <img className="navbar-logo" src={imgurl2} />
         <div>
           <h2>HireFlow</h2>
           <p>by FocusR AI</p>
-        </div>
+        </div> */}
       </div>
       <div className="navbar-right">
-        <div onClick={handleBadgeClick}>
+        {/* <div onClick={handleBadgeClick}>
           <Badge color="gold" count={500}>
             <Avatar
               shape="square"
@@ -63,7 +63,7 @@ const Kanbanintnav = () => {
               style={{ backgroundColor: "yellowgreen", cursor: "pointer" }}
             />
           </Badge>
-        </div>
+        </div> */}
         <span onClick={handleLogout} className="nav-span">
           Logout
         </span>

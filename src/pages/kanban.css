@@ -2,10 +2,20 @@
 
 .kanban-board {
   display: flex;
-  gap: 20px;
+  /* position:relative; */
+  /* gap: 20px; */
+  overflow-x: scroll;
+  overflow-y: scroll;
   padding-left: 100px;
   padding-right: 100px;
   padding-top: 50px;
+}
+
+.ncbtn {
+  position: absolute;
+  top: 65px;
+  right: 20px;
+  z-index: 1000;
 }
 
 .column {
@@ -35,15 +45,18 @@
   color: #393939;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  border-left: 3px solid #eeaefe;
-  transition: background-color 0.3s ease-in-out; /* Smooth transition on hover */
+  border-left: 3px solid rgb(174, 177, 254);
+  transition: background-color 0.3s ease-in-out;
+  /* Smooth transition on hover */
   padding-left: 16px;
-  padding: 10px; /* Add padding to the list items for better spacing */
+  padding: 10px;
+  /* Add padding to the list items for better spacing */
 }
 
 .column li h2 {
   text-align: left;
-  margin-bottom: 8px; /* Adjust margin for better spacing */
+  margin-bottom: 8px;
+  /* Adjust margin for better spacing */
   padding-left: 16px;
 }
 
@@ -55,12 +68,20 @@
 
 .score {
   text-align: center;
-  width:40px;
+  width: 40px;
   background-color: #55ffc9;
-  border-radius: 20px; /* Make the score container circular */
+  border-radius: 20px;
+  /* Make the score container circular */
   justify-content: center;
 }
 
 
+.delete-icon-button:hover {
+  color: rgb(231, 9, 9); 
+}
+
+.add-alarm-icon-button:hover {
+  color: #9200b3; 
+}
 
 /* Add any additional styles or overrides as needed */

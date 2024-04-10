@@ -9,10 +9,13 @@
     padding: 10px 20px;
     background-color: transparent;
     opacity: 1;
+    /* padding-bottom: 100px; */
+
   }
   
   .logo {
     height: 30px; /* Adjust the size of your logo */
+    
   }
   
   nav ul {

@@ -71,6 +71,22 @@ export const updateCandidateDataAsync = createAsyncThunk(
   }
 );
 
+export const updateAdminCandidateDataAsync = createAsyncThunk(
+  "summary/updateAdminCandidateData",
+  async (requestData) => {
+    try {
+      const response = await api.post(
+        `/hiring/auth/updatedataadmin/${requestData.resumeId}`,
+        requestData
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating candidate data:", error);
+      throw error;
+    }
+  }
+);
+
 export const fetchInterviewerRemarksAsync = createAsyncThunk(
   "summary/fetchInterviewerRemarks",
   async (resumeId) => {
