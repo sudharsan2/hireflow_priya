@@ -34,6 +34,8 @@ import Meeting from "../components/meet/Meet";
 import { DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
 
+import Toolkit from "./multipleinterviewers";
+
 const { Option } = Select;
 
 export default function Kanban() {
@@ -42,6 +44,7 @@ export default function Kanban() {
   const tasks = useSelector((state) => state.kanban.tasks);
   const interviewers = useSelector((state) => state.kanban.interviewers);
   const updatedTask = useSelector((state) => state.kanban.updatedData);
+  const [interviewers1, setinterviewers] = useState(null)
   const [selectedCard, setSelectedCard] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalWaitingVisible, setIsModalWaitingVisible] = useState(false);
@@ -56,6 +59,22 @@ export default function Kanban() {
   const handleModalMeet = () => {
     setIsModalMeet(false);
   }
+
+  const generateStars = (resumeScore) => {
+    // Convert resumeScore to a number
+    const score = parseInt(resumeScore);
+  
+    // Array to hold the stars JSX elements
+    const stars = [];
+  
+    // Loop to create the stars based on the score
+    for (let i = 0; i < score; i++) {
+      stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
+    }
+  
+    return stars;
+  };
+
   const handleIsWalkinUpload = () => {
     console.log("yes it works");
     setIsWalkinUpload(true);
@@ -117,6 +136,7 @@ export default function Kanban() {
           `/hiring/entryLevel/getACandidate/${cardData.id}`
         );
         setSelectedCard(response.data);
+        // setinterviewers(selectedCard.interviewer.map(interviewerId => ({ interviewer: interviewerId })))
         // setSelectedCard(modalData);
       } else {
         // If the card is in other columns, fetch the card details from the API
@@ -399,7 +419,7 @@ export default function Kanban() {
                                 {/* <p>Mail:{task.email}</p> */}
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Experience: {task.yearsOfExperience}</p>
-                                <p className="score">{task.resumeScore}</p>
+                                <p>Score : {generateStars(task.resumeScore)}</p>
                               </div>
                             </div>
                           </li>
@@ -436,6 +456,7 @@ export default function Kanban() {
         title="Candidate Details"
         visible={isModalVisible}
         onCancel={handleModalClose}
+        width={570}
         footer={
           [
             // <Button key="back" onClick={handleModalClose}>
@@ -645,24 +666,28 @@ export default function Kanban() {
               </Select>
             </Tooltip>
             {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null :
-              <Tooltip title="Interviewer">
-                <Select
-                  placeholder="Interviewer"
-                  value={selectedCard.interviewer}
-                  onChange={(value) =>
-                    setSelectedCard({
-                      ...selectedCard,
-                      interviewer: value,
-                    })
-                  }
-                >
-                  {interviewers.map((interviewer) => (
-                    <Option key={interviewer.id} value={interviewer.empId}>
-                      {interviewer.username}
-                    </Option>
-                  ))}
-                </Select>
-              </Tooltip>
+             <>
+              {/* <Tooltip title="Interviewer">
+              <Select
+                placeholder="Interviewer"
+                value={selectedCard.interviewer}
+                onChange={(value) =>
+                  setSelectedCard({
+                    ...selectedCard,
+                    interviewer: value,
+                  })
+                }
+              >
+                {interviewers.map((interviewer) => (
+                  <Option key={interviewer.id} value={interviewer.empId}>
+                    {interviewer.username}
+                  </Option>
+                ))}
+              </Select>
+            </Tooltip> */}
+            <Toolkit interviewerList={interviewers} selectedcard={selectedCard} handleclick = {handleModalOpen} interviewers1 = {interviewers1} />
+            {console.log(selectedCard)}
+            </>
             }
 
 
@@ -672,7 +697,7 @@ export default function Kanban() {
           {selectedCard && selectedCard.currentStatus == "ASSIGNED" && <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
             Save
           </Button>}
-          {selectedCard && !selectedCard.interviewer ? null :
+          {/* {selectedCard && !selectedCard.interviewer ? null :
             selectedCard && selectedCard.currentStatus == "ASSIGNED" &&
             <Button
               key="meet"
@@ -682,7 +707,7 @@ export default function Kanban() {
             >
               Meet
             </Button>
-          }
+          } */}
           <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>

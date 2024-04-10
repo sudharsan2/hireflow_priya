@@ -60,33 +60,34 @@ export default function Meeting({ onSave, prevData }) {
     }
 
     const validationForm = () => {
-        if (!meeting.meetingURL.trim()) {
-            failure('Meeting URL is required');
-            return false;
-        }
-        if (!meeting.interviewer.trim()) {
-            failure('Interviewer is required');
-            return false;
-        }
-        if (!meeting.date.trim()) {
-            failure('date is required');
-            return false;
-        }
-        if (!meeting.startTime.trim()) {
-            failure('Start Time is required');
-            return false;
-        }
-        if (!meeting.endTime.trim()) {
-            failure('End Time is required');
-            return false;
-        }
-        if (!meeting.description.trim()) {
-            failure('description is required');
-            return false;
-        }
+    if (!meeting.meetingURL.trim()) {
+        failure('Meeting URL is required');
+        return false;
+    }
+    if (!meeting.interviewer) {
+        failure('Interviewer is required');
+        return false;
+    }
+    if (!meeting.date.trim()) {
+        failure('date is required');
+        return false;
+    }
+    if (!meeting.startTime.trim()) {
+        failure('Start Time is required');
+        return false;
+    }
+    if (!meeting.endTime.trim()) {
+        failure('End Time is required');
+        return false;
+    }
+    if (!meeting.description.trim()) {
+        failure('description is required');
+        return false;
+    }
 
-        return true;
-    };
+    return true;
+};
+
     const [meetLoading, setMeetLoading] = useState(false);
     const handleSubmit = async () => {
         console.log("meeting", meeting)
@@ -171,12 +172,12 @@ export default function Meeting({ onSave, prevData }) {
             /> */}
 
             {/* <label>{prevData.resumeId}</label> */}
-            <Input
+            {/* <Input
                 name="interviewer"
                 value={prevData.interviewer}
                 placeholder="Interviewer"
             // onChange={handleChange}
-            />
+            /> */}
             {/* <label>Date:</label> */}
             <DatePicker
                 onChange={onDateChange}

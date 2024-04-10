@@ -15,6 +15,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import Kanbanintnav from "../components/usermanagement/Kanbanintnav";
 import { DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
+import { LocalLaundryService } from "@mui/icons-material";
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 export default function KanbanInterviewer() {
@@ -28,6 +29,20 @@ export default function KanbanInterviewer() {
   const [interViewerId, setInterViewerId] = useState("");
   const [interViewerData, setInterViewerData] = useState([]);
   const [interViewerStatus, setInterViewerStatus] = useState("");
+  const generateStars = (resumeScore) => {
+    // Convert resumeScore to a number
+    const score = parseInt(resumeScore);
+  
+    // Array to hold the stars JSX elements
+    const stars = [];
+  
+    // Loop to create the stars based on the score
+    for (let i = 0; i < score; i++) {
+      stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
+    }
+  
+    return stars;
+  };
 
   useEffect(() => {
     dispatch(fetchTasksAsync());
@@ -151,6 +166,7 @@ export default function KanbanInterviewer() {
       submissionStatus: "SAVED",
       candidateName: updatedData.values.name,
       id: interViewerId,
+      name : localStorage.getItem('empId'),
       skills: updatedData.values.skills || []
     };
 
@@ -179,6 +195,7 @@ export default function KanbanInterviewer() {
     //       });
     //   });
     // }
+
     console.log("before save");
     dispatch(updateTaskAsync(updatedTask));
     setIsModalVisible(false);
@@ -280,7 +297,7 @@ export default function KanbanInterviewer() {
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Mail:{task.email}</p>
                                 <p>phone:{task.phoneNo}</p>
-                                <p className="score">{task.resumeScore}</p>
+                                <p>Score : {generateStars(task.resumeScore)}</p>
                               </div>
                             </div>
                           </li>
