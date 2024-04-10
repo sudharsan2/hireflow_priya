@@ -125,7 +125,7 @@ const CustomLayout = ({ children }) => {
             </div>
           )}
         </div>
-
+{/*  */}
         {collapsed && (
           <div
             style={{
