@@ -2,7 +2,7 @@
   "name": "kanban",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://172.235.10.116:9000",
+  "homepage": "http://172.235.10.116:7000",
   "dependencies": {
     "@ant-design/icons": "^5.3.4",
     "@emotion/react": "^11.11.3",

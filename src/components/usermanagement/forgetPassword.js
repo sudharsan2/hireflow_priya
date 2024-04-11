@@ -24,14 +24,14 @@ export default function ForgetPassword() {
     const handleSubmit = () => {
         setLoading(true);
         // Make API call to forgot password endpoint
-        axios.post('http://127.0.0.1:8000/hiring/auth/forgotPassword/', {
+        axios.post('http://172.235.10.116:7000/hiring/auth/forgotPassword', {
             email: email
         })
         .then(response => {
             setLoading(false);
             setSnackbarMessage('Forgot password email sent.');
             setSnackbarOpen(true);
-            setEmail(''); // Clear email field
+            setEmail(''); 
             console.log('Forgot password email sent:', response.data);
         })
         .catch(error => {

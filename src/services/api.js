@@ -87,9 +87,11 @@ import axios from "axios";
 
 const BASE_URL = "http://172.235.10.116:7000"; // Replace with your API base URL
 
+
 const api = axios.create({
   baseURL: BASE_URL,
 });
+
 
 // Add an interceptor to dynamically set the Authorization header before each request
 api.interceptors.request.use(

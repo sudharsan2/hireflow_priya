@@ -36,6 +36,8 @@ import Usernav from "../../components/usermanagement/Usernav";
 import { DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
 
+
+
 ////////////////////////////////////////////////////////////
 
 const { Option } = Select;
@@ -220,7 +222,101 @@ const AdminSummary = () => {
     dispatch(fetchListofRecruiterAsync());
     dispatch(fetchListofSourceAsync());
   }, []);
+  //   Skill: Progrmming
 
+  // Proficiency: profiency
+
+  // Rating out of 10: 9
+
+  // Comments: comments
+  const [showSkillsModal, setShowSkillsModal] = useState(false);
+  const handleSkills = (record) => {
+    setShowSkillsModal(true);
+    console.log('record', record.skills);
+    setSkills(record.skills);
+  }
+  const skillsColumns = [
+    {
+      title: "Skill",
+      dataIndex: "skills",
+      key: "skills",
+    },
+    {
+      title: "Proficiency",
+      dataIndex: "proficiency",
+      key: "proficiency",
+    },
+    {
+      title: "Rating out of 10",
+      dataIndex: "ratingoutof10",
+      key: "ratingoutof10",
+    },
+    {
+      title: "Comments",
+      dataIndex: "comments",
+      key: "comments",
+    }
+  ]
+  const interviewerColumns = [
+    {
+      title: "interviewer",
+      dataIndex: "interviewerName",
+      key: "interviewerName",
+    },
+    {
+      title: "Interviewer Time",
+      dataIndex: "dateTime",
+      key: "dateTime",
+    },
+    {
+      title: "Shortlist Status",
+      dataIndex: "shortlistStatus",
+      key: "shortlistStatus",
+    },
+    {
+      title: "Strength",
+      dataIndex: "Strength",
+      key: "Strength",
+    },
+    {
+      title: "Weakness",
+      dataIndex: "weakness",
+      key: "weakness",
+    },
+    {
+      title: "Overall Rating",
+      dataIndex: "overall_rating",
+      key: "overall_rating",
+    },
+    {
+      title: "Overall comments",
+      dataIndex: "overall_comments",
+      key: "overall_comments",
+    },
+    {
+      title: "skills",
+      key: "skills",
+      render: (_, record) => (
+        <Button type="primary" onClick={() => handleSkills(record)}>
+          skills
+        </Button>
+      ),
+    },
+  ]
+  //   const skillsData = [
+  //     {
+  //         "id": 3,
+  //         "skills": "ewret",
+  //         "proficiency": "regtr",
+  //         "ratingoutof10": 10,
+  //         "comments": "rgetr",
+  //         "techReview": 7
+  //     }
+  // ];
+  const skillsData = interviewerRemarks ? interviewerRemarks.skills : '';
+  const [skills, setSkills] = useState([]);
+
+  const interviwewerData = interviewerRemarks;
   const columns = [
     {
       title: "Resume ID",
@@ -269,7 +365,7 @@ const AdminSummary = () => {
         // <Button type="primary" onClick={() => handleDownload(record)}>
         //   download
         // </Button>
-        <DownloadOutlined onClick={()=>handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }}/>
+        <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
       )
     },
     {
@@ -473,7 +569,7 @@ const AdminSummary = () => {
                 onChange={(value) => handleChange("recruiterStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
                 <Option value="HOLD">HOLD</Option>
               </Select>
             </Col>
@@ -711,62 +807,21 @@ const AdminSummary = () => {
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
+        width={900}
       >
         <Divider />
-        <p>
-          <strong>Interviewer:</strong> {interviewerRemarks?.interviewerName}
-        </p>
-        <p>
-          <strong>Interviewer Time: </strong> {interviewerRemarks?.dateTime}
-        </p>
+        <Table columns={interviewerColumns} dataSource={interviwewerData} scroll={{ x: true }} />
 
-        <p>
-          <strong>Shortlist Status: </strong>{interviewerRemarks?.shortlistStatus}
-        </p>
-        <p>
-          <strong>Strength: </strong>{interviewerRemarks?.strength}
-        </p>
-        <p>
-          <strong>Weakness: </strong>{interviewerRemarks?.weakness}
-        </p>
-        <p>
-          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_rating}
-        </p>
-        <p>
-          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_comments}
-        </p>
 
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {" "}
-          {interviewerRemarks?.skills.map((skill, index) => (
-            <li key={index} style={{ marginBottom: "10px" }}>
-              {" "}
-              <a onClick={() => setSelectedSkill(skill)}>View Skill Details</a>
-              <Modal
-                title="Skill Details"
-                visible={!!selectedSkill}
-                onCancel={() => setSelectedSkill(null)}
-                footer={null}
-              >
-                <Card>
-                  <p>
-                    <strong>Skill:</strong> {selectedSkill?.skills}
-                  </p>
-                  <p>
-                    <strong>Proficiency:</strong> {selectedSkill?.proficiency}
-                  </p>
-                  <p>
-                    <strong>Rating out of 10:</strong>{" "}
-                    {selectedSkill?.ratingoutof10}
-                  </p>
-                  <p>
-                    <strong>Comments:</strong> {selectedSkill?.comments}
-                  </p>
-                </Card>
-              </Modal>
-            </li>
-          ))}
-        </ul>
+        <Modal
+          title="Skill Details"
+          visible={showSkillsModal}
+          onCancel={() => { setShowSkillsModal(false) }}
+          footer={null}
+        >
+          <Table columns={skillsColumns} dataSource={skills} scroll={{ x: true }} />
+        </Modal>
+
       </Modal>
     </>
   );

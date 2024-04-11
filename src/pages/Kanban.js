@@ -50,6 +50,10 @@ export default function Kanban() {
   const [isWalkinUpload, setIsWalkinUpload] = useState(false);
   const [newCandidate, setNewCandidate] = useState(false);
   const [isModalMeet, setIsModalMeet] = useState(false);
+  const handleChatButton = () => {
+    navigate('/chat-msg');
+
+  }
   const handleModalOpen = () => {
     setIsModalMeet(true);
   }
@@ -361,6 +365,7 @@ export default function Kanban() {
                     }}
                   >
                     {column}
+                    <div style={{ fontSize: "0.8em" }}>({tasks[column].length})</div>
                   </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
@@ -672,6 +677,7 @@ export default function Kanban() {
           {selectedCard && selectedCard.currentStatus == "ASSIGNED" && <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
             Save
           </Button>}
+          <Button onClick={handleChatButton} style={{ marginLeft: '10px' }}>chat</Button>
           {selectedCard && !selectedCard.interviewer ? null :
             selectedCard && selectedCard.currentStatus == "ASSIGNED" &&
             <Button
@@ -761,6 +767,22 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
+            
+            <Tooltip title="Shortlist Status">
+              <Select
+                placeholder="Shortlist Status"
+                value={selectedCard.shortlistStatus}
+                onChange={(value) =>
+                  setSelectedCard({
+                    ...selectedCard,
+                    shortlistStatus: value,
+                  })
+                }
+              >
+                <Option value="SHORTLISTED">Shortlisted</Option>
+                <Option value="NOTSHORTLISTED">Not Shortlisted</Option>
+              </Select>
+            </Tooltip>
 
             <Tooltip title="SpecialRequest">
               <Input
@@ -812,14 +834,20 @@ export default function Kanban() {
             </Tooltip>
           </div>
         )}
-        <Button
-          key="save" type="primary"
-          onClick={handleSave}
-          loading={saveButtonLoading}
-          style={{ marginTop: '10px' }}
-        >
-          Save
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+          
+          <Button
+            key="save" type="primary"
+            onClick={handleSave}
+            loading={saveButtonLoading}
+            style={{ marginTop: '10px' }}
+          >
+            Save
+          </Button>
+          <div style={{ marginLeft: 'auto' }}>
+            <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
+          </div>
+        </div>
       </Modal>
     </>
   );

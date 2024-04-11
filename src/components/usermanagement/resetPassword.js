@@ -54,7 +54,7 @@ export default function ResetPassword() {
         };
 
         // Make API call to reset password using Axios
-        axios.post('http://127.0.0.1:8000/hiring/auth/resetPassword/', payload)
+        axios.post('http://172.235.10.116:7000/hiring/auth/resetPassword', payload)
             .then(response => {
                 setLoading(false);
                 setResponse('Password reset successfully.');

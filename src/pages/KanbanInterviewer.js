@@ -9,7 +9,7 @@ import {
 import "../pages/kanban.css";
 import { useNavigate } from "react-router-dom";
 import { logoutAction } from "../redux/slices/authSlice";
-import { Button, Modal, Form, Input, Rate, Select, Divider, message} from "antd";
+import { Button, Modal, Form, Input, Rate, Select, Divider, message } from "antd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
 import Kanbanintnav from "../components/usermanagement/Kanbanintnav";
@@ -78,7 +78,7 @@ export default function KanbanInterviewer() {
     // }
     if (
       source.droppableId === "Selected" &&
-      destination.droppableId === "Tech" 
+      destination.droppableId === "Tech"
       // || destination.droppableId === "Waiting"
     ) {
       // Prevent the drop action for cards from the "Selected" column to   "Tech"
@@ -141,7 +141,7 @@ export default function KanbanInterviewer() {
   const handleModalSubmit = (updatedData) => {
     console.log("Updated data:", updatedData);
     // if (!updatedData || !updatedData.values || !updatedData.values.skills) {
-      if (!updatedData || !updatedData.values ) {
+    if (!updatedData || !updatedData.values) {
       console.error("Invalid updatedData object:", updatedData);
       return;
     }
@@ -224,6 +224,26 @@ export default function KanbanInterviewer() {
 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   const { Option } = Select;
+  const handleRemoveSkill = async (index, skills) => {
+    try {
+      // Get the skill to delete
+      console.log('index', index);
+      console.log('skills', skills.skills[index].id);
+      
+       
+      await axios.delete(`http://172.235.10.116:7000/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+    } catch (error) {
+      console.error('Error deleting skill:', error);
+      
+      message.error('unable to delete skill')
+      // Handle error as needed
+    }
+  };
   return (
     <>
       <Kanbanintnav />
@@ -248,6 +268,7 @@ export default function KanbanInterviewer() {
                     }}
                   >
                     {column}
+                    <div style={{fontSize:'0.8rem'}}>({tasks[column].length})</div>
                   </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
@@ -384,7 +405,7 @@ export default function KanbanInterviewer() {
                         </Form.Item>
                         <Button
                           type="dashed"
-                          onClick={() => remove(name)}
+                          onClick={() => { remove(name); handleRemoveSkill(name, selectedTask); }}
                           style={{ width: "100%" }}
                         >
                           Remove Skill
@@ -404,11 +425,11 @@ export default function KanbanInterviewer() {
                 )}
               </Form.List>
               <Form.Item>
-                
+
                 <Button type="primary" htmlType="submit">
                   SAVE
                 </Button>
-                <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{marginLeft:"20px"}}/>
+                <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{ marginLeft: "20px" }} />
               </Form.Item>
             </Form>
           ))}

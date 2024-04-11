@@ -20,7 +20,7 @@ const Usernav = () => {
   const [passwordError, setPasswordError] = useState("");
   const [empIdError, setEmpIdError] = useState("");
   const [notificationCount, setNotificationCount] = useState(0);
-  const [showNotificationModal, setShowNotificationModal] = useState(false); 
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const [newUser, setNewUser] = useState({
     ROLE: "",
@@ -105,7 +105,7 @@ const Usernav = () => {
     setShowNotificationModal(true);
   };
 
-  const handleClearNotification =()=>{
+  const handleClearNotification = () => {
     setNotificationCount(0)
   }
 
@@ -189,7 +189,7 @@ const Usernav = () => {
           <option value="model3">gpt-4-turbo-preview </option>
           <option value="model4">Llama</option>
           <option value="model4">Palm</option>
-          <option value="model4">Gemini Pro</option>
+          <option value="model4">Gemini Pro</option>
         </select>
 
         {/* <span onClick={handleAddUserClick} className="nav-span">
@@ -210,8 +210,9 @@ const Usernav = () => {
           visible={showNotificationModal}
           onCancel={handleNotificationModalClose}
           footer={null}
+          
         >
-          <Notification onClearNotification={handleClearNotification}/>
+          <Notification onClearNotification={handleClearNotification} />
         </Modal>
         <span onClick={handleLogout} className="nav-span">
           Logout

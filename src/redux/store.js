@@ -6,6 +6,7 @@ import {  rootReducer } from './rootReducer';
 // ----------------------------------------------------------------------
 
 const store = configureStore({
+  devTools:true,
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
