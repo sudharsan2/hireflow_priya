@@ -1,8 +1,19 @@
-.meeting {
-    width: 90%; /* Adjust width as needed */
-    max-width: 400px; /* Limit maximum width */
-    margin: 0 auto; /* Center the component horizontally */
+/* .meeting { 
+    width: 90%; 
+    max-width: 400px; 
+    margin: 0 auto; 
     padding: 20px;
+    
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  } */
+
+  .meeting { 
+    width: 110%; 
+    max-width: 450px; 
+    margin: 0 auto; 
+    padding: 20px;
+    
     border: 1px solid #ccc;
     border-radius: 8px;
   }

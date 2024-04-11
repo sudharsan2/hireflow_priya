@@ -31,8 +31,12 @@ import moment from "moment";
 import Kanbannav from "../components/usermanagement/Kanbannav";
 import WalkInCandidate from "./WalkinCandidate";
 import Meeting from "../components/meet/Meet";
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, MessageOutlined } from '@ant-design/icons';
 import axios from "axios";
+
+import Toolkit from "./multipleinterviewers";
+import ChatButton from "./chatbutton";
+
 
 const { Option } = Select;
 
@@ -42,6 +46,7 @@ export default function Kanban() {
   const tasks = useSelector((state) => state.kanban.tasks);
   const interviewers = useSelector((state) => state.kanban.interviewers);
   const updatedTask = useSelector((state) => state.kanban.updatedData);
+  const [interviewers1, setinterviewers] = useState(null)
   const [selectedCard, setSelectedCard] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalWaitingVisible, setIsModalWaitingVisible] = useState(false);
@@ -60,6 +65,42 @@ export default function Kanban() {
   const handleModalMeet = () => {
     setIsModalMeet(false);
   }
+
+  
+   // Get navigate function
+
+  const handleChat = (param1Value) => {
+    // Navigate to the '/chat-msg' route when chat button is clicked
+    
+    navigate('/chat-msg', { state:  { param1Value }});
+  };
+
+  // const ChatButton = ({ onClick, ...rest }) => (
+  //   <Button
+  //     type="primary"
+  //     icon={<MessageOutlined />}
+  //     onClick={onClick}
+  //     {...rest}
+  //   >
+  //     Chat
+  //   </Button>
+  // );
+
+  const generateStars = (resumeScore) => {
+    // Convert resumeScore to a number
+    const score = parseInt(resumeScore);
+  
+    // Array to hold the stars JSX elements
+    const stars = [];
+  
+    // Loop to create the stars based on the score
+    for (let i = 0; i < score; i++) {
+      stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
+    }
+  
+    return stars;
+  };
+
   const handleIsWalkinUpload = () => {
     console.log("yes it works");
     setIsWalkinUpload(true);
@@ -113,7 +154,7 @@ export default function Kanban() {
     try {
       if (cardData.currentStatus === "IN_TECH") {
         // If the card is in the "Waiting" column, open the modal with empty fields
-        setIsModalVisible(false);
+        setIsModalVisible(true);
       } else if (cardData.currentStatus === "IN_FINAL") {
         // If the card is in the "Final" column, open the modal with specific fields
         setIsModalWaitingVisible(true);
@@ -121,6 +162,7 @@ export default function Kanban() {
           `/hiring/entryLevel/getACandidate/${cardData.id}`
         );
         setSelectedCard(response.data);
+        // setinterviewers(selectedCard.interviewer.map(interviewerId => ({ interviewer: interviewerId })))
         // setSelectedCard(modalData);
       } else {
         // If the card is in other columns, fetch the card details from the API
@@ -400,11 +442,13 @@ export default function Kanban() {
 
                               <div>
                                 <h3>{task.name}</h3>
-                                <p>Phone:{task.phoneNo}</p>
+                                
                                 {/* <p>Mail:{task.email}</p> */}
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Experience: {task.yearsOfExperience}</p>
-                                <p className="score">{task.resumeScore}</p>
+                                <p>Phone:{task.phoneNo}</p>
+                                <p>Score : {generateStars(task.resumeScore)}</p>
+                                
                               </div>
                             </div>
                           </li>
@@ -441,6 +485,7 @@ export default function Kanban() {
         title="Candidate Details"
         visible={isModalVisible}
         onCancel={handleModalClose}
+        width={570}
         footer={
           [
             // <Button key="back" onClick={handleModalClose}>
@@ -650,45 +695,50 @@ export default function Kanban() {
               </Select>
             </Tooltip>
             {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null :
-              <Tooltip title="Interviewer">
-                <Select
-                  placeholder="Interviewer"
-                  value={selectedCard.interviewer}
-                  onChange={(value) =>
-                    setSelectedCard({
-                      ...selectedCard,
-                      interviewer: value,
-                    })
-                  }
-                >
-                  {interviewers.map((interviewer) => (
-                    <Option key={interviewer.id} value={interviewer.empId}>
-                      {interviewer.username}
-                    </Option>
-                  ))}
-                </Select>
-              </Tooltip>
+             <>
+              {/* <Tooltip title="Interviewer">
+              <Select
+                placeholder="Interviewer"
+                value={selectedCard.interviewer}
+                onChange={(value) =>
+                  setSelectedCard({
+                    ...selectedCard,
+                    interviewer: value,
+                  })
+                }
+              >
+                {interviewers.map((interviewer) => (
+                  <Option key={interviewer.id} value={interviewer.empId}>
+                    {interviewer.username}
+                  </Option>
+                ))}
+              </Select>
+            </Tooltip> */}
+            <Toolkit interviewerList={interviewers} selectedcard={selectedCard} handleclick = {handleModalOpen} interviewers1 = {interviewers1} />
+            
+            </>
             }
 
 
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-          {selectedCard && selectedCard.currentStatus == "ASSIGNED" && <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
-            Save
-          </Button>}
-          <Button onClick={handleChatButton} style={{ marginLeft: '10px' }}>chat</Button>
-          {selectedCard && !selectedCard.interviewer ? null :
-            selectedCard && selectedCard.currentStatus == "ASSIGNED" &&
-            <Button
-              key="meet"
-              type="primary"
-              onClick={handleModalOpen}
-              style={{ marginLeft: '10px' }}
-            >
-              Meet
-            </Button>
-          }
+  {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
+    <>
+      <Button
+        key="save"
+        type="primary"
+        onClick={handleSave}
+        loading={saveButtonLoading}
+      >
+        Save
+      </Button>
+      <ChatButton key="chat" onClick={() => handleChat({
+      "username": selectedCard.name,
+      "email": selectedCard.email
+    })} style={{ marginLeft: '10px' }} />
+    </>
+  )}
           <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
@@ -848,6 +898,19 @@ export default function Kanban() {
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+        <Button
+          key="save" type="primary"
+          onClick={handleSave}
+          loading={saveButtonLoading}
+          style={{ marginTop: '10px' }}
+        >
+          Save
+        </Button>
+        <div style={{ marginLeft: 'auto' }}>
+            <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
+          </div>
+          </div>
       </Modal>
     </>
   );

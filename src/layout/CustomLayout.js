@@ -118,14 +118,14 @@ const CustomLayout = ({ children }) => {
           }}
         >
           {!collapsed && (
-            <div style={{ display: "flex", alignItems: "center", padding:"10px"}}>
+            <div style={{ display: "flex", alignItems: "center", paddingLeft:"10px",paddingRight:"10px"}}>
               <img className="navbar-logo" src={imgurl2} alt="logo" />
-              <h2 style={{ margin: "0 10px" }}>HireFlow</h2>
+              <h2 style={{ marginLeft:"10px", marginTop:"30px" }}>HireFlow</h2>
               
             </div>
           )}
         </div>
-
+{/*  */}
         {collapsed && (
           <div
             style={{
@@ -166,7 +166,7 @@ const CustomLayout = ({ children }) => {
               
             }}
           >
-            <Avatar style={{ backgroundColor: "red"}} icon={<UserOutlined />} />
+            <Avatar style={{ backgroundColor: "rgb(112, 160, 209)", marginLeft:'10px'}} icon={<UserOutlined />} />
           </div>
         )}
 

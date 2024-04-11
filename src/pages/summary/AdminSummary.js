@@ -35,18 +35,21 @@ import { Typography } from "@mui/material";
 import Usernav from "../../components/usermanagement/Usernav";
 import { DownloadOutlined } from '@ant-design/icons';
 import axios from "axios";
+ 
+ 
+ 
 
 
 
 ////////////////////////////////////////////////////////////
-
+ 
 const { Option } = Select;
-
+ 
 const AdminSummary = () => {
   const [loadings, setLoadings] = useState(false);
   const loading = useSelector(getLoadingState);
   const error = useSelector(getErrorState);
-
+ 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -76,7 +79,7 @@ const AdminSummary = () => {
     fromDate: null,
     toDate: "",
   });
-
+ 
   const [showEditFormData, setShowEditFormData] = useState({
     resumeId: "",
     // candidateName: "",
@@ -91,7 +94,7 @@ const AdminSummary = () => {
     status: "",
     source: "",
   });
-
+ 
   const [editFormData, setEditFormData] = useState({
     // Initialize with empty values or values you want to start with
     resumeId: "",
@@ -109,7 +112,7 @@ const AdminSummary = () => {
   });
   // State to hold fetched candidate details
   const [candidates, setCandidates] = useState([]);
-
+ 
   const handleChange = (field, value) => {
     if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
       const forvalue = value
@@ -127,8 +130,8 @@ const AdminSummary = () => {
         [field]: value,
       });
     }
-
-
+ 
+ 
     console.log(formData);
   };
   const handleFromDateChange = (date) => {
@@ -137,9 +140,9 @@ const AdminSummary = () => {
     console.log("moment", moment("2024-03-27", "YYYY-MM-DD"));
     console.log("formData", formData);
   };
-
+ 
   const handleToDateChange = (date) => {
-
+ 
     handleChange("toDate", date);
   };
   const handleRecruiterDateChange = (date) => {
@@ -152,30 +155,30 @@ const AdminSummary = () => {
     console.log(record.resumeId);
     const resumeId = record.resumeId;
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`https://hireflow.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
-
+ 
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-
+ 
       const blob = new Blob([response.data], { type: 'application/pdf' });
-
-
+ 
+ 
       const url = window.URL.createObjectURL(blob);
-
+ 
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
-
+ 
       document.body.appendChild(link);
       link.click();
-
+ 
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -194,9 +197,9 @@ const AdminSummary = () => {
     })
     setEditModalVisible(true);
     console.log('formDatashow', showEditFormData);
-
+ 
   };
-
+ 
   const fetchCandidateDetails = async () => {
     try {
       // Filter out fields with empty values
@@ -216,7 +219,7 @@ const AdminSummary = () => {
       setLoadings(false);
     }
   };
-
+ 
   useEffect(() => {
     dispatch(fetchListofInterviewerAsync());
     dispatch(fetchListofRecruiterAsync());
@@ -366,6 +369,7 @@ const AdminSummary = () => {
         //   download
         // </Button>
         <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
+        // <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
       )
     },
     {
@@ -388,7 +392,7 @@ const AdminSummary = () => {
     },
     // Add more columns as needed
   ];
-
+ 
   const clearForm = () => {
     setFormData({
       resumeId: "",
@@ -404,14 +408,14 @@ const AdminSummary = () => {
       status: "",
     });
   };
-
+ 
   const handleSave = async () => {
     try {
       console.log(editFormData);
       setLoadings(true);
       // Dispatch the async thunk action to update the data
       await dispatch(updateAdminCandidateDataAsync(editFormData));
-
+ 
       // Close the modal or handle any other actions upon successful update
       setEditModalVisible(false);
       // Optionally, fetch updated candidate details
@@ -424,12 +428,12 @@ const AdminSummary = () => {
       setLoadings(false);
     }
   };
-
+ 
   const handleInterviewerClick = async (record) => {
     try {
       // Dispatch the fetchInterviewerRemarksAsync thunk with the resumeId
       dispatch(fetchInterviewerRemarksAsync(record.resumeId));
-
+ 
       // Open the modal with the response data or handle it as needed
       setSelectedCandidate(record);
       setModalVisible(true);
@@ -801,13 +805,14 @@ const AdminSummary = () => {
         </div>
       </Modal>
       {/* Interviewer Remarks Modal */}
-
+ 
       <Modal
         title="Interviewer Remarks"
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={900}
+        // width={900}
       >
         <Divider />
         <Table columns={interviewerColumns} dataSource={interviwewerData} scroll={{ x: true }} />
@@ -826,5 +831,5 @@ const AdminSummary = () => {
     </>
   );
 };
-
+ 
 export default AdminSummary;

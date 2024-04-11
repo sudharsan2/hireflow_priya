@@ -1,17 +1,20 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UserList from "../components/chat/UserList";
 import ConversationHistory from "../components/chat/ConversationHistory";
 import Kanbannav from "../components/usermanagement/Kanbannav";
+import { useLocation } from 'react-router-dom';
 
 // ////////////////////////////////////////////////////////////////
 
 export default function Chats() {
 
-  
+    const location = useLocation();
     const [selectedUser, setSelectedUser] = useState({});
     const [spinFlag, setSpinFlag]=useState(false);
     const [currentUser, setCurrentUser]=useState({});
+
+
 
     function handleSentHistory(message){
         setSelectedUser(message);
@@ -22,19 +25,22 @@ export default function Chats() {
     //   setCurrentUser(username);
     // }
 
+
     const handleUserClick = async (user) => {
+      if (!user) return; // Add null check
+      
       setSelectedUser({});
       setCurrentUser(user);
       setSpinFlag(true);
       const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/getemail";
       const recruiterMail = localStorage.getItem("mail");
-  
+    
       const payload = {
         recruiterMail: recruiterMail,
         candidateMail: user.email, // Use the clicked user's email from the userList
         password: "FCTai123",
       };
-  
+    
       try {
         const response = await axios.post(apiUrl, payload);
         setSpinFlag(false);
@@ -42,9 +48,19 @@ export default function Chats() {
         setSelectedUser(response.data);
       } catch (error) {
         setSpinFlag(false);
-      }
-      
+      }  
     };
+    
+
+
+    useEffect(() => {
+      // Access the parameters from the location object
+      const {param1Value} = location.state || {};
+      // Do something with the parameters
+      handleUserClick(param1Value)
+      
+  }, [location]);
+
     return (
       <>
       <Kanbannav/>
