@@ -31,10 +31,12 @@ import moment from "moment";
 import Kanbannav from "../components/usermanagement/Kanbannav";
 import WalkInCandidate from "./WalkinCandidate";
 import Meeting from "../components/meet/Meet";
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, MessageOutlined } from '@ant-design/icons';
 import axios from "axios";
 
 import Toolkit from "./multipleinterviewers";
+import ChatButton from "./chatbutton";
+
 
 const { Option } = Select;
 
@@ -59,6 +61,26 @@ export default function Kanban() {
   const handleModalMeet = () => {
     setIsModalMeet(false);
   }
+
+  
+   // Get navigate function
+
+  const handleChat = (param1Value) => {
+    // Navigate to the '/chat-msg' route when chat button is clicked
+    
+    navigate('/chat-msg', { state:  { param1Value }});
+  };
+
+  // const ChatButton = ({ onClick, ...rest }) => (
+  //   <Button
+  //     type="primary"
+  //     icon={<MessageOutlined />}
+  //     onClick={onClick}
+  //     {...rest}
+  //   >
+  //     Chat
+  //   </Button>
+  // );
 
   const generateStars = (resumeScore) => {
     // Convert resumeScore to a number
@@ -128,7 +150,7 @@ export default function Kanban() {
     try {
       if (cardData.currentStatus === "IN_TECH") {
         // If the card is in the "Waiting" column, open the modal with empty fields
-        setIsModalVisible(false);
+        setIsModalVisible(true);
       } else if (cardData.currentStatus === "IN_FINAL") {
         // If the card is in the "Final" column, open the modal with specific fields
         setIsModalWaitingVisible(true);
@@ -415,11 +437,13 @@ export default function Kanban() {
 
                               <div>
                                 <h3>{task.name}</h3>
-                                <p>Phone:{task.phoneNo}</p>
+                                
                                 {/* <p>Mail:{task.email}</p> */}
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Experience: {task.yearsOfExperience}</p>
+                                <p>Phone:{task.phoneNo}</p>
                                 <p>Score : {generateStars(task.resumeScore)}</p>
+                                
                               </div>
                             </div>
                           </li>
@@ -686,7 +710,7 @@ export default function Kanban() {
               </Select>
             </Tooltip> */}
             <Toolkit interviewerList={interviewers} selectedcard={selectedCard} handleclick = {handleModalOpen} interviewers1 = {interviewers1} />
-            {console.log(selectedCard)}
+            
             </>
             }
 
@@ -694,20 +718,22 @@ export default function Kanban() {
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-          {selectedCard && selectedCard.currentStatus == "ASSIGNED" && <Button key="save" type="primary" onClick={handleSave} loading={saveButtonLoading}>
-            Save
-          </Button>}
-          {/* {selectedCard && !selectedCard.interviewer ? null :
-            selectedCard && selectedCard.currentStatus == "ASSIGNED" &&
-            <Button
-              key="meet"
-              type="primary"
-              onClick={handleModalOpen}
-              style={{ marginLeft: '10px' }}
-            >
-              Meet
-            </Button>
-          } */}
+  {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
+    <>
+      <Button
+        key="save"
+        type="primary"
+        onClick={handleSave}
+        loading={saveButtonLoading}
+      >
+        Save
+      </Button>
+      <ChatButton key="chat" onClick={() => handleChat({
+      "username": selectedCard.name,
+      "email": selectedCard.email
+    })} style={{ marginLeft: '10px' }} />
+    </>
+  )}
           <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
@@ -837,6 +863,7 @@ export default function Kanban() {
             </Tooltip>
           </div>
         )}
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
         <Button
           key="save" type="primary"
           onClick={handleSave}
@@ -847,6 +874,7 @@ export default function Kanban() {
         </Button>
         <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
+          </div>
           </div>
       </Modal>
     </>
