@@ -33,7 +33,7 @@ import {
 } from "antd";
 import WalkInCandidate from "../../pages/WalkinCandidate";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import { notification, Modal } from "antd";
+
 import { Notification } from "./Notification";
 
 const Kanbannav = () => {
@@ -70,11 +70,11 @@ const Kanbannav = () => {
       });
   }, []);
 
-  const handleSearch = () => {
-    // Only navigate when loading is true
-    navigate("/results-page");
-    dispatch(fetchSearchResults(searchInput));
-  };
+  // const handleSearch = () => {
+  //   // Only navigate when loading is true
+  //   navigate("/results-page");
+  //   dispatch(fetchSearchResults(searchInput));
+  // };
 
   const handleClearNotification = () => {
     setNotificationCount(0)
