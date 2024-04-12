@@ -15,6 +15,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
 import Kanbanintnav from "../components/usermanagement/Kanbanintnav";
 import { DownloadOutlined } from '@ant-design/icons';
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
 import axios from "axios";
 ////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -245,6 +248,23 @@ export default function KanbanInterviewer() {
       // Handle error as needed
     }
   };
+
+  const generateStars = (resumeScore) => {
+    // Convert resumeScore to a number
+    const score = parseInt(resumeScore);
+ 
+    // Array to hold the stars JSX elements
+    const stars = [];
+ 
+    // Loop to create the stars based on the score
+    for (let i = 0; i < score; i++) {
+      stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
+    }
+ 
+    return stars;
+  };
+
+
   return (
     <>
       <Kanbanintnav />
@@ -258,38 +278,56 @@ export default function KanbanInterviewer() {
                   {...provided.droppableProps}
                   className="column"
                 >
-                  <h2
+                  <div
                     style={{
-                      backgroundColor: "rgb(219, 247, 255)",
-                      padding: "20px",
-                      borderTop: "3px solid #0091ff",
-                      borderRadius: "10px",
+                      backgroundColor: "rgb(230, 230, 230)",
+                      padding: "15px",
+                      paddingTop:'20px',
+                      borderBottom: "3px solid #0091ff",
+                      borderRadius: "3px",
                       color: "rgb(62, 62, 62)",
-                      fontSize: "1.2em",
+                      fontSize: "1.4em",
+                      fontWeight:"400",
+                      display:'flex',
+                      flexDirection:'column',
+                      alignItems: 'center',
+                      
+
                     }}
                   >
+                    <div >
                     {column}
-                  </h2>
+                    </div>
+                    
+                  <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", marginLeft:'80%', marginBottom:'2%',marginTop:'-7.5%', backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px'}}>
+                    {tasks[column].length}
+                    </div>
+                  </div>
                   <ul>
                     {tasks[column].map((task, index) => (
                       <Draggable
                         key={task.id}
                         draggableId={task.id.toString()}
                         index={index}
-                      // isDragDisabled={task.submissionStatus !== "SAVED"}
+                        isDragDisabled={
+                          task.recruiterSubmissionStatus !== "SAVED"
+                        }
                       >
                         {(provided) => (
                           <li
-                            onClick={() => handleCardClick(task)}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            onClick={() => handleCardClick(task)}
                             style={{
                               ...provided.draggableProps.style,
-                              cursor: "pointer",
+                              cursor:
+                                task.recruiterSubmissionStatus === "SAVED"
+                                  ? "pointer"
+                                  : "not-allowed",
                             }}
                           >
-                            <div style={{ position: "relative" }}>
+                            <div style={{ position: "relative", padding:'5%'}}>
                               {/* <img
                                 className="avatarkan"
                                 src={avatarUrl}
@@ -297,11 +335,19 @@ export default function KanbanInterviewer() {
                               /> */}
  
                               <div>
-                                <h2>{task.name}</h2>
-                                <p>Job Role: {task.jobRole}</p>
-                                <p>Mail:{task.email}</p>
-                                <p>phone:{task.phoneNo}</p>
-                                <p className="score">{task.resumeScore}</p>
+                                <h3 style={{fontWeight:'500'}}>{task.name}</h3>
+                                
+                                {/* <p>Mail:{task.email}</p> */}
+                               {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'10px', borderColor:'rgb(236, 236, 236)', fontWeight:'450' }}> */}
+                                <p style={{display:'flex', alignItems:'center'}}><WorkOutlineIcon style={{color:"rgb(88, 167, 204)"}}/>    <div style={{paddingLeft:'15px'}}> {task.jobRole}</div></p>
+                                <p style={{display:'flex', alignItems:'center'}}><BeenhereIcon style={{color:"rgb(88, 167, 204)"}}/> <div style={{paddingLeft:'15px'}}> {task.yearsOfExperience} {task.yearsOfExperience === '1' ? "year":"years"}</div></p>
+                                <p style={{display:'flex', alignItems:'center'}}><LocalPhoneIcon style={{color:"rgb(88, 167, 204)"}}/>     <div style={{paddingLeft:'15px'}}> {task.phoneNo}</div></p>
+                                {/* </div> */}
+                                {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'3px', borderColor:'rgb(236, 236, 236)', marginTop:'3px', fontWeight:'500' }}> */}
+                               <p style={{fontSize: '20px',fontWeight:'lighter', marginBottom:'-3px', marginTop:'-3px'}}>{generateStars(task.resumeScore)}</p>
+                                {/* </div> */}
+                                
+                               
                               </div>
                             </div>
                           </li>
@@ -309,6 +355,12 @@ export default function KanbanInterviewer() {
                       </Draggable>
                     ))}
                   </ul>
+                  {/* {provided.placeholder && (
+                    <div
+                      className="placeholder"
+                      ref={provided.placeholder.innerRef}
+                    />
+                  )} */}
                 </div>
               )}
             </Droppable>

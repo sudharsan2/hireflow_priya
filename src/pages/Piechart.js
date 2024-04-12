@@ -21,7 +21,12 @@ class Dashboard extends Component {
       loading: true,
       error: null,
       chartData: null,
+      chartDataScheduled: null,
+      chartDataHR: null,
+      chartDataIntdone: null,
+      chartDataSelect:null,
       title:null,
+      percent:null
     };
   }
 
@@ -38,13 +43,11 @@ class Dashboard extends Component {
         this.setState({
           loading: false,
           chartData: [
-            { label: 'orc', value: data['review by HR'] },
-            { label: 'java', value: data['Scheduled For Interview'] },
-            { label: 'pyt', value: data['Interview Done'] },
-            { label: 'HR', value: data['review by HR'] },
-            { label: 'pm', value: data['review by HR'] },
-            { label: 'sap', value: data['review by HR'] },
-            { label: 'HR', value: data['review by HR'] },
+            { label: 'HRR', value: data['review by HR'] },
+            { label: 'TECH', value: data['Scheduled For Interview'] },
+            { label: 'HR', value: data['Interview Done'] },
+            { label: 'SEL', value: data['Offer Letters Given'] },
+           
             
             
           ],
@@ -56,13 +59,165 @@ class Dashboard extends Component {
           error: error.message,
         });
       });
-  }
+
+
+
+
+
+
+      fetch('http://172.235.10.116:7000/hiring/auth/reviewbyHR')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data from the reviewbyHR API');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.setState({
+          chartDataHR: [
+            { label: 'OAT', value: data["Oracle Apps Technical Consultant"] },
+            { label: 'JFSD', value: data["Java Full Stack developer"] },
+            { label: 'OFFC', value: data["Oracle Finance Functional Consultant"] },
+            { label: 'OHC', value: data["Oracle HRMS consultant"] },
+            { label: 'OSC', value: data["Oracle SCM consultant"] },
+            { label: 'ODBA', value: data["Oracle Apps DBA"] },
+            { label: 'FRS', value: data["Fresher"] },
+          ],
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          error: error.message,
+        });
+      });
+
+
+
+
+
+
+      fetch('http://172.235.10.116:7000/hiring/auth/assigned')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data from the reviewbyHR API');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.setState({
+          chartDataScheduled: [
+            // Assuming the structure of data from reviewbyHR API is similar
+            { label: 'OAT', value: data["Oracle Apps Technical Consultant"] },
+            { label: 'JFSD', value: data["Java Full Stack developer"] },
+            { label: 'OFFC', value: data["Oracle Finance Functional Consultant"] },
+            { label: 'OHC', value: data["Oracle HRMS consultant"] },
+            { label: 'OSC', value: data["Oracle SCM consultant"] },
+            { label: 'ODBA', value: data["Oracle Apps DBA"] },
+            { label: 'FRS', value: data["Fresher"] },
+          ],
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          error: error.message,
+        });
+      });
+
+
+
+      fetch('http://172.235.10.116:7000/hiring/auth/interviewdone')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data from the reviewbyHR API');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.setState({
+          chartDataIntdone: [
+            // Assuming the structure of data from reviewbyHR API is similar
+            { label: 'OAT', value: data["Oracle Apps Technical Consultant"] },
+            { label: 'JFSD', value: data["Java Full Stack developer"] },
+            { label: 'OFFC', value: data["Oracle Finance Functional Consultant"] },
+            { label: 'OHC', value: data["Oracle HRMS consultant"] },
+            { label: 'OSC', value: data["Oracle SCM consultant"] },
+            { label: 'ODBA', value: data["Oracle Apps DBA"] },
+            { label: 'FRS', value: data["Fresher"] },
+          ],
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          error: error.message,
+        });
+      });
+
+
+      
+      fetch('http://172.235.10.116:7000/hiring/auth/selected')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch data from the reviewbyHR API');
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.setState({
+          chartDataSelect: [
+            // Assuming the structure of data from reviewbyHR API is similar
+            { label: 'OAT', value: data["Oracle Apps Technical Consultant"] },
+            { label: 'JFSD', value: data["Java Full Stack developer"] },
+            { label: 'OFFC', value: data["Oracle Finance Functional Consultant"] },
+            { label: 'OHC', value: data["Oracle HRMS consultant"] },
+            { label: 'OSC', value: data["Oracle SCM consultant"] },
+            { label: 'ODBA', value: data["Oracle Apps DBA"] },
+            { label: 'FRS', value: data["Fresher"] },
+          ],
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          error: error.message,
+        });
+      });
+
+      fetch('http://172.235.10.116:7000/hiring/auth/hiringPercentage')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch hiring percentage data');
+        }
+        return response.json(); // Parse response data as JSON
+      })
+      .then(data => {
+        this.setState({
+          percent: data,
+          loading: false,
+        });
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          error: error.message,
+        });
+      });
+      
+    }
+ 
+
 
   render() {
-    const { loading, error, chartData } = this.state;
+    const { loading, error, chartData,  chartDataHR, chartDataScheduled, chartDataIntdone, chartDataSelect, percent } = this.state;
 
     if (loading) {
-      return <div>Loading...</div>;
+      return <div></div>;
     }
 
     if (error) {
@@ -71,19 +226,21 @@ class Dashboard extends Component {
 
     return (
       <div>
+     
         <Usernav/>
-      <div style={{display:'flex'}}>
+        <div style={{display:'flex', flexDirection:'column',alignItems:'center', justifyContent:'center'}}></div>
+      <div style={{display:'flex', marginTop:'25px'}}>
         
         <RoundsGraph data={chartData} title='Overall Report' />
-        <RoundsGraph data={chartData} title='Overall Report' />
-        <Gaugecon val={30}/>
+        <RoundsGraph data={chartDataHR} title='Reviewed by HR' />
+        <Gaugecon value={percent} title='Hired %'/>
         
       </div>
-      <div style={{display:'flex', paddingTop:'50px'}}>
+      <div style={{display:'flex', paddingTop:'15px'}}>
         
-      <RoundsGraph data={chartData} title='Overall Report' />
-      <RoundsGraph data={chartData} title='Overall Report' />
-      <RoundsGraph data={chartData} title='Overall Report' />
+      <RoundsGraph data={chartDataScheduled} title='Assigned' />
+      <RoundsGraph data={chartDataIntdone} title='Interview done' />
+      <RoundsGraph data={chartDataSelect} title='Selected' />
       
     </div>
     </div>

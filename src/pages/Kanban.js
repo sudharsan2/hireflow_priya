@@ -489,7 +489,9 @@ export default function Kanban() {
                     {column}
                     </div>
                     
-                  <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", marginLeft:'80%', marginBottom:'-2%', backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px'}}>{tasks[column].length*100}</div>
+                  <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", marginLeft:'80%', marginBottom:'2%',marginTop:'-10%', backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px'}}>
+                    {tasks[column].length}
+                    </div>
                   </div>
                   <ul>
                     {tasks[column].map((task, index) => (

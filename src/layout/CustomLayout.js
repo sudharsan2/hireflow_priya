@@ -108,7 +108,7 @@ else if (jobRole === 'ROLE_RECRUITER'){
    setRole('HR Recruiter');
 }
 else if (jobRole === 'ROLE_INTERVIEWER'){
-   setRole('Technical Interviewer');
+   setRole('Tech Interviewer');
 }};
 
 
