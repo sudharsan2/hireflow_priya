@@ -51,7 +51,7 @@ const Kanbanintnav = () => {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     axios
-      .get("http://127.0.0.1:8000/hiring/entryLevel/getMeetingNotification", {
+      .get("http://172.235.10.116:7000/hiring/entryLevel/getMeetingNotification", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

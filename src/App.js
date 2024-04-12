@@ -51,7 +51,7 @@ import Admineval from "./pages/Admineval";
 import TechSummary from "./pages/summary/TechSummary";
 import ForgetPassword from "./components/usermanagement/forgetPassword";
 import ResetPassword from "./components/usermanagement/resetPassword";
-import dynamicTest from "./pages/dynamicTest";
+
 const App = () => {
 
   
@@ -75,7 +75,7 @@ const App = () => {
         <Route path="/evaluation" element={<CustomLayout><Admineval /></CustomLayout>} />
         <Route path="/forgotPassword" element={<ForgetPassword/>} />
         <Route path="/resetPassword/:token" element={<ResetPassword/>} />
-        <Route path="/dynamicTest" element={<dynamicTest/>} />
+        
         {/* Add more routes as needed */}
       </Routes>
     </Router>

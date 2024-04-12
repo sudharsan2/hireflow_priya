@@ -36,6 +36,10 @@ import axios from "axios";
 
 import Toolkit from "./multipleinterviewers";
 import ChatButton from "./chatbutton";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import StepContent from "@mui/material/StepContent";
 
 
 const { Option } = Select;
@@ -55,6 +59,11 @@ export default function Kanban() {
   const [isWalkinUpload, setIsWalkinUpload] = useState(false);
   const [newCandidate, setNewCandidate] = useState(false);
   const [isModalMeet, setIsModalMeet] = useState(false);
+  const [tracker, setTracker] = useState([]);
+  const [activeStep, setActiveStep] = React.useState(0);
+
+  const steps = tracker;
+
   const handleChatButton = () => {
     navigate('/chat-msg');
 
@@ -66,13 +75,13 @@ export default function Kanban() {
     setIsModalMeet(false);
   }
 
-  
-   // Get navigate function
+
+  // Get navigate function
 
   const handleChat = (param1Value) => {
     // Navigate to the '/chat-msg' route when chat button is clicked
-    
-    navigate('/chat-msg', { state:  { param1Value }});
+
+    navigate('/chat-msg', { state: { param1Value } });
   };
 
   // const ChatButton = ({ onClick, ...rest }) => (
@@ -85,19 +94,27 @@ export default function Kanban() {
   //     Chat
   //   </Button>
   // );
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "NOTSHORTLISTED":
+        return "red"; // Set color to red for NOTSHORTLISTED status
+      default:
+        return "inherit"; // Inherit color for other statuses
+    }
+  };
 
   const generateStars = (resumeScore) => {
     // Convert resumeScore to a number
     const score = parseInt(resumeScore);
-  
+
     // Array to hold the stars JSX elements
     const stars = [];
-  
+
     // Loop to create the stars based on the score
     for (let i = 0; i < score; i++) {
       stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
     }
-  
+
     return stars;
   };
 
@@ -150,31 +167,75 @@ export default function Kanban() {
     }
   };
 
+  // const handleCardClick = async (cardData) => {
+  //   try {
+  //     if (cardData.currentStatus === "IN_TECH") {
+  //       // If the card is in the "Waiting" column, open the modal with empty fields
+  //       setIsModalVisible(true);
+  //     } else if (cardData.currentStatus === "IN_FINAL") {
+  //       // If the card is in the "Final" column, open the modal with specific fields
+  //       setIsModalWaitingVisible(true);
+  //       const response = await api.get(
+  //         `/hiring/entryLevel/getACandidate/${cardData.id}`
+  //       );
+  //       setSelectedCard(response.data);
+  //       // setinterviewers(selectedCard.interviewer.map(interviewerId => ({ interviewer: interviewerId })))
+  //       // setSelectedCard(modalData);
+  //     } else {
+  //       // If the card is in other columns, fetch the card details from the API
+  //       const response = await api.get(
+  //         `/hiring/entryLevel/getACandidate/${cardData.id}`
+  //       );
+  //       setSelectedCard(response.data);
+  //       setIsModalVisible(true);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching card details:", error);
+  //   }
+  // };
+
   const handleCardClick = async (cardData) => {
     try {
+      let response;
       if (cardData.currentStatus === "IN_TECH") {
-        // If the card is in the "Waiting" column, open the modal with empty fields
-        setIsModalVisible(true);
-      } else if (cardData.currentStatus === "IN_FINAL") {
-        // If the card is in the "Final" column, open the modal with specific fields
-        setIsModalWaitingVisible(true);
-        const response = await api.get(
+        setIsModalTechVisible(true);
+        // Fetch the data for the selected card
+        response = await api.get(
           `/hiring/entryLevel/getACandidate/${cardData.id}`
         );
         setSelectedCard(response.data);
-        // setinterviewers(selectedCard.interviewer.map(interviewerId => ({ interviewer: interviewerId })))
-        // setSelectedCard(modalData);
+      } else if (cardData.currentStatus === "IN_FINAL") {
+        setIsModalWaitingVisible(true);
+        response = await api.get(
+          `/hiring/entryLevel/getACandidate/${cardData.id}`
+        );
+        setSelectedCard(response.data);
       } else {
-        // If the card is in other columns, fetch the card details from the API
-        const response = await api.get(
+        response = await api.get(
           `/hiring/entryLevel/getACandidate/${cardData.id}`
         );
         setSelectedCard(response.data);
         setIsModalVisible(true);
       }
+
+      // Check if response contains the 'interviewer' array and set it to state
+      if (response && response.data && response.data.tracker) {
+        setTracker(response.data.tracker);
+      } else {
+        // Set interviewers to null or an empty array if no data is found
+        setTracker([]);
+      }
     } catch (error) {
       console.error("Error fetching card details:", error);
     }
+  };
+
+  console.log("track", tracker);
+
+  const [isModalTechVisible, setIsModalTechVisible] = useState(false);
+
+  const handleModalTechClose = () => {
+    setIsModalTechVisible(false);
   };
 
   // Fetch tasks when the component mounts
@@ -228,6 +289,8 @@ export default function Kanban() {
 
     setTimeout(() => {
       dispatch(fetchTasksAsync());
+
+      dispatch(fetchFinalDataAsync());
     }, 3000);
   };
 
@@ -309,7 +372,7 @@ export default function Kanban() {
 
       const validationErrors = validateFields(selectedCard);
       // condition for waiting
-      if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate) {
+      if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate&&selectedCard.shortlistStatus==="SHORTLISTED") {
         notification.error({ message: 'joinDate is required' });
         return;
       }
@@ -377,6 +440,40 @@ export default function Kanban() {
 
 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
+  const handleIntChange = (value) => {
+    setSelectedCard({ ...selectedCard, shortlistStatus: value });
+  }
+
+  const handleTechSave = () => {
+    
+    if (!selectedCard.shortlistStatus) {
+
+      console.error('Shortlist status not selected');
+      return;
+    }
+
+    const token = localStorage.getItem('accessToken'); 
+    const resumeId=selectedCard.resumeId;
+    selectedCard.recruiterSubmissionStatus='TECH_SAVED';
+    axios.put(`http://172.235.10.116:7000/hiring/entryLevel/updatedata/${resumeId}/`, selectedCard, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        
+        console.log('API call successful', response);
+
+        handleModalTechClose();
+        dispatch(fetchTasksAsync());
+        dispatch(fetchFinalDataAsync());
+      })
+      .catch(error => {
+
+        console.error('Error making API call', error);
+      });
+  }
+
   return (
     <>
       <Kanbannav />
@@ -417,6 +514,7 @@ export default function Kanban() {
                         index={index}
                         isDragDisabled={
                           task.recruiterSubmissionStatus !== "SAVED"
+                          &&task.recruiterSubmissionStatus !== "TECH_SAVED"
                         }
                       >
                         {(provided) => (
@@ -429,6 +527,7 @@ export default function Kanban() {
                               ...provided.draggableProps.style,
                               cursor:
                                 task.recruiterSubmissionStatus === "SAVED"
+                                ||task.recruiterSubmissionStatus==="TECH_SAVED"
                                   ? "pointer"
                                   : "not-allowed",
                             }}
@@ -442,13 +541,13 @@ export default function Kanban() {
 
                               <div>
                                 <h3>{task.name}</h3>
-                                
+
                                 {/* <p>Mail:{task.email}</p> */}
                                 <p>Job Role: {task.jobRole}</p>
                                 <p>Experience: {task.yearsOfExperience}</p>
                                 <p>Phone:{task.phoneNo}</p>
                                 <p>Score : {generateStars(task.resumeScore)}</p>
-                                
+
                               </div>
                             </div>
                           </li>
@@ -695,8 +794,8 @@ export default function Kanban() {
               </Select>
             </Tooltip>
             {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null :
-             <>
-              {/* <Tooltip title="Interviewer">
+              <>
+                {/* <Tooltip title="Interviewer">
               <Select
                 placeholder="Interviewer"
                 value={selectedCard.interviewer}
@@ -714,31 +813,31 @@ export default function Kanban() {
                 ))}
               </Select>
             </Tooltip> */}
-            <Toolkit interviewerList={interviewers} selectedcard={selectedCard} handleclick = {handleModalOpen} interviewers1 = {interviewers1} />
-            
-            </>
+                <Toolkit interviewerList={interviewers} selectedcard={selectedCard} handleclick={handleModalOpen} interviewers1={interviewers1} />
+
+              </>
             }
 
 
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-  {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
-    <>
-      <Button
-        key="save"
-        type="primary"
-        onClick={handleSave}
-        loading={saveButtonLoading}
-      >
-        Save
-      </Button>
-      <ChatButton key="chat" onClick={() => handleChat({
-      "username": selectedCard.name,
-      "email": selectedCard.email
-    })} style={{ marginLeft: '10px' }} />
-    </>
-  )}
+          {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
+            <>
+              <Button
+                key="save"
+                type="primary"
+                onClick={handleSave}
+                loading={saveButtonLoading}
+              >
+                Save
+              </Button>
+              <ChatButton key="chat" onClick={() => handleChat({
+                "username": selectedCard.name,
+                "email": selectedCard.email
+              })} style={{ marginLeft: '10px' }} />
+            </>
+          )}
           <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
@@ -817,7 +916,7 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
-            
+
             <Tooltip title="Shortlist Status">
               <Select
                 placeholder="Shortlist Status"
@@ -885,7 +984,7 @@ export default function Kanban() {
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-          
+
           <Button
             key="save" type="primary"
             onClick={handleSave}
@@ -898,19 +997,83 @@ export default function Kanban() {
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-        <Button
-          key="save" type="primary"
-          onClick={handleSave}
-          loading={saveButtonLoading}
-          style={{ marginTop: '10px' }}
-        >
-          Save
-        </Button>
-        <div style={{ marginLeft: 'auto' }}>
-            <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
+
+      </Modal>
+      <Modal
+        title="Tech Details"
+        visible={isModalTechVisible}
+        onCancel={handleModalTechClose}
+        width={540}
+        footer={[]}
+      >
+        <div style={{ marginLeft: "90%", marginTop: "5%" }}>
+          <Button
+            type="primary"
+            icon={<DownloadOutlined />}
+            onClick={handleDownload}
+          />
+        </div>{" "}
+
+        {selectedCard && (
+          <div
+            style={{
+              display: "grid",
+              gap: "5px",
+              gridTemplateColumns: "1fr 1fr",
+              marginTop: "2%",
+            }}
+          >
+
+            <Typography>Resume ID: {selectedCard.resumeId}</Typography>
+
+            <Typography>Name: {selectedCard.name}</Typography>
+
+            <div style={{ marginTop: "10%" }}>
+              <Toolkit
+                interviewerList={interviewers}
+                selectedcard={selectedCard}
+                handleclick={handleModalOpen}
+                interviewers1={interviewers1}
+              />
+              {console.log(selectedCard)}
+            </div>
+
+            <div style={{ marginLeft: "10%", marginTop: "5%" }}>
+              <Stepper
+                activeStep={activeStep}
+                orientation="vertical"
+                style={{ textAlign: "center" }}
+              >
+                {steps.map((label, index) => (
+                  <Step key={index} style={{ color: getStatusColor(label) }}>
+                    <StepLabel>
+                      {label === "NOTSHORTLISTED" ? <>{label}</> : label}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </div>
+            <div style={{ marginTop: "10%" }}>
+              <Select
+                placeholder="ShortListStatus"
+                value={selectedCard.shortlistStatus}
+                onChange={(value) => handleIntChange(value)}
+                style={{ width: 134, marginBottom: '5px', marginRight: '5px' }}
+              >
+
+                <Option key="shortlisted" value="SHORTLISTED">
+                  Shortlisted
+                </Option>
+                <Option key="notShortlisted" value="NOT SHORTLISTED">
+                  Not Shortlisted
+                </Option>
+
+              </Select>
+              <Button type="primary" onClick={handleTechSave}>Save</Button>
+            </div>
+
           </div>
-          </div>
+        )}
       </Modal>
     </>
   );

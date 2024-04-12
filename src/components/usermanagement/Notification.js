@@ -20,6 +20,7 @@ export const Notification = ({ onClearNotification }) => {
   const [candidates, setCandidates] = useState([]);
 
   useEffect(() => {
+  
     const fetchNotificationData = async () => {
       try {
         const api = "http://172.235.10.116:7000/hiring/auth/notificationforadmin"
@@ -39,8 +40,9 @@ export const Notification = ({ onClearNotification }) => {
     };
     const fetchRecruiterNotification = async () => {
       try {
-        const api = "http://127.0.0.1:8000/hiring/interviewer/notshortlistedNotification"
         const token = localStorage.getItem('accessToken');
+        const api = "http://172.235.10.116:7000/hiring/interviewer/notshortlistedNotification"
+        
         const response = await axios.get(api,
           {
             headers: {
@@ -56,7 +58,7 @@ export const Notification = ({ onClearNotification }) => {
     };
     const fetchInterviewerNotification = async () => {
       try {
-        const api = "http://127.0.0.1:8000/hiring/entryLevel/getMeetingNotification"
+        const api = "http://172.235.10.116:7000/hiring/entryLevel/getMeetingNotification"
         const token = localStorage.getItem('accessToken');
         const response = await axios.get(api,
           {
@@ -108,7 +110,7 @@ export const Notification = ({ onClearNotification }) => {
       try {
         const token = localStorage.getItem('accessToken');
         const response = await axios.post(
-          'http://127.0.0.1:8000/hiring/interviewer/clearNotification',
+          'http://172.235.10.116:7000/hiring/interviewer/clearNotification',
           null,
           {
             headers: {
@@ -142,12 +144,13 @@ export const Notification = ({ onClearNotification }) => {
         console.error('Error clearing notifications:', error);
       }
     }
+    
 
 
   };
 
   return (
-    <div>
+    <div className='notification-table-container'>
       <table className="notification-table">
         <thead>
           <tr>

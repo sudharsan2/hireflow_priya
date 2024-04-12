@@ -1,4 +1,5 @@
 
+ 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,7 +11,6 @@ import {
 import "../pages/kanban.css";
 import { useNavigate } from "react-router-dom";
 import { logoutAction } from "../redux/slices/authSlice";
-import { Button, Modal, Form, Input, Rate, Select, Divider, message } from "antd";
 import { Button, Modal, Form, Input, Rate, Select, Divider, message } from "antd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
@@ -34,7 +34,7 @@ export default function KanbanInterviewer() {
   useEffect(() => {
     dispatch(fetchTasksAsync());
     // dispatch(fetchInterviewerDataByIdAsync());
-  }, [dispatch]);
+  }, [dispatch, selectedTasks]);
  
   const handleDrop = (result) => {
     const { source, destination } = result;
@@ -80,7 +80,6 @@ export default function KanbanInterviewer() {
     // }
     if (
       source.droppableId === "Selected" &&
-      destination.droppableId === "Tech"
       destination.droppableId === "Tech"
       // || destination.droppableId === "Waiting"
     ) {
@@ -144,7 +143,6 @@ export default function KanbanInterviewer() {
   const handleModalSubmit = (updatedData) => {
     console.log("Updated data:", updatedData);
     // if (!updatedData || !updatedData.values || !updatedData.values.skills) {
-    if (!updatedData || !updatedData.values) {
     if (!updatedData || !updatedData.values) {
       console.error("Invalid updatedData object:", updatedData);
       return;
@@ -233,17 +231,17 @@ export default function KanbanInterviewer() {
       // Get the skill to delete
       console.log('index', index);
       console.log('skills', skills.skills[index].id);
-      
+     
        
       await axios.delete(`http://172.235.10.116:7000/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
         headers: {
           'Content-Type': 'application/json'
         },
       });
-
+ 
     } catch (error) {
       console.error('Error deleting skill:', error);
-      
+     
       message.error('unable to delete skill')
       // Handle error as needed
     }
@@ -272,7 +270,6 @@ export default function KanbanInterviewer() {
                     }}
                   >
                     {column}
-                    <div style={{fontSize:'0.8rem'}}>({tasks[column].length})</div>
                   </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
@@ -429,11 +426,10 @@ export default function KanbanInterviewer() {
                 )}
               </Form.List>
               <Form.Item>
-
+ 
                 <Button type="primary" htmlType="submit">
                   SAVE
                 </Button>
-                <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{ marginLeft: "20px" }} />
                 <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{ marginLeft: "20px" }} />
               </Form.Item>
             </Form>
@@ -444,3 +440,4 @@ export default function KanbanInterviewer() {
     </>
   );
 }
+ 
