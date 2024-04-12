@@ -25,7 +25,7 @@ class RoundsGraph extends Component {
     }));
 
     return (
-      <div style={{ height: '300px', width: '400px', position:'relative', backgroundColor:'rgb(255,255,255)', paddingBottom:'60px', margin:'10px',marginTop:'20px', borderRadius:'3px', boxShadow:'0 0 10px rgb(0,0,0,0.2)' }}>
+      <div style={{ height: '280px', width: '400px', position:'relative',  }}>
         <ResponsiveContainer>
             <h2 style={{textAlign:'center', fontWeight:'normal', }}>{title}</h2>
           <BarChart

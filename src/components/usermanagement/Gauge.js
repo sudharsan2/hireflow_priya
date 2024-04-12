@@ -1,17 +1,16 @@
-import { Gauge } from '@mui/x-charts/Gauge';
+// import { Gauge } from '@mui/x-charts/Gauge';
+import GaugeChart from 'react-gauge-chart'
 
 
 const Gaugecon = (val) =>{
     return (
         <div>
-            <Gauge
-                value={val}
-                startAngle={0}
-                endAngle={360}
-                innerRadius="80%"
-                outerRadius="100%"
-                // ...
-            />
+           <GaugeChart id="gauge-chart3" 
+  nrOfLevels={30} 
+  colors={["#FF5F6D", "#FFC371"]} 
+  arcWidth={0.3} 
+  percent={0.37} 
+/>
         </div>
     )
 }
