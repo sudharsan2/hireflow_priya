@@ -506,7 +506,7 @@ export default function Kanban() {
                   >
                     {column}
                     <div style={{ fontSize: "0.8em" }}>({tasks[column].length})</div>
-                    <div style={{ fontSize: "0.8em" }}>({tasks[column].length})</div>
+                    
                   </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
@@ -826,22 +826,7 @@ export default function Kanban() {
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-          {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
-            <>
-              <Button
-                key="save"
-                type="primary"
-                onClick={handleSave}
-                loading={saveButtonLoading}
-              >
-                Save
-              </Button>
-              <ChatButton key="chat" onClick={() => handleChat({
-                "username": selectedCard.name,
-                "email": selectedCard.email
-              })} style={{ marginLeft: '10px' }} />
-            </>
-          )}
+          
           {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
             <>
               <Button
