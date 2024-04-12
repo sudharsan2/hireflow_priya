@@ -8,7 +8,7 @@ import Canheader from '../components/usermanagement/Canheader';
 import BarGraphWithApiData from '../components/usermanagement/Piechartcon';
 import Usernav from '../components/usermanagement/Usernav';
 import RoundsGraph from '../components/usermanagement/RoundsGraph';
-// import Gaugecon from '../components/usermanagement/Gauge';
+import Gaugecon from '../components/usermanagement/Gauge';
 
 
 
@@ -38,10 +38,13 @@ class Dashboard extends Component {
         this.setState({
           loading: false,
           chartData: [
-            { label: 'HRR', value: data['review by HR'] },
-            { label: 'Interview', value: data['Scheduled For Interview'] },
-            { label: 'Completed', value: data['Interview Done'] },
-            { label: 'HRR', value: data['review by HR'] },
+            { label: 'orc', value: data['review by HR'] },
+            { label: 'java', value: data['Scheduled For Interview'] },
+            { label: 'pyt', value: data['Interview Done'] },
+            { label: 'HR', value: data['review by HR'] },
+            { label: 'pm', value: data['review by HR'] },
+            { label: 'sap', value: data['review by HR'] },
+            { label: 'HR', value: data['review by HR'] },
             
             
           ],
@@ -73,7 +76,7 @@ class Dashboard extends Component {
         
         <RoundsGraph data={chartData} title='Overall Report' />
         <RoundsGraph data={chartData} title='Overall Report' />
-        {/* <Gaugecon val='50'/> */}
+        <Gaugecon val={30}/>
         
       </div>
       <div style={{display:'flex', paddingTop:'50px'}}>
