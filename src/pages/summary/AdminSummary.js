@@ -770,13 +770,13 @@ const AdminSummary = () => {
             <Select
               style={{ width: "100%" }}
               placeholder="Recruiter Status"
-              value={showEditFormData.recruiterSubmissionStatus}
+              value={showEditFormData.shortlistStatus}
               onChange={(value) =>
                 // setEditFormData({
                 //   ...editFormData,
                 //   recruiterSubmissionStatus: value,
                 // })
-                handleInputChange('recruiterSubmissionStatus', value)
+                handleInputChange('shortlistStatus', value)
               }
             >
               <Option value="SHORTLISTED">SHORTLISTED</Option>
