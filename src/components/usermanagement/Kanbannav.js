@@ -32,11 +32,16 @@ import {
   notification,
 } from "antd";
 import WalkInCandidate from "../../pages/WalkinCandidate";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+
+import { Notification } from "./Notification";
 
 const Kanbannav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [notificationCount, setNotificationCount] = useState(0);
+  
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const loading = useSelector((state) => state.search.loading);
   const [newCandidate, setNewCandidate] = useState(false);
   const [isWalkinUpload, setIsWalkinUpload] = useState(false);
@@ -49,11 +54,31 @@ const Kanbannav = () => {
     navigate("/", { replace: true });
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    axios
+      .get("http://172.235.10.116:7000/hiring/interviewer/notshortlistedNotification", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setNotificationCount(res.data.length);
+      })
+      .catch((err) => {
+        console.log("Error fetching notifications:", err);
+      });
+  }, []);
+
   // const handleSearch = () => {
   //   // Only navigate when loading is true
   //   navigate("/results-page");
   //   dispatch(fetchSearchResults(searchInput));
   // };
+
+  const handleClearNotification = () => {
+    setNotificationCount(0)
+  }
 
   const handleBadgeClick = () => {
     navigate("/chat-msg");
@@ -82,9 +107,15 @@ const Kanbannav = () => {
 
   const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
+  const handleNotificationClick = () => {
+    setShowNotificationModal(true);
+  };
+  const handleNotificationModalClose = () => {
+    setShowNotificationModal(false);
+  };
   return (
     <>
-      <nav className="navbar" style={{height:"50px"}}>
+      <nav className="navbar" style={{ height: "50px" }}>
         <div className="navbar-left">
           {/* <img className="navbar-logo" src={imgurl2} />
           <div>
@@ -125,7 +156,20 @@ const Kanbannav = () => {
       >
         <WalkInCandidate isWalkinUpload={handleIsWalkinUpload} />
       </Modal>
-
+          <span onClick={handleNotificationClick} className="nav-span">
+            <NotificationsNoneOutlinedIcon />
+            {notificationCount > 0 && (
+              <span className="notification-count">{notificationCount}</span>
+            )}
+          </span>
+          <Modal
+            title="Notifications"
+            visible={showNotificationModal}
+            onCancel={handleNotificationModalClose}
+            footer={null}
+          >
+            <Notification onClearNotification={handleClearNotification} />
+          </Modal>
           <span onClick={handleLogout} className="nav-span">
             Logout
           </span>

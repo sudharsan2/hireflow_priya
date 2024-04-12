@@ -1,11 +1,11 @@
 
- 
+
 import React, { useState, useEffect } from 'react';
 import './Notification.css';
 import axios from 'axios';
- 
- 
- 
+
+
+
 const NotificationComponent = ({ candidate, isVisible }) => {
   return isVisible ? (
     <tr>
@@ -15,11 +15,12 @@ const NotificationComponent = ({ candidate, isVisible }) => {
     </tr>
   ) : null;
 };
- 
-export const Notification = ({onClearNotification}) => {
+
+export const Notification = ({ onClearNotification }) => {
   const [candidates, setCandidates] = useState([]);
- 
+
   useEffect(() => {
+  
     const fetchNotificationData = async () => {
       try {
         const api = "http://172.235.10.116:7000/hiring/auth/notificationforadmin"
@@ -37,32 +38,119 @@ export const Notification = ({onClearNotification}) => {
         console.error('Error fetching notification data:', error);
       }
     };
-    fetchNotificationData();
-  }, []);
- 
-  const handleClear = async () => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.post(
-        'http://172.235.10.116:7000/hiring/auth/clearnotification',
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+    const fetchRecruiterNotification = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const api = "http://172.235.10.116:7000/hiring/interviewer/notshortlistedNotification"
+        
+        const response = await axios.get(api,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
           }
-        }
-      );
-      console.log('Notifications cleared successfully:', response.data);
-      setCandidates([]);
-      onClearNotification();
-    } catch (error) {
-      console.error('Error clearing notifications:', error);
+        );
+        console.log(response.data);
+        setCandidates(response.data);
+      } catch (error) {
+        console.error('Error fetching notification data:', error);
+      }
+    };
+    const fetchInterviewerNotification = async () => {
+      try {
+        const api = "http://172.235.10.116:7000/hiring/entryLevel/getMeetingNotification"
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get(api,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+        console.log(response.data);
+        setCandidates(response.data);
+      } catch (error) {
+        console.error('Error fetching notification data:', error);
+      }
+    };
+    // localStorage.getItem('role')=='ROLE_RECRUITER'?fetchRecruiterNotification():fetchNotificationData()
+    if (localStorage.getItem('role') == 'ROLE_RECRUITER') {
+      fetchRecruiterNotification();
+    }
+    else if (localStorage.getItem('role') == 'ROLE_ADMIN') {
+      fetchNotificationData();
+    }
+    else {
+      fetchInterviewerNotification();
+    }
+
+  }, []);
+
+  const handleClear = async () => {
+    if (localStorage.getItem('role') == 'ROLE_ADMIN') {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.post(
+          'http://172.235.10.116:7000/hiring/auth/clearnotification',
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+        console.log('Notifications cleared successfully:', response.data);
+        setCandidates([]);
+        onClearNotification();
+      } catch (error) {
+        console.error('Error clearing notifications:', error);
+      }
+    }
+    else if (localStorage.getItem('role') == 'ROLE_RECRUITER') {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.post(
+          'http://172.235.10.116:7000/hiring/interviewer/clearNotification',
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+        console.log('Notifications cleared successfully:', response.data);
+        setCandidates([]);
+        onClearNotification();
+      } catch (error) {
+        console.error('Error clearing notifications:', error);
+      }
+    }
+    else {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.post(
+          'http://172.235.10.116:7000/hiring/entryLevel/clearNotification',
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
+        console.log('Notifications cleared successfully:', response.data);
+        setCandidates([]);
+        onClearNotification();
+      } catch (error) {
+        console.error('Error clearing notifications:', error);
+      }
     }
     
+
+
   };
- 
+
   return (
-    <div>
+    <div className='notification-table-container'>
       <table className="notification-table">
         <thead>
           <tr>
@@ -85,4 +173,3 @@ export const Notification = ({onClearNotification}) => {
     </div>
   );
 };
- 

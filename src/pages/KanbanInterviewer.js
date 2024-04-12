@@ -1,4 +1,5 @@
 
+ 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -36,7 +37,7 @@ export default function KanbanInterviewer() {
   useEffect(() => {
     dispatch(fetchTasksAsync());
     // dispatch(fetchInterviewerDataByIdAsync());
-  }, [dispatch]);
+  }, [dispatch, selectedTasks]);
  
   const handleDrop = (result) => {
     const { source, destination } = result;
@@ -491,3 +492,4 @@ export default function KanbanInterviewer() {
     </>
   );
 }
+ 

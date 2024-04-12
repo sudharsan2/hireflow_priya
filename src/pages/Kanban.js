@@ -45,11 +45,11 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
- 
+
 import DirectionsWalkSharpIcon from '@mui/icons-material/DirectionsWalkSharp';
 
 const { Option } = Select;
- 
+
 export default function Kanban() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,12 +67,12 @@ export default function Kanban() {
   const [isModalMeet, setIsModalMeet] = useState(false);
   const [tracker, setTracker] = useState([]);
   const [activeStep, setActiveStep] = React.useState(0);
- 
+
   const steps = tracker;
- 
+
   const handleChatButton = () => {
     navigate('/chat-msg');
- 
+
   }
   const handleModalOpen = () => {
     setIsModalMeet(true);
@@ -80,16 +80,16 @@ export default function Kanban() {
   const handleModalMeet = () => {
     setIsModalMeet(false);
   }
- 
- 
+
+
   // Get navigate function
- 
+
   const handleChat = (param1Value) => {
     // Navigate to the '/chat-msg' route when chat button is clicked
- 
+
     navigate('/chat-msg', { state: { param1Value } });
   };
- 
+
   // const ChatButton = ({ onClick, ...rest }) => (
   //   <Button
   //     type="primary"
@@ -108,22 +108,22 @@ export default function Kanban() {
         return "inherit"; // Inherit color for other statuses
     }
   };
- 
+
   const generateStars = (resumeScore) => {
     // Convert resumeScore to a number
     const score = parseInt(resumeScore);
- 
+
     // Array to hold the stars JSX elements
     const stars = [];
- 
+
     // Loop to create the stars based on the score
     for (let i = 0; i < score; i++) {
       stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
     }
- 
+
     return stars;
   };
- 
+
   const handleIsWalkinUpload = () => {
     console.log("yes it works");
     setIsWalkinUpload(true);
@@ -145,25 +145,25 @@ export default function Kanban() {
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
- 
+
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
- 
+
       const blob = new Blob([response.data], { type: 'application/pdf' });
- 
- 
+
+
       const url = window.URL.createObjectURL(blob);
- 
+
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
- 
+
       document.body.appendChild(link);
       link.click();
- 
+
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -172,7 +172,7 @@ export default function Kanban() {
       console.error('Error downloading file:', error);
     }
   };
- 
+
   // const handleCardClick = async (cardData) => {
   //   try {
   //     if (cardData.currentStatus === "IN_TECH") {
@@ -199,7 +199,7 @@ export default function Kanban() {
   //     console.error("Error fetching card details:", error);
   //   }
   // };
- 
+
   const handleCardClick = async (cardData) => {
     try {
       let response;
@@ -223,7 +223,7 @@ export default function Kanban() {
         setSelectedCard(response.data);
         setIsModalVisible(true);
       }
- 
+
       // Check if response contains the 'interviewer' array and set it to state
       if (response && response.data && response.data.tracker) {
         setTracker(response.data.tracker);
@@ -235,25 +235,25 @@ export default function Kanban() {
       console.error("Error fetching card details:", error);
     }
   };
- 
+
   console.log("track", tracker);
- 
+
   const [isModalTechVisible, setIsModalTechVisible] = useState(false);
- 
+
   const handleModalTechClose = () => {
     setIsModalTechVisible(false);
   };
- 
+
   // Fetch tasks when the component mounts
   useEffect(() => {
     dispatch(fetchTasksAsync());
     dispatch(fetchInterviewersAsync());
     dispatch(fetchFinalDataAsync());
   }, [dispatch, moveTask, isSaved, isWalkinUpload]);
- 
+
   const handleDrop = (result) => {
     const { source, destination } = result;
- 
+
     if (
       !destination ||
       (source.droppableId === destination.droppableId &&
@@ -262,7 +262,7 @@ export default function Kanban() {
       // Card was dropped outside of a droppable area or didn't change position
       return;
     }
- 
+
     // Check if the source column is "Assigned" and the destination column is "Waiting" or "Selected"
     if (
       source.droppableId === "Assigned" &&
@@ -272,7 +272,7 @@ export default function Kanban() {
       // Prevent the drop action for cards from the "Assigned" column to "Waiting" or "Selected"
       return;
     }
- 
+
     dispatch(
       moveTask({
         sourceColumn: source.droppableId,
@@ -291,18 +291,20 @@ export default function Kanban() {
         })
       );
     }
- 
- 
+
+
     setTimeout(() => {
       dispatch(fetchTasksAsync());
+
+      dispatch(fetchFinalDataAsync());
     }, 3000);
   };
- 
+
   const handleModalClose = () => {
     setIsModalVisible(false);
     setIsModalWaitingVisible(false);
   };
- 
+
   const validateFields = (fields) => {
     const errors = {};
     let requiredFields = [];
@@ -313,10 +315,10 @@ export default function Kanban() {
         "location",
         "qualification",
         "domainExperience",
- 
+
         // "travelConstraint",
- 
- 
+
+
         "notificationPeriod",
         "fatherOccupation",
         "motherOccupation",
@@ -329,58 +331,58 @@ export default function Kanban() {
         "location",
         "qualification",
         "domainExperience",
- 
+
         // "travelConstraint",
- 
- 
+
+
         "notificationPeriod",
         "fatherOccupation",
         "motherOccupation",
         "shortlistStatus",
- 
+
       ];
     }
- 
- 
+
+
     requiredFields.forEach((field) => {
       if (!fields[field]) {
         errors[field] = `${field} is required.`;
       }
     });
- 
+
     // Additional validation for domainExperience and notificationPeriod
     if (!/^\d+$/.test(fields.domainExperience)) {
       errors.domainExperience = "Domain Experience should be a valid integer.";
     }
- 
+
     if (!/^\d+$/.test(fields.notificationPeriod)) {
       errors.notificationPeriod =
         "Notification Period should be a valid integer.";
     }
- 
+
     if (fields.referenceEmail) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.referenceEmail)) {
         errors.referenceEmail =
           "Reference Email should be in a valid email format.";
       }
     }
- 
- 
+
+
     return errors;
   };
- 
+
   const handleSave = async () => {
     setSaveButtonLoading(true);
- 
+
     try {
- 
+
       const validationErrors = validateFields(selectedCard);
       // condition for waiting
-      if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate) {
+      if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate && selectedCard.shortlistStatus === "SHORTLISTED") {
         notification.error({ message: 'joinDate is required' });
         return;
       }
- 
+
       if ((selectedCard.recruiterSubmissionStatus == 'SAVED' || selectedCard.recruiterSubmissionStatus == null) && Object.keys(validationErrors).length > 0) {
         // Display error messages to the user
         Object.values(validationErrors).forEach((errorMsg) => {
@@ -403,7 +405,7 @@ export default function Kanban() {
       dispatch(fetchFinalDataAsync());
       setIsModalVisible(false);
       handleModalClose();
- 
+
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
@@ -411,9 +413,9 @@ export default function Kanban() {
     finally {
       setSaveButtonLoading(false);
     }
- 
+
   };
- 
+
   const handleWaitSave = async () => {
     try {
       // Prepare the payload for the API call
@@ -427,10 +429,10 @@ export default function Kanban() {
         remarks: selectedCard.remarks,
         submissionStatus: "SAVED",
       };
- 
+
       // Dispatch the updateWaitingTaskAsync action with the payload
       await dispatch(updateWaitingTaskAsync(apiPayload));
- 
+
       console.log("Save clicked with data:", selectedCard);
       dispatch(UpdatedDataTask(selectedCard));
       setIsSaved(true);
@@ -441,13 +443,44 @@ export default function Kanban() {
     }
   };
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
- 
- 
+
+
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   const handleIntChange = (value) => {
     setSelectedCard({ ...selectedCard, shortlistStatus: value });
   }
- 
+
+  const handleTechSave = () => {
+
+    if (!selectedCard.shortlistStatus) {
+
+      console.error('Shortlist status not selected');
+      return;
+    }
+
+    const token = localStorage.getItem('accessToken');
+    const resumeId = selectedCard.resumeId;
+    selectedCard.recruiterSubmissionStatus = 'TECH_SAVED';
+    axios.put(`http://172.235.10.116:7000/hiring/entryLevel/updatedata/${resumeId}/`, selectedCard, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => {
+
+        console.log('API call successful', response);
+
+        handleModalTechClose();
+        dispatch(fetchTasksAsync());
+        dispatch(fetchFinalDataAsync());
+      })
+      .catch(error => {
+
+        console.error('Error making API call', error);
+      });
+  }
+  const skillColors = ['lightblue', 'lightgreen', 'lightcoral', 'lightskyblue', 'lightpink', 'lightgoldenrodyellow', 'lightsalmon'];
+
   return (
     <>
       <Kanbannav />
@@ -455,7 +488,7 @@ export default function Kanban() {
         className="ncbtn"
         onClick={handleNewCandidateBtn}
       >
-        <DirectionsWalkSharpIcon/>
+        <DirectionsWalkSharpIcon />
         Walk-in
       </Button>
       <DragDropContext onDragEnd={handleDrop}>
@@ -472,21 +505,22 @@ export default function Kanban() {
                     style={{
                       backgroundColor: "rgb(230, 230, 230)",
                       padding: "15px",
-                      paddingTop:'20px',
+                      paddingTop: '20px',
                       borderBottom: "3px solid #0091ff",
                       borderRadius: "3px",
                       color: "rgb(62, 62, 62)",
                       fontSize: "1.4em",
-                      fontWeight:"400",
-                      display:'flex',
-                      flexDirection:'column',
+                      fontWeight: "400",
+                      display: 'flex',
+                      flexDirection: 'column',
                       alignItems: 'center',
-                      
+
 
                     }}
                   >
                     <div >
-                    {column}
+                      {column}
+
                     </div>
                     
                   <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", marginLeft:'80%', marginBottom:'2%',marginTop:'-10%', backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px'}}>
@@ -501,6 +535,7 @@ export default function Kanban() {
                         index={index}
                         isDragDisabled={
                           task.recruiterSubmissionStatus !== "SAVED"
+                          && task.recruiterSubmissionStatus !== "TECH_SAVED"
                         }
                       >
                         {(provided) => (
@@ -513,31 +548,32 @@ export default function Kanban() {
                               ...provided.draggableProps.style,
                               cursor:
                                 task.recruiterSubmissionStatus === "SAVED"
+                                  || task.recruiterSubmissionStatus === "TECH_SAVED"
                                   ? "pointer"
                                   : "not-allowed",
                             }}
                           >
-                            <div style={{ position: "relative", padding:'5%'}}>
+                            <div style={{ position: "relative", padding: '5%' }}>
                               {/* <img
                                 className="avatarkan"
                                 src={avatarUrl}
                                 alt="User Avatar"
                               /> */}
- 
+
                               <div>
-                                <h3 style={{fontWeight:'500'}}>{task.name}</h3>
-                                
+                                <h3 style={{ fontWeight: '500' }}>{task.name}</h3>
+
                                 {/* <p>Mail:{task.email}</p> */}
-                               {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'10px', borderColor:'rgb(236, 236, 236)', fontWeight:'450' }}> */}
-                                <p style={{display:'flex', alignItems:'center'}}><WorkOutlineIcon style={{color:"rgb(88, 167, 204)"}}/>    <div style={{paddingLeft:'15px'}}> {task.jobRole}</div></p>
-                                <p style={{display:'flex', alignItems:'center'}}><BeenhereIcon style={{color:"rgb(88, 167, 204)"}}/> <div style={{paddingLeft:'15px'}}> {task.yearsOfExperience} {task.yearsOfExperience === '1' ? "year":"years"}</div></p>
-                                <p style={{display:'flex', alignItems:'center'}}><LocalPhoneIcon style={{color:"rgb(88, 167, 204)"}}/>     <div style={{paddingLeft:'15px'}}> {task.phoneNo}</div></p>
+                                {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'10px', borderColor:'rgb(236, 236, 236)', fontWeight:'450' }}> */}
+                                <p style={{ display: 'flex', alignItems: 'center' }}><WorkOutlineIcon style={{ color: "rgb(88, 167, 204)" }} />    <div style={{ paddingLeft: '15px' }}> {task.jobRole}</div></p>
+                                <p style={{ display: 'flex', alignItems: 'center' }}><BeenhereIcon style={{ color: "rgb(88, 167, 204)" }} /> <div style={{ paddingLeft: '15px' }}> {task.yearsOfExperience} {task.yearsOfExperience === '1' ? "year" : "years"}</div></p>
+                                <p style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneIcon style={{ color: "rgb(88, 167, 204)" }} />     <div style={{ paddingLeft: '15px' }}> {task.phoneNo}</div></p>
                                 {/* </div> */}
                                 {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'3px', borderColor:'rgb(236, 236, 236)', marginTop:'3px', fontWeight:'500' }}> */}
-                               <p style={{fontSize: '20px',fontWeight:'lighter', marginBottom:'-3px', marginTop:'-3px'}}>{generateStars(task.resumeScore)}</p>
+                                <p style={{ fontSize: '20px', fontWeight: 'lighter', marginBottom: '-3px', marginTop: '-3px' }}>{generateStars(task.resumeScore)}</p>
                                 {/* </div> */}
-                                
-                               
+
+
                               </div>
                             </div>
                           </li>
@@ -557,7 +593,7 @@ export default function Kanban() {
           ))}
         </div>
       </DragDropContext>
- 
+
       <Modal
         open={newCandidate}
         onCancel={handleNewCandidate}
@@ -569,7 +605,7 @@ export default function Kanban() {
       >
         <WalkInCandidate isWalkinUpload={handleIsWalkinUpload} />
       </Modal>
- 
+
       <Modal
         title="Candidate Details"
         visible={isModalVisible}
@@ -614,9 +650,9 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
- 
- 
- 
+
+
+
             <Tooltip title="Location">
               <Input
                 placeholder="Location"
@@ -625,7 +661,7 @@ export default function Kanban() {
                   setSelectedCard({ ...selectedCard, location: e.target.value })
                 }
               />
- 
+
             </Tooltip>
             <Tooltip title="Job Role">
               <Select
@@ -647,7 +683,7 @@ export default function Kanban() {
                 <Option value="Fresher">Fresher</Option>
               </Select>
             </Tooltip>
- 
+
             <Tooltip title="Qualification">
               <Input
                 placeholder="Qualification"
@@ -786,6 +822,8 @@ export default function Kanban() {
             {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null :
               <>
                 {/* <Tooltip title="Interviewer">
+              <>
+                {/* <Tooltip title="Interviewer">
               <Select
                 placeholder="Interviewer"
                 value={selectedCard.interviewer}
@@ -802,16 +840,20 @@ export default function Kanban() {
                   </Option>
                 ))}
               </Select>
-            </Tooltip> */}
+              </Tooltip> */}
                 <Toolkit interviewerList={interviewers} selectedcard={selectedCard} handleclick={handleModalOpen} interviewers1={interviewers1} />
- 
+
+                {/* <h1>hi</h1> */}
               </>
+
             }
- 
- 
+
+
           </div>
+
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+
           {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
             <>
               <Button
@@ -828,11 +870,29 @@ export default function Kanban() {
               })} style={{ marginLeft: '10px' }} />
             </>
           )}
+
           <div style={{ marginLeft: 'auto' }}>
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
+
         </div>
- 
+        <hr style={{ margin: "40px 0" }} />
+        <div>
+          <h3>Skills</h3>
+          {selectedCard && selectedCard.skills ? (
+            <p>
+              {selectedCard.skills.slice(2, -2).split("\\n").map((skill, index) => {
+                
+                const skillWithoutNumbering = skill.replace(/^\d+\.\s*/, '');
+                return (
+                  <span key={index} style={{ backgroundColor: skillColors[index % skillColors.length], borderRadius: '30px', display: 'inline-block', padding: '9px', marginRight: '5px', margin: '5px' }}>{skillWithoutNumbering}</span>
+                );
+              })}
+            </p>
+          ) : (
+            <p>No skills data available</p>
+          )}
+        </div>
         <Modal
           open={isModalMeet}
           onCancel={handleModalMeet}
@@ -845,7 +905,7 @@ export default function Kanban() {
           <Meeting onSave={handleModalMeet} prevData={selectedCard} />
         </Modal>
       </Modal>
- 
+
       <Modal
         title="Candidate Details"
         open={isModalWaitingVisible}
@@ -879,7 +939,7 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
- 
+
             <Tooltip title="LongTermAssocaition">
               <Input
                 placeholder="LongTermAssocaition"
@@ -893,7 +953,7 @@ export default function Kanban() {
               />
             </Tooltip>
             <Tooltip title="JoinDate">
- 
+
               <input
                 type="date"
                 placeholder="Join Date"
@@ -906,7 +966,7 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
- 
+
             <Tooltip title="Shortlist Status">
               <Select
                 placeholder="Shortlist Status"
@@ -922,7 +982,7 @@ export default function Kanban() {
                 <Option value="NOTSHORTLISTED">Not Shortlisted</Option>
               </Select>
             </Tooltip>
- 
+
             <Tooltip title="SpecialRequest">
               <Input
                 placeholder="SpecialRequest"
@@ -974,7 +1034,7 @@ export default function Kanban() {
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
- 
+
           <Button
             key="save" type="primary"
             onClick={handleSave}
@@ -987,7 +1047,7 @@ export default function Kanban() {
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
         </div>
- 
+
       </Modal>
       <Modal
         title="Tech Details"
@@ -997,7 +1057,7 @@ export default function Kanban() {
         footer={[]}
       >
 
-       
+
         {selectedCard && (
           <div
             style={{
@@ -1007,11 +1067,11 @@ export default function Kanban() {
               marginTop: "2%",
             }}
           >
- 
+
             <Typography>Resume ID: {selectedCard.resumeId}</Typography>
-           
-            <Typography style={{ marginLeft: "15%"}}>Name: {selectedCard.name}</Typography>
-           
+
+            <Typography style={{ marginLeft: "15%" }}>Name: {selectedCard.name}</Typography>
+
             <div style={{ marginTop: "10%" }}>
               <Toolkit
                 interviewerList={interviewers}
@@ -1021,7 +1081,7 @@ export default function Kanban() {
               />
               {console.log(selectedCard)}
             </div>
-           
+
             <div style={{ marginLeft: "15%", marginTop: "10%" }}>
               <Stepper
                 activeStep={activeStep}
@@ -1041,32 +1101,36 @@ export default function Kanban() {
               <Select
                 placeholder="ShortListStatus"
                 value={selectedCard.shortlistStatus}
-                onChange={(value) => handleIntChange}
+                onChange={(value) => handleIntChange(value)}
                 style={{ width: 134, marginBottom: '5px', marginRight: '5px' }}
               >
- 
+
                 <Option key="shortlisted" value="SHORTLISTED">
                   Shortlisted
                 </Option>
                 <Option key="notShortlisted" value="NOT SHORTLISTED">
                   Not Shortlisted
                 </Option>
- 
+
               </Select>
-              
+              <Button
+                type="primary"
+                onClick={handleTechSave}
+              >Save
+              </Button>
             </div>
             <div style={{ marginLeft: "75%", marginTop: "9%" }}>
-          <Button
-            type="primary"
-            icon={<DownloadOutlined />}
-            onClick={handleDownload}
-          />
-        </div>{" "}
+              <Button
+                type="primary"
+                icon={<DownloadOutlined />}
+                onClick={handleDownload}
+              />
+
+            </div>{" "}
           </div>
         )}
-        
+
       </Modal>
     </>
   );
 }
- 

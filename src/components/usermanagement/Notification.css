@@ -1,7 +1,10 @@
-
+.notification-table-container {
+  max-width: 100%; 
+  overflow-x: auto; 
+}
  
 .notification-table {
-    width: 100%;
+  max-width: 100%;
     border-collapse: collapse;
     margin-bottom: 10px;
   }

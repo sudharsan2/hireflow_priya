@@ -100,8 +100,8 @@ const App = () => {
             <Typography.Text>Role : {userData.candidateData.jobRole}</Typography.Text>
             <Typography.Text>Resume Score : {userData.candidateData.resumeScore}</Typography.Text>
             <Typography.Text>Candidate Name : {userData.candidateData.name}</Typography.Text>
-            <Typography.Text>Feedback : {userData.candidateData.skills}</Typography.Text>
-            <Typography.Text>Overall Rating : {userData.interviewerData.overall_rating}</Typography.Text>
+            <Typography.Text>Feedback : {userData.candidateData.hrFeedback}</Typography.Text>
+            <Typography.Text>Overall Rating : {userData.candidateData.overall_rating}</Typography.Text>
             <Form.Item label="Final Remarks">
               <Input value={finalRemarks} onChange={(e) => setFinalRemarks(e.target.value)} />
             </Form.Item>

@@ -38,6 +38,9 @@ import axios from "axios";
  
  
  
+
+
+
 ////////////////////////////////////////////////////////////
  
 const { Option } = Select;
@@ -223,11 +226,11 @@ const AdminSummary = () => {
     dispatch(fetchListofSourceAsync());
   }, []);
   //   Skill: Progrmming
- 
+
   // Proficiency: profiency
- 
+
   // Rating out of 10: 9
- 
+
   // Comments: comments
   const [showSkillsModal, setShowSkillsModal] = useState(false);
   const handleSkills = (record) => {
@@ -315,7 +318,7 @@ const AdminSummary = () => {
   // ];
   const skillsData = interviewerRemarks ? interviewerRemarks.skills : '';
   const [skills, setSkills] = useState([]);
- 
+
   const interviwewerData = interviewerRemarks;
   const columns = [
     {
@@ -366,6 +369,7 @@ const AdminSummary = () => {
         //   download
         // </Button>
         <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
+        // <DownloadOutlined onClick={() => handleDownload(record)} style={{ cursor: "pointer", display: "flex", justifyContent: "center" }} />
       )
     },
     {
@@ -569,7 +573,7 @@ const AdminSummary = () => {
                 onChange={(value) => handleChange("recruiterStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
                 <Option value="HOLD">HOLD</Option>
               </Select>
             </Col>
@@ -808,11 +812,12 @@ const AdminSummary = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={900}
+        // width={900}
       >
         <Divider />
         <Table columns={interviewerColumns} dataSource={interviwewerData} scroll={{ x: true }} />
- 
- 
+
+
         <Modal
           title="Skill Details"
           visible={showSkillsModal}
@@ -821,7 +826,7 @@ const AdminSummary = () => {
         >
           <Table columns={skillsColumns} dataSource={skills} scroll={{ x: true }} />
         </Modal>
- 
+
       </Modal>
     </>
   );

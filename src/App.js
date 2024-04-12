@@ -75,6 +75,7 @@ const App = () => {
         <Route path="/evaluation" element={<CustomLayout><Admineval /></CustomLayout>} />
         <Route path="/forgotPassword" element={<ForgetPassword/>} />
         <Route path="/resetPassword/:token" element={<ResetPassword/>} />
+        
         {/* Add more routes as needed */}
       </Routes>
     </Router>
