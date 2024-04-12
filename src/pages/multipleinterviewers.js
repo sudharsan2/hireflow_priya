@@ -78,7 +78,7 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
               placeholder="Interviewer"
               value={toolkit.interviewer}
               onChange={(value) => handleSelectChange(index, value)}
-              style={{ width: 134, marginBottom : '5px', marginRight : '5px'}}
+              style={{ width: 134, marginTop : '5px', marginRight : '5px'}}
             >
               {interviewerList.map((interviewer) => (
                 <Option key={interviewer.id} value={interviewer.id}>
@@ -104,10 +104,10 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
           </Modal>
         </div>
       ))}
-      <Button onClick={handleAddToolkit} style={{ width: "160px" }}>
+      <Button onClick={handleAddToolkit} style={{ width: "135px", marginTop : '5px' }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <PersonAddAltIcon  style={{marginRight : '5px'}} />
-          Add Interviewer
+          Interviewer
         </div>
       </Button>
     </>

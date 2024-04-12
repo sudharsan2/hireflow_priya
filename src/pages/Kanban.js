@@ -1,3 +1,4 @@
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,17 +34,17 @@ import WalkInCandidate from "./WalkinCandidate";
 import Meeting from "../components/meet/Meet";
 import { DownloadOutlined, MessageOutlined } from '@ant-design/icons';
 import axios from "axios";
-
+ 
 import Toolkit from "./multipleinterviewers";
 import ChatButton from "./chatbutton";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
-
-
+ 
+ 
 const { Option } = Select;
-
+ 
 export default function Kanban() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -61,12 +62,12 @@ export default function Kanban() {
   const [isModalMeet, setIsModalMeet] = useState(false);
   const [tracker, setTracker] = useState([]);
   const [activeStep, setActiveStep] = React.useState(0);
-
+ 
   const steps = tracker;
-
+ 
   const handleChatButton = () => {
     navigate('/chat-msg');
-
+ 
   }
   const handleModalOpen = () => {
     setIsModalMeet(true);
@@ -74,16 +75,16 @@ export default function Kanban() {
   const handleModalMeet = () => {
     setIsModalMeet(false);
   }
-
-
+ 
+ 
   // Get navigate function
-
+ 
   const handleChat = (param1Value) => {
     // Navigate to the '/chat-msg' route when chat button is clicked
-
+ 
     navigate('/chat-msg', { state: { param1Value } });
   };
-
+ 
   // const ChatButton = ({ onClick, ...rest }) => (
   //   <Button
   //     type="primary"
@@ -102,7 +103,7 @@ export default function Kanban() {
         return "inherit"; // Inherit color for other statuses
     }
   };
-
+ 
   const generateStars = (resumeScore) => {
     // Convert resumeScore to a number
     const score = parseInt(resumeScore);
@@ -117,7 +118,7 @@ export default function Kanban() {
 
     return stars;
   };
-
+ 
   const handleIsWalkinUpload = () => {
     console.log("yes it works");
     setIsWalkinUpload(true);
@@ -139,25 +140,25 @@ export default function Kanban() {
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
-
+ 
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-
+ 
       const blob = new Blob([response.data], { type: 'application/pdf' });
-
-
+ 
+ 
       const url = window.URL.createObjectURL(blob);
-
+ 
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
-
+ 
       document.body.appendChild(link);
       link.click();
-
+ 
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -166,7 +167,7 @@ export default function Kanban() {
       console.error('Error downloading file:', error);
     }
   };
-
+ 
   // const handleCardClick = async (cardData) => {
   //   try {
   //     if (cardData.currentStatus === "IN_TECH") {
@@ -193,7 +194,7 @@ export default function Kanban() {
   //     console.error("Error fetching card details:", error);
   //   }
   // };
-
+ 
   const handleCardClick = async (cardData) => {
     try {
       let response;
@@ -217,7 +218,7 @@ export default function Kanban() {
         setSelectedCard(response.data);
         setIsModalVisible(true);
       }
-
+ 
       // Check if response contains the 'interviewer' array and set it to state
       if (response && response.data && response.data.tracker) {
         setTracker(response.data.tracker);
@@ -229,25 +230,25 @@ export default function Kanban() {
       console.error("Error fetching card details:", error);
     }
   };
-
+ 
   console.log("track", tracker);
-
+ 
   const [isModalTechVisible, setIsModalTechVisible] = useState(false);
-
+ 
   const handleModalTechClose = () => {
     setIsModalTechVisible(false);
   };
-
+ 
   // Fetch tasks when the component mounts
   useEffect(() => {
     dispatch(fetchTasksAsync());
     dispatch(fetchInterviewersAsync());
     dispatch(fetchFinalDataAsync());
   }, [dispatch, moveTask, isSaved, isWalkinUpload]);
-
+ 
   const handleDrop = (result) => {
     const { source, destination } = result;
-
+ 
     if (
       !destination ||
       (source.droppableId === destination.droppableId &&
@@ -256,7 +257,7 @@ export default function Kanban() {
       // Card was dropped outside of a droppable area or didn't change position
       return;
     }
-
+ 
     // Check if the source column is "Assigned" and the destination column is "Waiting" or "Selected"
     if (
       source.droppableId === "Assigned" &&
@@ -266,7 +267,7 @@ export default function Kanban() {
       // Prevent the drop action for cards from the "Assigned" column to "Waiting" or "Selected"
       return;
     }
-
+ 
     dispatch(
       moveTask({
         sourceColumn: source.droppableId,
@@ -285,20 +286,20 @@ export default function Kanban() {
         })
       );
     }
-
-
+ 
+ 
     setTimeout(() => {
       dispatch(fetchTasksAsync());
 
       dispatch(fetchFinalDataAsync());
     }, 3000);
   };
-
+ 
   const handleModalClose = () => {
     setIsModalVisible(false);
     setIsModalWaitingVisible(false);
   };
-
+ 
   const validateFields = (fields) => {
     const errors = {};
     let requiredFields = [];
@@ -309,10 +310,10 @@ export default function Kanban() {
         "location",
         "qualification",
         "domainExperience",
-
+ 
         // "travelConstraint",
-
-
+ 
+ 
         "notificationPeriod",
         "fatherOccupation",
         "motherOccupation",
@@ -325,58 +326,58 @@ export default function Kanban() {
         "location",
         "qualification",
         "domainExperience",
-
+ 
         // "travelConstraint",
-
-
+ 
+ 
         "notificationPeriod",
         "fatherOccupation",
         "motherOccupation",
         "shortlistStatus",
-
+ 
       ];
     }
-
-
+ 
+ 
     requiredFields.forEach((field) => {
       if (!fields[field]) {
         errors[field] = `${field} is required.`;
       }
     });
-
+ 
     // Additional validation for domainExperience and notificationPeriod
     if (!/^\d+$/.test(fields.domainExperience)) {
       errors.domainExperience = "Domain Experience should be a valid integer.";
     }
-
+ 
     if (!/^\d+$/.test(fields.notificationPeriod)) {
       errors.notificationPeriod =
         "Notification Period should be a valid integer.";
     }
-
+ 
     if (fields.referenceEmail) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.referenceEmail)) {
         errors.referenceEmail =
           "Reference Email should be in a valid email format.";
       }
     }
-
-
+ 
+ 
     return errors;
   };
-
+ 
   const handleSave = async () => {
     setSaveButtonLoading(true);
-
+ 
     try {
-
+ 
       const validationErrors = validateFields(selectedCard);
       // condition for waiting
       if (selectedCard.recruiterSubmissionStatus == 'SUBMITTED' && !selectedCard.joinDate&&selectedCard.shortlistStatus==="SHORTLISTED") {
         notification.error({ message: 'joinDate is required' });
         return;
       }
-
+ 
       if ((selectedCard.recruiterSubmissionStatus == 'SAVED' || selectedCard.recruiterSubmissionStatus == null) && Object.keys(validationErrors).length > 0) {
         // Display error messages to the user
         Object.values(validationErrors).forEach((errorMsg) => {
@@ -399,7 +400,7 @@ export default function Kanban() {
       dispatch(fetchFinalDataAsync());
       setIsModalVisible(false);
       handleModalClose();
-
+ 
     } catch (error) {
       console.error("Error updating task:", error);
       // Handle the error as needed
@@ -407,9 +408,9 @@ export default function Kanban() {
     finally {
       setSaveButtonLoading(false);
     }
-
+ 
   };
-
+ 
   const handleWaitSave = async () => {
     try {
       // Prepare the payload for the API call
@@ -423,10 +424,10 @@ export default function Kanban() {
         remarks: selectedCard.remarks,
         submissionStatus: "SAVED",
       };
-
+ 
       // Dispatch the updateWaitingTaskAsync action with the payload
       await dispatch(updateWaitingTaskAsync(apiPayload));
-
+ 
       console.log("Save clicked with data:", selectedCard);
       dispatch(UpdatedDataTask(selectedCard));
       setIsSaved(true);
@@ -437,8 +438,8 @@ export default function Kanban() {
     }
   };
   const [saveButtonLoading, setSaveButtonLoading] = useState(false);
-
-
+ 
+ 
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   const handleIntChange = (value) => {
     setSelectedCard({ ...selectedCard, shortlistStatus: value });
@@ -505,6 +506,7 @@ export default function Kanban() {
                   >
                     {column}
                     <div style={{ fontSize: "0.8em" }}>({tasks[column].length})</div>
+                    <div style={{ fontSize: "0.8em" }}>({tasks[column].length})</div>
                   </h2>
                   <ul>
                     {tasks[column].map((task, index) => (
@@ -538,7 +540,7 @@ export default function Kanban() {
                                 src={avatarUrl}
                                 alt="User Avatar"
                               /> */}
-
+ 
                               <div>
                                 <h3>{task.name}</h3>
 
@@ -567,7 +569,7 @@ export default function Kanban() {
           ))}
         </div>
       </DragDropContext>
-
+ 
       <Modal
         open={newCandidate}
         onCancel={handleNewCandidate}
@@ -579,7 +581,7 @@ export default function Kanban() {
       >
         <WalkInCandidate isWalkinUpload={handleIsWalkinUpload} />
       </Modal>
-
+ 
       <Modal
         title="Candidate Details"
         visible={isModalVisible}
@@ -624,9 +626,9 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
-
-
-
+ 
+ 
+ 
             <Tooltip title="Location">
               <Input
                 placeholder="Location"
@@ -635,7 +637,7 @@ export default function Kanban() {
                   setSelectedCard({ ...selectedCard, location: e.target.value })
                 }
               />
-
+ 
             </Tooltip>
             <Tooltip title="Job Role">
               <Select
@@ -657,7 +659,7 @@ export default function Kanban() {
                 <Option value="Fresher">Fresher</Option>
               </Select>
             </Tooltip>
-
+ 
             <Tooltip title="Qualification">
               <Input
                 placeholder="Qualification"
@@ -796,6 +798,8 @@ export default function Kanban() {
             {selectedCard.shortlistStatus === "NOTSHORTLISTED" ? null :
               <>
                 {/* <Tooltip title="Interviewer">
+              <>
+                {/* <Tooltip title="Interviewer">
               <Select
                 placeholder="Interviewer"
                 value={selectedCard.interviewer}
@@ -817,11 +821,27 @@ export default function Kanban() {
 
               </>
             }
-
-
+ 
+ 
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+          {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
+            <>
+              <Button
+                key="save"
+                type="primary"
+                onClick={handleSave}
+                loading={saveButtonLoading}
+              >
+                Save
+              </Button>
+              <ChatButton key="chat" onClick={() => handleChat({
+                "username": selectedCard.name,
+                "email": selectedCard.email
+              })} style={{ marginLeft: '10px' }} />
+            </>
+          )}
           {selectedCard && selectedCard.currentStatus === "ASSIGNED" && (
             <>
               <Button
@@ -842,7 +862,7 @@ export default function Kanban() {
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
         </div>
-
+ 
         <Modal
           open={isModalMeet}
           onCancel={handleModalMeet}
@@ -855,7 +875,7 @@ export default function Kanban() {
           <Meeting onSave={handleModalMeet} prevData={selectedCard} />
         </Modal>
       </Modal>
-
+ 
       <Modal
         title="Candidate Details"
         open={isModalWaitingVisible}
@@ -889,7 +909,7 @@ export default function Kanban() {
                 }
               />
             </Tooltip>
-
+ 
             <Tooltip title="LongTermAssocaition">
               <Input
                 placeholder="LongTermAssocaition"
@@ -903,7 +923,7 @@ export default function Kanban() {
               />
             </Tooltip>
             <Tooltip title="JoinDate">
-
+ 
               <input
                 type="date"
                 placeholder="Join Date"
@@ -984,7 +1004,7 @@ export default function Kanban() {
           </div>
         )}
         <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-
+ 
           <Button
             key="save" type="primary"
             onClick={handleSave}
@@ -997,7 +1017,7 @@ export default function Kanban() {
             <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} />
           </div>
         </div>
-
+ 
       </Modal>
       <Modal
         title="Tech Details"
@@ -1006,14 +1026,8 @@ export default function Kanban() {
         width={540}
         footer={[]}
       >
-        <div style={{ marginLeft: "90%", marginTop: "5%" }}>
-          <Button
-            type="primary"
-            icon={<DownloadOutlined />}
-            onClick={handleDownload}
-          />
-        </div>{" "}
 
+       
         {selectedCard && (
           <div
             style={{
@@ -1023,11 +1037,11 @@ export default function Kanban() {
               marginTop: "2%",
             }}
           >
-
+ 
             <Typography>Resume ID: {selectedCard.resumeId}</Typography>
-
-            <Typography>Name: {selectedCard.name}</Typography>
-
+           
+            <Typography style={{ marginLeft: "15%"}}>Name: {selectedCard.name}</Typography>
+           
             <div style={{ marginTop: "10%" }}>
               <Toolkit
                 interviewerList={interviewers}
@@ -1037,8 +1051,8 @@ export default function Kanban() {
               />
               {console.log(selectedCard)}
             </div>
-
-            <div style={{ marginLeft: "10%", marginTop: "5%" }}>
+           
+            <div style={{ marginLeft: "15%", marginTop: "10%" }}>
               <Stepper
                 activeStep={activeStep}
                 orientation="vertical"
@@ -1057,24 +1071,32 @@ export default function Kanban() {
               <Select
                 placeholder="ShortListStatus"
                 value={selectedCard.shortlistStatus}
-                onChange={(value) => handleIntChange(value)}
+                onChange={(value) => handleIntChange}
                 style={{ width: 134, marginBottom: '5px', marginRight: '5px' }}
               >
-
+ 
                 <Option key="shortlisted" value="SHORTLISTED">
                   Shortlisted
                 </Option>
                 <Option key="notShortlisted" value="NOT SHORTLISTED">
                   Not Shortlisted
                 </Option>
-
+ 
               </Select>
-              <Button type="primary" onClick={handleTechSave}>Save</Button>
+              
             </div>
-
+            <div style={{ marginLeft: "75%", marginTop: "9%" }}>
+          <Button
+            type="primary"
+            icon={<DownloadOutlined />}
+            onClick={handleDownload}
+          />
+        </div>{" "}
           </div>
         )}
+        
       </Modal>
     </>
   );
 }
+ 

@@ -7,7 +7,7 @@ import api from "../../services/api";
 
 const initialState = {
   isLoading: false,
-  isAuthenticated: false,
+  isAuthenticated: 1,
   userDetails: null,
   error: "",
 };
@@ -66,7 +66,7 @@ export const fetchLoginDetailsAsync = createAsyncThunk(
 
 // Logout action
 export const logoutAction = () => (dispatch) => {
-  dispatch(setIsAuthenticated(false));
+  dispatch(setIsAuthenticated(1));
   dispatch({ type: "USER_LOGOUT" });
 };
 
@@ -82,6 +82,7 @@ const authSlice = createSlice({
     },
     setIsAuthenticated: (state, action) => {
       state.isAuthenticated = action.payload;
+      
     },
 
     resetError: (state) => {
@@ -95,7 +96,7 @@ const authSlice = createSlice({
         console.log("Fetched Successfully!", action.payload);
         return {
         ...state,
-        isAuthenticated:true,
+        isAuthenticated:2,
         userDetails:action.payload,
         isLoading:false
       };
@@ -103,7 +104,7 @@ const authSlice = createSlice({
       })
       .addCase(fetchLoginDetailsAsync.rejected, (state, action) => ({
         ...state,
-        isAuthenticated: false,
+        isAuthenticated: 3,
         error: action.payload,
         isLoading: false
       }));
