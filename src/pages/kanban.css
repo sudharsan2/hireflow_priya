@@ -6,9 +6,9 @@
   /* gap: 20px; */
   overflow-x: scroll;
   overflow-y: scroll;
-  padding-left: 100px;
-  padding-right: 100px;
-  padding-top: 50px;
+  padding-left: 80px;
+  padding-right: 140px;
+  padding-top: 0px;
 }
 
 .ncbtn {
@@ -16,6 +16,11 @@
   top: 65px;
   right: 20px;
   z-index: 1000;
+  background-color: rgb(0, 20, 45);
+  color:#fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .column {
@@ -33,6 +38,7 @@
 }
 
 .column ul {
+  padding-top: 20px;
   list-style-type: none;
   padding: 0;
 }
@@ -40,16 +46,16 @@
 .column li {
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 5px;
   margin-bottom: 8px;
   color: #393939;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   border-left: 3px solid rgb(174, 177, 254);
   transition: background-color 0.3s ease-in-out;
   /* Smooth transition on hover */
   padding-left: 16px;
-  padding: 10px;
+  padding: 2px;
   /* Add padding to the list items for better spacing */
 }
 

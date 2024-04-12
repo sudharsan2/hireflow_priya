@@ -40,7 +40,7 @@ import First from "./pages/First";
 import Candidate from "./pages/Candidate";
 import Kanban from "./pages/Kanban";
 import KanbanInterviewer from "./pages/KanbanInterviewer";
-import ResultPage from "./components/usermanagement/ResultsPage";
+//import ResultPage from "./components/usermanagement/ResultsPage";
 import Chats from "./pages/Chats";
 import CustomLayout from "./layout/CustomLayout";
 import AdminSummary from "./pages/summary/AdminSummary";
@@ -65,7 +65,7 @@ const App = () => {
         <Route path="/kanban-recurit" element={<CustomLayout><Kanban /></CustomLayout>} />
         <Route path="/kanban-Interviewer" element={<CustomLayout><KanbanInterviewer /></CustomLayout>} />
         <Route path="/candidate" element={<CustomLayout><Candidate /></CustomLayout>} />
-        <Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />
+        {/*<Route path="/results-page" element={<CustomLayout><ResultPage /></CustomLayout>} />*/}
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
         
         <Route path="/hrr-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />

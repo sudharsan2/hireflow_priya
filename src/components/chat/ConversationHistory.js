@@ -98,6 +98,46 @@ export default function ConversationHistory({
     setAttachments(files);
   };
 
+  const EmailAnimation = () => {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" width="80" height="80" style={{ shapeRendering: 'geometricPrecision', textRendering: 'geometricPrecision', imageRendering: 'optimizeQuality', fillRule: 'evenodd', clipRule: 'evenodd' }} viewBox="0 0 6.827 6.827">
+        <defs>
+          <style>
+            {`
+              .fil1{fill:none;}
+              .bounce {
+                animation: bounce 0.8s infinite alternate;
+              }
+              @keyframes bounce {
+                0% {
+                  transform: translateY(0);
+                }
+                100% {
+                  transform: translateY(-20%);
+                }
+              }
+            `}
+          </style>
+        </defs>
+        <g id="Layer_x0020_1">
+          <path style={{ fill: '#fbe9e7' }} d="M.853 3.062h5.12v2.415H.853z" />
+          <g id="_491470088">
+            <path id="_491469776" className="fil1" d="M0 0h6.827v6.827H0z" />
+            <path id="_491469728" className="fil1" d="M.853.853h5.12v5.12H.853z" />
+          </g>
+          <path className="fil1" d="M.853.853h5.12v5.12H.853z" />
+          <path style={{ fill: '#1e88e5' }} d="m3.413 4.589 2.56-1.277v2.661H.853V3.312z" />
+          <path style={{ fill: '#64b5f6' }} d="M3.413 1.341.853 2.62v.688h5.12v-.688z" className="bounce" />
+          <path className="fil1" d="M0 0h6.827v6.827H0z" />
+        </g>
+      </svg>
+    );
+  };
+
+  
+  const imgurl2 = require("../../media/nomail.jpg");
+
+
   return (
     <>
       <div className="conversation-header">
@@ -118,15 +158,16 @@ export default function ConversationHistory({
 
       <div className="conversation-history-container">
         <div className="email-list">
-          <div className="spinner-container">
-            {flag && <Spin style={{ transform: 'scale(2)' }} />}
-          </div>
+          
+            {flag && <div className="spinner-container"><EmailAnimation /></div>}
+         
 
           {(!selectedUser || !Object.values(selectedUser).length) && !flag && (
-            <div className="default-quote" style={{ padding: '20px', marginTop: '170px', marginLeft: '120px' }}>
-              <h1>Click on a chat to start the conversation.</h1>
+            <div className="default-quote" style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'100px',}}>
+             <img src={imgurl2} alt="No Email" style={{ width: '300px', height: '300px' }}/>
+              
             </div>
-          )}
+          )} 
 
           {selectedUser &&
             Object.values(selectedUser)

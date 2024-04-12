@@ -138,10 +138,10 @@ const HRRHeader = () => {
   return (
 
     <div className="header">
-      <h2>HRR</h2>
-      <span onClick={handleAddUserClick} className="nav-span">
+      <p style={{fontSize:'10px'}}>HRR</p>
+      <span onClick={handleAddUserClick}>
           <PersonAddAlt1Icon style={{ marginRight: "5px" }} />
-          Add user
+          Add
         </span>
         {isAddUserModalOpen && (
           <>
