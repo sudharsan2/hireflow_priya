@@ -71,7 +71,8 @@ const Login = () => {
   useEffect(() => {
     
     const role = localStorage.getItem("role");
-    if (isAuthenticated) {
+    if (isAuthenticated === 2) {
+      // console.log({'authentication': isAuthenticated})
       switch (role) {
         case "ROLE_ADMIN":
           navigate("/admin-page");
@@ -90,6 +91,13 @@ const Login = () => {
       notification.success({
         message: "Login Successful",
         description: "You have successfully logged in.",
+      });
+    }
+
+    else if(isAuthenticated === 3){
+      notification.error({
+        message: "Login Failed",
+        description: isError || "An error occurred during login.",
       });
     }
     

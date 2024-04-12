@@ -53,6 +53,7 @@ const HrrSummary = () => {
   const interviewers = useSelector((state) => state.summary.interviewers);
   const recruiters = useSelector((state) => state.summary.recruiters);
   const source = useSelector((state) => state.summary.source);
+  const [skills, setSkills] = useState([]);
   const interviewerRemarks = useSelector(
     (state) => state.summary.interviewerRemarks
   );
@@ -71,7 +72,7 @@ const HrrSummary = () => {
     status: "",
     source: "",
   });
-
+  const interviwewerData = interviewerRemarks;
   const [editFormData, setEditFormData] = useState({
     // Initialize with empty values or values you want to start with
     resumeId: "",
@@ -89,6 +90,34 @@ const HrrSummary = () => {
   });
   // State to hold fetched candidate details
   const [candidates, setCandidates] = useState([]);
+  const [showSkillsModal, setShowSkillsModal] = useState(false);
+  const handleSkills = (record) => {
+    setShowSkillsModal(true);
+    console.log('record', record.skills);
+    setSkills(record.skills);
+  }
+  const skillsColumns = [
+    {
+      title: "Skill",
+      dataIndex: "skills",
+      key: "skills",
+    },
+    {
+      title: "Proficiency",
+      dataIndex: "proficiency",
+      key: "proficiency",
+    },
+    {
+      title: "Rating out of 10",
+      dataIndex: "ratingoutof10",
+      key: "ratingoutof10",
+    },
+    {
+      title: "Comments",
+      dataIndex: "comments",
+      key: "comments",
+    }
+  ]
 
   const handleFromDateChange = (date) => {
     handleChange("fromDate", date);
@@ -191,7 +220,52 @@ const HrrSummary = () => {
     dispatch(fetchListofRecruiterAsync());
     dispatch(fetchListofSourceAsync());
   }, []);
-
+  const interviewerColumns = [
+    {
+      title: "interviewer",
+      dataIndex: "interviewerName",
+      key: "interviewerName",
+    },
+    {
+      title: "Interviewer Time",
+      dataIndex: "dateTime",
+      key: "dateTime",
+    },
+    {
+      title: "Shortlist Status",
+      dataIndex: "shortlistStatus",
+      key: "shortlistStatus",
+    },
+    {
+      title: "Strength",
+      dataIndex: "Strength",
+      key: "Strength",
+    },
+    {
+      title: "Weakness",
+      dataIndex: "weakness",
+      key: "weakness",
+    },
+    {
+      title: "Overall Rating",
+      dataIndex: "overall_rating",
+      key: "overall_rating",
+    },
+    {
+      title: "Overall comments",
+      dataIndex: "overall_comments",
+      key: "overall_comments",
+    },
+    {
+      title: "skills",
+      key: "skills",
+      render: (_, record) => (
+        <Button type="primary" onClick={() => handleSkills(record)}>
+          skills
+        </Button>
+      ),
+    },
+  ]
   const columns = [
     {
       title: "Resume ID",
@@ -303,7 +377,7 @@ const HrrSummary = () => {
     try {
       // Dispatch the fetchInterviewerRemarksAsync thunk with the resumeId
       dispatch(fetchInterviewerRemarksAsync(record.resumeId));
-
+ 
       // Open the modal with the response data or handle it as needed
       setSelectedCandidate(record);
       setModalVisible(true);
@@ -690,66 +764,21 @@ const HrrSummary = () => {
         visible={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
+        width={900}
       >
         <Divider />
-        <p>
-          <strong>Interviewer:</strong> {interviewerRemarks?.interviewerName}
-        </p>
-        <p>
-          <strong>Date And Time: </strong> {interviewerRemarks?.dateTime}
-        </p>
-
-        <p>
-          <strong>Shortlist Status: </strong>{interviewerRemarks?.shortlistStatus}
-        </p>
-        <p>
-          <strong>Strength: </strong>{interviewerRemarks?.strength}
-        </p>
-        <p>
-          <strong>Weakness: </strong>{interviewerRemarks?.weakness}
-        </p>
-        <p>
-          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_rating}
-        </p>
-        <p>
-          <strong>Overall Rating: </strong> {interviewerRemarks?.overall_comments}
-        </p>
-
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {" "}
-          {interviewerRemarks && interviewerRemarks.skills && interviewerRemarks.skills.length > 0 && (
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {interviewerRemarks.skills.map((skill, index) => (
-                <li key={index} style={{ marginBottom: "10px" }}>
-                  <a onClick={() => setSelectedSkill(skill)}>View Skill Details</a>
-                  <Modal
-                    title="Skill Details"
-                    visible={!!selectedSkill}
-                    onCancel={() => setSelectedSkill(null)}
-                    footer={null}
-                  >
-                    <Card>
-                      <p>
-                        <strong>Skill:</strong> {selectedSkill?.skills}
-                      </p>
-                      <p>
-                        <strong>Proficiency:</strong> {selectedSkill?.proficiency}
-                      </p>
-                      <p>
-                        <strong>Rating out of 10:</strong>{" "}
-                        {selectedSkill?.ratingoutof10}
-                      </p>
-                      <p>
-                        <strong>Comments:</strong> {selectedSkill?.comments}
-                      </p>
-                    </Card>
-                  </Modal>
-                </li>
-              ))}
-            </ul>
-          )}
-
-        </ul>
+        <Table columns={interviewerColumns} dataSource={interviwewerData} scroll={{ x: true }} />
+ 
+ 
+        <Modal
+          title="Skill Details"
+          visible={showSkillsModal}
+          onCancel={() => { setShowSkillsModal(false) }}
+          footer={null}
+        >
+          <Table columns={skillsColumns} dataSource={skills} scroll={{ x: true }} />
+        </Modal>
+ 
       </Modal>
     </>
   );
