@@ -4,10 +4,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-image: url("../../../public/img/bg_17.jpg");
+  /* background-image: url("../../../public/img/bg_17.jpg"); */
   background-size: cover;
   background-position: center;
-  background-color: #2a3c4a;
+  background-color: rgb(7, 21, 37);
   color: #fff;
   padding: 10px; 
 }
@@ -20,7 +20,7 @@
 .navbar-logo {
   height: 30px;
   width: auto;
-  margin-top: 15px;
+  /* margin-top: 10px; */
 }
 
 .navbar-left h2 {
@@ -80,14 +80,14 @@
 }
 
 .nav-drop {
-  background-color: #121e24;
+  background-color: rgb(7, 21, 37);
   color: #fff;
   height: 30px;
   font-size: 15px;
   cursor: pointer;
   width: 100px;
   margin-right: 20px;
-  border-color: #2a3c4a00;
+  border-color: rgb(7, 21, 37);
   margin-left: 20px;
   padding-top: 2px;
   border-radius: 5px;

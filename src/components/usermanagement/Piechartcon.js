@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { PieChart } from '@mui/x-charts/PieChart';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Usernav from './Usernav';
 
-class PieChartWithApiData extends Component {
+class BarChartWithApiData extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,10 +25,10 @@ class PieChartWithApiData extends Component {
         this.setState({
           loading: false,
           data: {
-            'In Review by HRR': data['review by HR'],
-            'Scheduled for Interview': data['Scheduled For Interview'],
-            'Interview done': data['Interview Done'],
-            'Offer Letter given': data['Offer Letters Given'],
+            'HRR': data['review by HR'],
+            'Interview': data['Scheduled For Interview'],
+            'completed': data['Interview Done'],
+            'Offered': data['Offer Letters Given'],
           },
         });
       })
@@ -51,44 +51,35 @@ class PieChartWithApiData extends Component {
       return <div>Error: {error}</div>;
     }
 
-    const chartData = Object.entries(data).map(([label, value]) => ({
-      value,
-      label,
+    const chartData = Object.entries(data).map(([label, value], index) => ({
+      name: label,
+      Number: value,
+      fill: index % 1 === 0 ? '#8884d8' : '#82ca9d', // Alternating colors
     }));
 
     return (
-      <div>
-        <Usernav />
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '80px' }}>
-          <div style={{ float: 'left', marginRight: '50px', marginLeft: '50px', marginTop: '20px', fontSize: '20px', border: '1px solid', borderRadius: '10px', padding: '20px', borderColor: '#7a7a7a' }}>
-            {Object.entries(data).map(([key, value]) => (
-              <p key={key}>
-                {key}: {value}
-              </p>
-            ))}
-          </div>
-          <div style={{ float: 'left', height: '600px', width: '800px', fontSize: '20px' }}>
-            <PieChart
-              data={chartData}
-              series={[
-                {
-                  data: chartData,
-                  innerRadius: 150,
-                  outerRadius: 250,
-                  paddingAngle: 2,
-                  cornerRadius: 5,
-                  startAngle: 0,
-                  endAngle: 360,
-                  cx: 270,
-                  cy: 250,
-                }
-              ]}
-            />
-          </div>
-        </div>
+      <div style={{ height: '300px', width: '600px' }}>
+        <h3 style={{textAlign:'center'}}>Overall Report</h3>
+        <ResponsiveContainer>
+          <BarChart
+            data={chartData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <XAxis dataKey="name" />
+            <YAxis dataKey="Number"/>
+            <Tooltip />
+           
+            <Bar dataKey="Number" fill="#8884d8" barSize={30} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     );
   }
 }
 
-export default PieChartWithApiData;
+export default BarChartWithApiData;

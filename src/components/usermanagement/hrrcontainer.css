@@ -43,6 +43,7 @@ body {
 }
 .user-card-hrr h3{
   /* text-overflow: ellipsis; */
+  font-weight: 400;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -78,6 +79,14 @@ body {
   border-top: 3px solid #79ddfe;
   
 }
+
+.user-card-tech h3{
+  /* text-overflow: ellipsis; */
+  font-weight: 400;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 
 .user-card-can {
   flex: 0 0 calc(20% - 20px);
@@ -115,6 +124,7 @@ body {
 }
 
 .user-card h3 {
+  font-weight: 400;
   text-align: center;
   z-index: 200;
 }

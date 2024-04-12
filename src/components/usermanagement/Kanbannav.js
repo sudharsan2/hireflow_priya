@@ -1,6 +1,6 @@
 // Navbar.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./usernav.css";
 
 import { useNavigate } from "react-router-dom";
@@ -10,15 +10,38 @@ import { useDispatch } from "react-redux";
 import { logoutAction } from "../../redux/slices/authSlice";
 import ResultPage from "./ResultsPage";
 import { useSelector } from "react-redux";
-import { fetchSearchResults } from "../../redux/slices/searchSlice";
+// import { fetchSearchResults } from "../../../redux/slices/searchSlice";
+import {
+  moveTask,
+  fetchTasksAsync,
+  updateTaskAsync,
+  fetchInterviewersAsync,
+  updateWaitingTaskAsync,
+  fetchFinalDataAsync,
+} from "../../redux/slices/kanbanSlice";
+
+import {
+  Button,
+  DatePicker,
+  
+  Modal,
+  Select,
+  Tooltip,
+  Typography,
+  message,
+  notification,
+} from "antd";
+import WalkInCandidate from "../../pages/WalkinCandidate";
 
 const Kanbannav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.search.loading);
-
+  const [newCandidate, setNewCandidate] = useState(false);
+  const [isWalkinUpload, setIsWalkinUpload] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -26,15 +49,36 @@ const Kanbannav = () => {
     navigate("/", { replace: true });
   };
 
-  const handleSearch = () => {
-    // Only navigate when loading is true
-    navigate("/results-page");
-    dispatch(fetchSearchResults(searchInput));
-  };
+  // const handleSearch = () => {
+  //   // Only navigate when loading is true
+  //   navigate("/results-page");
+  //   dispatch(fetchSearchResults(searchInput));
+  // };
 
   const handleBadgeClick = () => {
     navigate("/chat-msg");
   };
+  const handleIsWalkinUpload = () => {
+    console.log("yes it works");
+    setIsWalkinUpload(true);
+    setNewCandidate(false);
+  }
+  const handleNewCandidate = () => {
+    setNewCandidate(false);
+  }
+  const handleNewCandidateBtn = () => {
+    console.log('btn clicked')
+    setNewCandidate(true);
+  }
+
+  useEffect(() => {
+    dispatch(fetchTasksAsync());
+    dispatch(fetchInterviewersAsync());
+    dispatch(fetchFinalDataAsync());
+  }, [dispatch, moveTask, isSaved, isWalkinUpload]);
+
+
+
 
   const imgurl1 = process.env.PUBLIC_URL + "./img/icon1.png";
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
@@ -65,6 +109,22 @@ const Kanbannav = () => {
             onSearch={handleSearch}
             loading={loading}
           /> */}
+          {/* <span onClick={handleNewCandidateBtn} className="nav-span">
+            Walk-in
+          </span> */}
+
+
+          <Modal
+        open={newCandidate}
+        onCancel={handleNewCandidate}
+        width={540}
+        footer={
+          [
+          ]
+        }
+      >
+        <WalkInCandidate isWalkinUpload={handleIsWalkinUpload} />
+      </Modal>
 
           <span onClick={handleLogout} className="nav-span">
             Logout

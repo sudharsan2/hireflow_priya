@@ -77,10 +77,12 @@
 }
  
 .spinner-container {
-  position: fixed;
-  top: 50%;
-  left: 64%;
-  transform: translate(-50%, -50%);
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  height: 700px;
+  background-color: #ececec;
+  padding-bottom: 150px;
 }
  
 .search-bar {

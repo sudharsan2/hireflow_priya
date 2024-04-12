@@ -163,10 +163,10 @@ const Usermanagement = () => {
     <div>
       <Usernav />
       <div className="header">
-        <h2>HRR</h2>
-        <span onClick={handleAddUserClick} className="nav-span">
+        <h2>HR Recruiter</h2>
+        <span onClick={handleAddUserClick} style={{display:'flex'}}>
           <PersonAddAlt1Icon style={{ marginRight: "5px" }} />
-          Add user
+        
         </span>
         {isAddUserModalOpen && (
           <>
