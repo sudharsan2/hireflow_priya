@@ -236,7 +236,7 @@ class Dashboard extends Component {
         <Gaugecon value={percent} title='Hired %'/>
         
       </div>
-      <div style={{display:'flex', paddingTop:'15px'}}>
+      <div style={{display:'flex', paddingTop:'10px'}}>
         
       <RoundsGraph data={chartDataScheduled} title='Assigned' />
       <RoundsGraph data={chartDataIntdone} title='Interview done' />

@@ -502,31 +502,31 @@ export default function Kanban() {
                   className="column"
                 >
                   <div
-                    style={{
-                      backgroundColor: "rgb(230, 230, 230)",
-                      padding: "15px",
-                      paddingTop: '20px',
-                      borderBottom: "3px solid #0091ff",
-                      borderRadius: "3px",
-                      color: "rgb(62, 62, 62)",
-                      fontSize: "1.4em",
-                      fontWeight: "400",
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-
-
-                    }}
-                  >
-                    <div >
-                      {column}
-
+  
+                      style={{
+                        backgroundColor: "rgb(230, 230, 230)",
+                        padding: "15px",
+                        paddingTop: '20px',
+                        borderBottom: "3px solid #0091ff",
+                        borderRadius: "3px",
+                        color: "rgb(62, 62, 62)",
+                        fontSize: "1.4em",
+                        fontWeight: "400",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div style={{ flex: 1, textAlign: 'center', paddingLeft:'10%' }}>
+                        {column}
+                      </div>
+                      
+                      <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px', marginLeft: 'auto' }}>
+                        {tasks[column].length}
+                      </div>
                     </div>
-                    
-                  <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", marginLeft:'80%', marginBottom:'2%',marginTop:'-10%', backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px'}}>
-                    {tasks[column].length}
-                    </div>
-                  </div>
+
+
                   <ul>
                     {tasks[column].map((task, index) => (
                       <Draggable

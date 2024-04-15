@@ -8,7 +8,7 @@ const GaugeComponent = ({ value, title }) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setShouldRender(true);
-    }, 200); // Delay rendering for 2 seconds
+    }, 0); // Delay rendering for 2 seconds
 
     return () => clearTimeout(timeoutId);
   }, []);
@@ -32,8 +32,17 @@ const GaugeComponent = ({ value, title }) => {
   }
 
   return (
-    <div style={{ width: '450px', height: '300px', paddingTop: '0px', backgroundColor:'white' ,borderRadius:'3px', margin:'10px',boxShadow:'0 0 10px rgb(0,0,0,0.2)', padding:'-30px', marginRight:'40px', marginLeft:'10px'}}>
-      <h2 style={{ textAlign: 'center', fontWeight: 'normal', paddingBottom: '30px' }}>{title.toUpperCase()}</h2>
+    <div style={{
+      height: '45vh', /* 50% of the viewport height */
+      width: '30.33vw', /* 33.33% of the viewport width */
+      position: 'relative',
+      backgroundColor: 'white',
+      paddingBottom: '5%', /* Adjust this value according to your need */
+      borderRadius: '3px',
+      margin: '10px',
+      boxShadow: '0 0 10px rgba(0,0,0,0.2)', /* Corrected the rgba syntax */
+    }}>
+       <h2 style={{ textAlign: 'center', fontWeight: 'normal', paddingBottom: '30px' }}>{title.toUpperCase()}</h2>
       <GaugeChart
         id="gauge-chart1"
         percent={animatedValue}
@@ -46,7 +55,7 @@ const GaugeComponent = ({ value, title }) => {
         animate={false}
         arcsLength={[animatedValue, 1 - animatedValue]}
         colors={['#23da78', 'rgb(100,100,100,0.3)']}
-        fontSize='30px'
+        fontSize='50px'
         arcPadding={0.01}
         fontWeight='bold'
       />

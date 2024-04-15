@@ -28,7 +28,16 @@ class RoundsGraph extends Component {
     }));
 
     return (
-      <div style={{ height: '300px', width: '400px', position: 'relative', backgroundColor:'white',paddingBottom:'80px',borderRadius:'3px', margin:'10px',boxShadow:'0 0 10px rgb(0,0,0,0.2)',  }}>
+      <div style={{
+        height: '45vh', /* 50% of the viewport height */
+        width: '30.33vw', /* 33.33% of the viewport width */
+        position: 'relative',
+        backgroundColor: 'white',
+        paddingBottom: '5%', /* Adjust this value according to your need */
+        borderRadius: '3px',
+        margin: '10px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.2)', /* Corrected the rgba syntax */
+      }}>
         <ResponsiveContainer>
           <h2 style={{ textAlign: 'center', fontWeight: 'normal' }}>{title.toUpperCase()}</h2>
           <BarChart

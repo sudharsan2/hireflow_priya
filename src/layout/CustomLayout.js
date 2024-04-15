@@ -114,8 +114,8 @@ else if (jobRole === 'ROLE_INTERVIEWER'){
 
 const [name, setName] = useState("");
 const Handleuser = (username) => {
-  if (username.length > 14) {
-    setName(username.substring(0, 14) + '');
+  if (username.length > 10) {
+    setName(username.substring(0,9) + '...');
   }
   else{setName(username);}
 };
@@ -204,10 +204,20 @@ useEffect(() => {
             }}
           >
             <Avatar icon={<UserOutlined />} />
-            <div style={{display:'flex', flexDirection:'column', marginLeft:5, color:'white', fontSize:'15px',fontWeight:'normal' , alignItems:'center'}}>
-            <span style={{fontSize:'2.2vh', fontWeight:'lighter'}}>{name.toUpperCase()}</span>
-            <span style={{color:'rgb(84, 116, 131)', paddingTop:'5px'}}>{role}</span>
-            </div>
+            <div style={{
+  display: 'flex',
+  flexDirection: 'column',
+  marginLeft: 5,
+  color: 'white',
+  fontSize: '15px',
+  fontWeight: 'normal',
+  alignItems: 'center',
+  justifyContent: 'center', // Center content horizontally
+}}>
+  <span style={{ fontSize: '1.2em', fontWeight: 'lighter' }}>{name.toUpperCase()}</span>
+  <span style={{ color: 'rgb(84, 116, 131)', paddingTop: '5px' }}>{role}</span>
+</div>
+
             
           </div>
         )}
@@ -239,7 +249,7 @@ useEffect(() => {
       {item.subMenu && item.subMenu.map((subItem) => (
         <Menu.Item key={subItem.key} theme="dark" defaultSelectedKeys={["1"]} mode="inline">
         <Link to={subItem.linkTo}>
-          <div style={{ display: 'flex', alignItems: 'center', fontSize:'15px', fontWeight:'lighter' }}>
+          <div style={{ display: 'flex', alignItems: 'center', fontSize:'1.1em', fontWeight:'lighter' }}>
             <div style={{ marginRight: '5px' }}><span>{subItem.icon}</span></div> 
             {!collapsed && <span>{subItem.label}</span>}
           </div>
