@@ -136,8 +136,8 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
   const [isModalMeet, setIsModalMeet] = useState(false);
  
   useEffect(() => {
-    if (selectedcard && selectedcard.interviewer) {
-      const initialToolkits = selectedcard.interviewer.map(interviewerId => ({ interviewer: interviewerId }));
+    if (selectedcard && selectedcard.interviewerorder) {
+      const initialToolkits = selectedcard.interviewerorder.map(interviewerId => ({ interviewer: interviewerId }));
       setToolkits(initialToolkits);
     }
   }, [selectedcard]);

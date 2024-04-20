@@ -32,17 +32,21 @@ const GaugeComponent = ({ value, title }) => {
   }
 
   return (
+    
     <div style={{
       height: '45vh', /* 50% of the viewport height */
       width: '30.33vw', /* 33.33% of the viewport width */
       position: 'relative',
+      // display:'flex',
+      // alignItems:'center',
+      // justifyContent:'center',
       backgroundColor: 'white',
-      paddingBottom: '5%', /* Adjust this value according to your need */
+      paddingTop: '5%', /* Adjust this value according to your need */
       borderRadius: '3px',
       margin: '10px',
       boxShadow: '0 0 10px rgba(0,0,0,0.2)', /* Corrected the rgba syntax */
     }}>
-       <h2 style={{ textAlign: 'center', fontWeight: 'normal', paddingBottom: '30px' }}>{title.toUpperCase()}</h2>
+       <h2 style={{ textAlign: 'center', fontWeight: 'normal', paddingBottom: '0' }}>{title.toUpperCase()}</h2>
       <GaugeChart
         id="gauge-chart1"
         percent={animatedValue}
