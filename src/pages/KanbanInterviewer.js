@@ -1,4 +1,5 @@
 
+ 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -124,15 +125,15 @@ export default function KanbanInterviewer() {
   const generateStars = (resumeScore) => {
     // Convert resumeScore to a number
     const score = parseInt(resumeScore);
-
+ 
     // Array to hold the stars JSX elements
     const stars = [];
-
+ 
     // Loop to create the stars based on the score
     for (let i = 0; i < score; i++) {
       stars.push(<span key={i} style={{ color: 'gold' }}>&#9733;</span>);
     }
-
+ 
     return stars;
   };
   const handleCardClick = async (task) => {
@@ -299,7 +300,7 @@ export default function KanbanInterviewer() {
                         {tasks[column].length}
                       </div>
                     </div>
-
+ 
                   <ul>
                     {tasks[column].map((task, index) => (
                       <Draggable
@@ -326,9 +327,9 @@ export default function KanbanInterviewer() {
                                 alt="User Avatar"
                               /> */}
  
- <div>
+<div>
                                 <h3 style={{ fontWeight: '500' }}>{task.name}</h3>
-
+ 
                                 {/* <p>Mail:{task.email}</p> */}
                                 {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'10px', borderColor:'rgb(236, 236, 236)', fontWeight:'450' }}> */}
                                 <p style={{ display: 'flex', alignItems: 'center' }}><WorkOutlineIcon style={{ color: "rgb(88, 167, 204)" }} />    <div style={{ paddingLeft: '15px' }}> {task.jobRole}</div></p>
@@ -338,8 +339,8 @@ export default function KanbanInterviewer() {
                                 {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'3px', borderColor:'rgb(236, 236, 236)', marginTop:'3px', fontWeight:'500' }}> */}
                                 <p style={{ fontSize: '20px', fontWeight: 'lighter', marginBottom: '-3px', marginTop: '-3px' }}>{generateStars(task.resumeScore)}</p>
                                 {/* </div> */}
-
-
+ 
+ 
                               </div>
                             </div>
                           </li>
@@ -400,69 +401,6 @@ export default function KanbanInterviewer() {
               </Form.Item>
               <Divider>Skills</Divider>
               <Form.List name="skills">
-              {(fields, { add, remove }) => (
-              <>
-              {fields.map(({ key, name, fieldKey, ...restField }) => (
-                <div key={key} style={{ marginBottom: "16px" }}>
-                  <Form.Item
-                    label={`Skill ${key + 1}`}
-                    {...restField}
-                    name={[name, "skills"]}
-                    fieldKey={[fieldKey, "skills"]}
-                  >
-                    <Input placeholder="Skill" />
-                  </Form.Item>
-                  <Form.Item
-                    label={`Proficiency ${key + 1}`}
-                    {...restField}
-                    name={[name, "proficiency"]}
-                    fieldKey={[fieldKey, "proficiency"]}
-                  >
-                    <Input placeholder="Proficiency" />
-                  </Form.Item>
-                  <Form.Item
-                    label={`Rating out of 10 ${key + 1}`}
-                    {...restField}
-                    name={[name, "ratingoutof10"]}
-                    fieldKey={[fieldKey, "ratingoutof10"]}
-                  >
-                    <Input
-                      placeholder="Rating out of 10"
-                      type="number"
-                      min={0}
-                      max={10}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label={`Comments ${key + 1}`}
-                    {...restField}
-                    name={[name, "comments"]}
-                    fieldKey={[fieldKey, "comments"]}
-                  >
-                    <Input.TextArea placeholder="Comments" />
-                  </Form.Item>
-                  <Button
-                    type="dashed"
-                    onClick={() => { remove(name); handleRemoveSkill(name, selectedTask); }}
-                    style={{ width: "100%" }}
-                  >
-                    Remove Skill
-                  </Button>
-                </div>
-              ))}
-              {!fields.length && (
-                <Form.Item>
-                  <Button
-                    type="dashed"
-                    onClick={() => add()}
-                    icon={<PlusOutlined />}
-                  >
-                    Add Skill
-                  </Button>
-                </Form.Item>
-              )}
-              </>
-              )}
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, fieldKey, ...restField }) => (
@@ -527,8 +465,6 @@ export default function KanbanInterviewer() {
                 </>
                 )}
               </Form.List>
-
-
               <Form.Item>
  
                 <Button type="primary" htmlType="submit">
@@ -544,3 +480,4 @@ export default function KanbanInterviewer() {
     </>
   );
 }
+ 
