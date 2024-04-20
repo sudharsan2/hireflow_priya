@@ -450,16 +450,18 @@ export default function KanbanInterviewer() {
                         </Button>
                       </div>
                     ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        icon={<PlusOutlined />}
-                      >
-                        Add Skill
-                      </Button>
-                    </Form.Item>
-                  </>
+                    {interViewerData && !("message" in interViewerData) && (
+        <Form.Item>
+          <Button
+            type="dashed"
+            onClick={() => add()}
+            icon={<PlusOutlined />}
+          >
+            Add Skill
+          </Button>
+        </Form.Item>
+      )}
+                </>
                 )}
               </Form.List>
               <Form.Item>
