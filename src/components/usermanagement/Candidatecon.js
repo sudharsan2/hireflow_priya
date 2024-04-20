@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./hrrcontainer.css";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
 
 const UserCard = ({ user, onClick }) => {
   const getAvatarUrl = () => {
@@ -12,10 +15,10 @@ const UserCard = ({ user, onClick }) => {
     <div className="user-card-can" onClick={() => onClick(user)}>
       <img className="avatar" src={getAvatarUrl()} alt="User Avatar" />
       <h3>{user.name}</h3>
-      <div></div>
-      <p>Job Role: {user.jobRole}</p>
+          <p style={{ display: 'flex', alignItems: 'center' }}><WorkOutlineIcon style={{ color: "rgb(88, 167, 204)" }} />    <div style={{ paddingLeft: '15px' }}> {user.jobRole}</div></p>
+    <p style={{ display: 'flex', alignItems: 'center' }}><BeenhereIcon style={{ color: "rgb(88, 167, 204)" }} /> <div style={{ paddingLeft: '15px' }}> {user.yearsOfExperience} {user.yearsOfExperience === '1' ? "year" : "years"}</div></p>
+    <p style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneIcon style={{ color: "rgb(88, 167, 204)" }} />     <div style={{ paddingLeft: '15px' }}> {user.phoneNo}</div></p>
 
-      <p>Experience: {user.yearsOfExperience}</p>
       <div className="score">
         <p>{user.resumeScore}</p>
       </div>

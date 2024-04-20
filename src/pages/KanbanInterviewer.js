@@ -400,68 +400,72 @@ export default function KanbanInterviewer() {
               </Form.Item>
               <Divider>Skills</Divider>
               <Form.List name="skills">
-                {(fields, { add, remove }) => (
-                  <>
-                    {fields.map(({ key, name, fieldKey, ...restField }) => (
-                      <div key={key} style={{ marginBottom: "16px" }}>
-                        <Form.Item
-                          label={`Skill ${key + 1}`}
-                          {...restField}
-                          name={[name, "skills"]}
-                          fieldKey={[fieldKey, "skills"]}
-                        >
-                          <Input placeholder="Skill" />
-                        </Form.Item>
-                        <Form.Item
-                          label={`Proficiency ${key + 1}`}
-                          {...restField}
-                          name={[name, "proficiency"]}
-                          fieldKey={[fieldKey, "proficiency"]}
-                        >
-                          <Input placeholder="Proficiency" />
-                        </Form.Item>
-                        <Form.Item
-                          label={`Rating out of 10 ${key + 1}`}
-                          {...restField}
-                          name={[name, "ratingoutof10"]}
-                          fieldKey={[fieldKey, "ratingoutof10"]}
-                        >
-                          <Input
-                            placeholder="Rating out of 10"
-                            type="number"
-                            min={0}
-                            max={10}
-                          />
-                        </Form.Item>
-                        <Form.Item
-                          label={`Comments ${key + 1}`}
-                          {...restField}
-                          name={[name, "comments"]}
-                          fieldKey={[fieldKey, "comments"]}
-                        >
-                          <Input.TextArea placeholder="Comments" />
-                        </Form.Item>
-                        <Button
-                          type="dashed"
-                          onClick={() => { remove(name); handleRemoveSkill(name, selectedTask); }}
-                          style={{ width: "100%" }}
-                        >
-                          Remove Skill
-                        </Button>
-                      </div>
-                    ))}
-                    <Form.Item>
-                      <Button
-                        type="dashed"
-                        onClick={() => add()}
-                        icon={<PlusOutlined />}
-                      >
-                        Add Skill
-                      </Button>
-                    </Form.Item>
-                  </>
-                )}
+              {(fields, { add, remove }) => (
+              <>
+              {fields.map(({ key, name, fieldKey, ...restField }) => (
+                <div key={key} style={{ marginBottom: "16px" }}>
+                  <Form.Item
+                    label={`Skill ${key + 1}`}
+                    {...restField}
+                    name={[name, "skills"]}
+                    fieldKey={[fieldKey, "skills"]}
+                  >
+                    <Input placeholder="Skill" />
+                  </Form.Item>
+                  <Form.Item
+                    label={`Proficiency ${key + 1}`}
+                    {...restField}
+                    name={[name, "proficiency"]}
+                    fieldKey={[fieldKey, "proficiency"]}
+                  >
+                    <Input placeholder="Proficiency" />
+                  </Form.Item>
+                  <Form.Item
+                    label={`Rating out of 10 ${key + 1}`}
+                    {...restField}
+                    name={[name, "ratingoutof10"]}
+                    fieldKey={[fieldKey, "ratingoutof10"]}
+                  >
+                    <Input
+                      placeholder="Rating out of 10"
+                      type="number"
+                      min={0}
+                      max={10}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={`Comments ${key + 1}`}
+                    {...restField}
+                    name={[name, "comments"]}
+                    fieldKey={[fieldKey, "comments"]}
+                  >
+                    <Input.TextArea placeholder="Comments" />
+                  </Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => { remove(name); handleRemoveSkill(name, selectedTask); }}
+                    style={{ width: "100%" }}
+                  >
+                    Remove Skill
+                  </Button>
+                </div>
+              ))}
+              {!fields.length && (
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    icon={<PlusOutlined />}
+                  >
+                    Add Skill
+                  </Button>
+                </Form.Item>
+              )}
+              </>
+              )}
               </Form.List>
+
+
               <Form.Item>
  
                 <Button type="primary" htmlType="submit">

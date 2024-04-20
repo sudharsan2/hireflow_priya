@@ -433,7 +433,7 @@ const TechSummary = () => {
                 onChange={(date) => handleChange("recruiterDate", date)}
               />
             </Col>
-            {/* <Col span={8}>
+            <Col span={8}>
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Name"
@@ -442,11 +442,11 @@ const TechSummary = () => {
               >
                 {interviewers.map((interviewer) => (
                   <Option key={interviewer.id} value={interviewer.empId}>
-                    {interviewer.username}
+                    {interviewer.name}
                   </Option>
                 ))}
               </Select>
-            </Col> */}
+            </Col>
             <Col span={8}>
               <Select
                 style={{ width: "100%" }}

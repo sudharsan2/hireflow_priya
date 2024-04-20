@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Typography, Button, Input, Form } from "antd";
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+
 import axios from "axios";
 
 const { TextArea } = Input;
@@ -13,8 +17,10 @@ const CanCard = ({ user, onModalOpen }) => {
     <div className="user-card-can" style={{ cursor: "pointer" }} onClick={() => onModalOpen(user)}>
       {/* <img className="avatar" src={getAvatarUrl()} alt="User Avatar" /> */}
       <h3>{user.name}</h3>
-      <p>Job Role: {user.jobRole}</p>
-      <p>Resume Score: {user.resumeScore}</p>
+      <p style={{ display: 'flex', alignItems: 'center' }}><WorkOutlineIcon style={{ color: "rgb(88, 167, 204)" }} />    <div style={{ paddingLeft: '15px' }}> {user.jobRole}</div></p>
+    <p style={{ display: 'flex', alignItems: 'center' }}><BeenhereIcon style={{ color: "rgb(88, 167, 204)" }} /> <div style={{ paddingLeft: '15px' }}> {user.yearsOfExperience} {user.yearsOfExperience === '1' ? "year" : "years"}</div></p>
+    <p style={{ display: 'flex', alignItems: 'center' }}><LocalPhoneIcon style={{ color: "rgb(88, 167, 204)" }} />     <div style={{ paddingLeft: '15px' }}> {user.phoneNo}</div></p>
+
     </div>
   );
 };

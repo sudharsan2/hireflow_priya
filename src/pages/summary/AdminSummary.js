@@ -595,7 +595,7 @@ const AdminSummary = () => {
                 onChange={(value) => handleChange("interviewerName", value)}
               >
                 {interviewers.map((interviewer) => (
-                  <Option key={interviewer.id} value={interviewer.empId}>
+                  <Option key={interviewer.id} value={interviewer.name}>
                     {interviewer.username}
                   </Option>
                 ))}

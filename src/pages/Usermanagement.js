@@ -93,7 +93,7 @@ const Usermanagement = () => {
         setLoading(false);
         notification.success({
           message: "User registration Successful",
-          description: "You have successfully logged in.",
+          description: `You have successfully registered ${newUser.Username}`,
         });
         handleCloseAddUserModal();
         fetchData();

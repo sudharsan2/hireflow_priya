@@ -561,7 +561,7 @@ export default function Kanban() {
                               /> */}
 
                               <div>
-                                <h3 style={{ fontWeight: '500' }}>{task.name}</h3>
+                                <h3 style={{ fontWeight: '500', whiteSpace:'nowrap', overflow:'hidden',textOverflow:'ellipsis' }}>{task.name}</h3>
 
                                 {/* <p>Mail:{task.email}</p> */}
                                 {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'10px', borderColor:'rgb(236, 236, 236)', fontWeight:'450' }}> */}

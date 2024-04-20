@@ -51,6 +51,7 @@ import Admineval from "./pages/Admineval";
 import TechSummary from "./pages/summary/TechSummary";
 import ForgetPassword from "./components/usermanagement/forgetPassword";
 import ResetPassword from "./components/usermanagement/resetPassword";
+import Candidatequery from "./pages/CandidateQuery";
 
 const App = () => {
 
@@ -75,6 +76,7 @@ const App = () => {
         <Route path="/evaluation" element={<CustomLayout><Admineval /></CustomLayout>} />
         <Route path="/forgotPassword" element={<ForgetPassword/>} />
         <Route path="/resetPassword/:token" element={<ResetPassword/>} />
+        <Route path="/candidatequery" element={<CustomLayout><Candidatequery/></CustomLayout>} />
         
         {/* Add more routes as needed */}
       </Routes>
