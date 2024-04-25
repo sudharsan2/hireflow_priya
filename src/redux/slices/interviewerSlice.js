@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
+import { message } from "antd";
 
 //////////////////////////////////////////////////////////////////
 
@@ -26,9 +27,11 @@ export const updateTaskAsync = createAsyncThunk(
         "/hiring/interviewer/SaveInterviewerData/",
         updatedData
       );
+      message.success("updated Successfully!")
       return response.data;
     } catch (error) {
       console.error("Error updating task:", error);
+      message.error('unable to update task')
       throw error;
     }
   }
@@ -55,7 +58,7 @@ const interviewerSlice = createSlice({
     tasks: {
       Tech: [],
       Waiting: [],
-      Selected: [],
+      Completed: [],
     },
     interviewerData: [],
     interviewers: [],
@@ -104,7 +107,7 @@ const interviewerSlice = createSlice({
           (task) => (task.currentStatus === "IN_FINAL" && task.interviewerSubmissionStatus === "SUBMITTED") || (task.currentStatus === "IN_TECH" && task.interviewerSubmissionStatus === "SUBMITTED")
       );
       
-        state.tasks.Selected = allTasks.filter(
+        state.tasks.Completed = allTasks.filter(
           (task) => task.currentStatus === "COMPLETED"
         );
       })

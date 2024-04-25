@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
-import { UserOutlined, TeamOutlined, AppstoreAddOutlined, BarChartOutlined, ProfileOutlined, BlockOutlined , UserAddOutlined, FileDoneOutlined, WechatOutlined    } from "@ant-design/icons";
+import { UserOutlined, TeamOutlined, AppstoreAddOutlined, BarChartOutlined, ProfileOutlined, BlockOutlined, UserAddOutlined, FileDoneOutlined, WechatOutlined } from "@ant-design/icons";
 import { Tooltip } from 'antd';
 import ChatIcon from '@mui/icons-material/Chat';
+import { Icon } from '@ant-design/icons';
+import { FileSearchOutlined } from '@ant-design/icons';
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -14,15 +16,15 @@ const roles = {
     {
       key: "general",
       label: "General",
-      icon: <AppstoreAddOutlined />, 
+      icon: <AppstoreAddOutlined />,
       subMenu: [
-        { key: "dashboard", label: "Dashboard", linkTo: "/dashboard" , icon: <BarChartOutlined />,},
+        { key: "dashboard", label: "Dashboard", linkTo: "/dashboard", icon: <BarChartOutlined />, },
         {
           key: "userManagement",
           label: "User Management",
           linkTo: "/admin-page",
           icon: <ProfileOutlined />,
-          
+
         },
       ],
     },
@@ -39,7 +41,8 @@ const roles = {
           icon: <UserAddOutlined />,
         },
         { key: "evaluation", label: "Admin Evaluation", linkTo: "/evaluation", icon: <FileDoneOutlined /> },
-        { key: "summary", label: "Summary", linkTo: "/admin-summary", icon:<ProfileOutlined />},
+        { key: "summary", label: "Summary", linkTo: "/admin-summary", icon: <ProfileOutlined /> },
+        { key: "llmSummary", label: "Query", linkTo: "/llmAdminSummary", icon: <FileSearchOutlined /> },
       ],
     },
   ],
@@ -47,8 +50,8 @@ const roles = {
     {
       key: "general",
       label: "General",
-      icon: <AppstoreAddOutlined />, 
-      subMenu: [{ key: "kanban", label: "Kanban", linkTo: "/kanban-recurit", icon:<BlockOutlined />}],
+      icon: <AppstoreAddOutlined />,
+      subMenu: [{ key: "kanban", label: "Kanban", linkTo: "/kanban-recurit", icon: <BlockOutlined /> }],
     },
     {
       key: "candidates",
@@ -62,7 +65,7 @@ const roles = {
           icon: <WechatOutlined />,
         },
 
-        { key: "summary", label: "Summary", linkTo: "/hrr-summary", icon:<ProfileOutlined />},
+        { key: "summary", label: "Summary", linkTo: "/hrr-summary", icon: <ProfileOutlined /> },
       ],
     },
   ],
@@ -70,16 +73,16 @@ const roles = {
     {
       key: "general",
       label: "General",
-      icon: <AppstoreAddOutlined />, 
+      icon: <AppstoreAddOutlined />,
       subMenu: [
-        { key: "kanban", label: "Kanban", linkTo: "/kanban-Interviewer", icon:<BlockOutlined />},
+        { key: "kanban", label: "Kanban", linkTo: "/kanban-Interviewer", icon: <BlockOutlined /> },
       ],
     },
     {
       key: "candidates",
       label: "Candidates",
       icon: <TeamOutlined />,
-      subMenu: [{ key: "summary", label: "Summary", linkTo: "/tech-summary", icon:<ProfileOutlined /> }],
+      subMenu: [{ key: "summary", label: "Summary", linkTo: "/tech-summary", icon: <ProfileOutlined /> }],
     },
   ],
 };
@@ -95,40 +98,42 @@ const CustomLayout = ({ children }) => {
   }, []);
   const username = localStorage.getItem("username");
   const jobRole = localStorage.getItem("role");
-//   const role = localStorage.getItem("role");
-const [role, setRole] = useState("");
+  //   const role = localStorage.getItem("role");
+  const [role, setRole] = useState("");
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
 
- const HandlerRole=(jobRole) => {if (jobRole === 'ROLE_ADMIN'){
-   setRole('Admin');
-}
+  const HandlerRole = (jobRole) => {
+    if (jobRole === 'ROLE_ADMIN') {
+      setRole('Admin');
+    }
 
 
-else if (jobRole === 'ROLE_RECRUITER'){
-   setRole('HR Recruiter');
-}
-else if (jobRole === 'ROLE_INTERVIEWER'){
-   setRole('Tech Interviewer');
-}};
+    else if (jobRole === 'ROLE_RECRUITER') {
+      setRole('HR Recruiter');
+    }
+    else if (jobRole === 'ROLE_INTERVIEWER') {
+      setRole('Tech Interviewer');
+    }
+  };
 
 
-const [name, setName] = useState("");
-const Handleuser = (username) => {
-  if (username.length > 10) {
-    setName(username.substring(0,9) + '...');
-  }
-  else{setName(username);}
-};
+  const [name, setName] = useState("");
+  const Handleuser = (username) => {
+    if (username.length > 10) {
+      setName(username.substring(0, 9) + '...');
+    }
+    else { setName(username); }
+  };
 
 
 
-useEffect(() => {
-  HandlerRole(jobRole); // Call HandlerRole when the component mounts or when jobRole changes
-}, [jobRole]); // Depend on jobRole so that HandlerRole is called whenever jobRole changes
+  useEffect(() => {
+    HandlerRole(jobRole); // Call HandlerRole when the component mounts or when jobRole changes
+  }, [jobRole]); // Depend on jobRole so that HandlerRole is called whenever jobRole changes
 
-useEffect(() => {
-  Handleuser(username); // Call HandlerRole when the component mounts or when jobRole changes
-}); // Depend on jobRole so that HandlerRole is called whenever jobRole changes
+  useEffect(() => {
+    Handleuser(username); // Call HandlerRole when the component mounts or when jobRole changes
+  }); // Depend on jobRole so that HandlerRole is called whenever jobRole changes
 
 
 
@@ -148,10 +153,10 @@ useEffect(() => {
       position: 'fixed',
       left: 0,
 
-    }}
-  
-        
-      
+        }}
+
+
+
       >
         {/* Username section at the top */}
         <div
@@ -165,14 +170,14 @@ useEffect(() => {
           }}
         >
           {!collapsed && (
-            <div style={{ display: "flex", alignItems: "center", paddingLeft:"10px",paddingRight:"10px"}}>
+            <div style={{ display: "flex", alignItems: "center", paddingLeft: "10px", paddingRight: "10px" }}>
               <img className="navbar-logo" src={imgurl2} alt="logo" />
-              <h2 style={{ marginLeft:"10px", marginTop:"15px", fontWeight:'normal' }}>HireFlow</h2>
-              
+              <h2 style={{ marginLeft: "10px", marginTop: "15px", fontWeight: 'normal' }}>HireFlow</h2>
+
             </div>
           )}
         </div>
-{/*  */}
+        {/*  */}
         {collapsed && (
           <div
             style={{
@@ -194,43 +199,43 @@ useEffect(() => {
               marginLeft: 7,
               marginRight: 7,
               padding: 5,
-              paddingTop:'10px',
-              paddingBottom:'10px',
+              paddingTop: '10px',
+              paddingBottom: '10px',
               borderRadius: 0, // Add border radius for light curved corners
-              borderBottom: '1px solid rgb(84, 116, 131)', 
+              borderBottom: '1px solid rgb(84, 116, 131)',
               // borderTop: '1px solid rgb(84, 116, 131)', 
-              
-              
+
+
             }}
           >
             <Avatar icon={<UserOutlined />} />
             <div style={{
-  display: 'flex',
-  flexDirection: 'column',
-  marginLeft: 5,
-  color: 'white',
-  fontSize: '15px',
-  fontWeight: 'normal',
-  alignItems: 'center',
-  justifyContent: 'center', // Center content horizontally
-}}>
-  <span style={{ fontSize: '1.2em', fontWeight: 'lighter' }}>{name.toUpperCase()}</span>
-  <span style={{ color: 'rgb(84, 116, 131)', paddingTop: '5px' }}>{role}</span>
-</div>
+              display: 'flex',
+              flexDirection: 'column',
+              marginLeft: 5,
+              color: 'white',
+              fontSize: '15px',
+              fontWeight: 'normal',
+              alignItems: 'center',
+              justifyContent: 'center', // Center content horizontally
+            }}>
+              <span style={{ fontSize: '1.2em', fontWeight: 'lighter' }}>{name.toUpperCase()}</span>
+              <span style={{ color: 'rgb(84, 116, 131)', paddingTop: '5px' }}>{role}</span>
+            </div>
 
-            
+
           </div>
         )}
-         {collapsed && (
+        {collapsed && (
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               marginTop: 10,
-              
+
             }}
           >
-            <Avatar style={{ backgroundColor: "rgb(112, 160, 209)", marginLeft:'10px'}} icon={<UserOutlined />} />
+            <Avatar style={{ backgroundColor: "rgb(112, 160, 209)", marginLeft: '10px' }} icon={<UserOutlined />} />
           </div>
         )}
 
@@ -368,7 +373,7 @@ export default CustomLayout;
 //           <Menu.Item key="general" icon={<AppstoreAddOutlined />}>
 //             General
 //           </Menu.Item>
-//           {roles[userRole]?.map((item) => 
+//           {roles[userRole]?.map((item) =>
 //             item.key === "dashboard" || item.key === "userManagement" ? (
 //               <Menu.Item key={item.key} icon={item.icon}>
 //                 <Link to={item.linkTo}>{item.label}</Link>
@@ -378,7 +383,7 @@ export default CustomLayout;
 //           <Menu.Item key="candidates" icon={<TeamOutlined />}>
 //             Candidates
 //           </Menu.Item>
-//           {roles[userRole]?.map((item) => 
+//           {roles[userRole]?.map((item) =>
 //             item.key !== "dashboard" && item.key !== "userManagement" ? (
 //               <Menu.Item key={item.key} icon={item.icon}>
 //                 <Link to={item.linkTo}>{item.label}</Link>

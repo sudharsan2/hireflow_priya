@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import Cannav from "../../components/usermanagement/Cannav";
@@ -38,9 +39,9 @@ import axios from "axios";
  
  
  
-
-
-
+ 
+ 
+ 
 ////////////////////////////////////////////////////////////
  
 const { Option } = Select;
@@ -226,11 +227,11 @@ const AdminSummary = () => {
     dispatch(fetchListofSourceAsync());
   }, []);
   //   Skill: Progrmming
-
+ 
   // Proficiency: profiency
-
+ 
   // Rating out of 10: 9
-
+ 
   // Comments: comments
   const [showSkillsModal, setShowSkillsModal] = useState(false);
   const handleSkills = (record) => {
@@ -318,7 +319,7 @@ const AdminSummary = () => {
   // ];
   const skillsData = interviewerRemarks ? interviewerRemarks.skills : '';
   const [skills, setSkills] = useState([]);
-
+ 
   const interviwewerData = interviewerRemarks;
   const columns = [
     {
@@ -394,6 +395,22 @@ const AdminSummary = () => {
   ];
  
   const clearForm = () => {
+    setFormData({
+      ...formData,
+      resumeId: "",
+      candidateName: "",
+      resumeScore: "",
+      jobRole: "",
+      recruiterName: "",
+      recruiterStatus: "",
+      recruiterDate: null,
+      interviewerName: "",
+      interviewerStatus: "",
+      interviewerDate: null,
+      status: "",
+    });
+  };
+  const clearForm1 = () => {
     setFormData({
       resumeId: "",
       candidateName: "",
@@ -610,7 +627,7 @@ const AdminSummary = () => {
                 onChange={(value) => handleChange("interviewerStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
                 {/* Add more options as needed */}
               </Select>
             </Col>
@@ -652,6 +669,19 @@ const AdminSummary = () => {
                 }}
               >
                 Find
+              </Button>
+              <Button
+                style= {{marginLeft : "10px"}}
+                type="primary"
+                icon={<SyncOutlined />}
+                loading={loadings}
+                onClick={() => {
+                  
+                  clearForm1();
+                  setShowTable(false); // Set showTable to true when clicking the button
+                }}
+              >
+                Clear
               </Button>
             </Col>
           </Row>
@@ -781,7 +811,7 @@ const AdminSummary = () => {
               }
             >
               <Option value="SHORTLISTED">SHORTLISTED</Option>
-              <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+              <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
               <Option value="HOLD">HOLD</Option>
             </Select>
           </Tooltip>
@@ -817,8 +847,8 @@ const AdminSummary = () => {
       >
         <Divider />
         <Table columns={interviewerColumns} dataSource={interviwewerData} scroll={{ x: true }} />
-
-
+ 
+ 
         <Modal
           title="Skill Details"
           visible={showSkillsModal}
@@ -827,7 +857,7 @@ const AdminSummary = () => {
         >
           <Table columns={skillsColumns} dataSource={skills} scroll={{ x: true }} />
         </Modal>
-
+ 
       </Modal>
     </>
   );

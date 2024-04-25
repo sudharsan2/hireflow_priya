@@ -101,7 +101,7 @@ const kanbanSlice = createSlice({
       Assigned: [],
       Tech: [],
       Waiting: [],
-      Selected: [],
+      Completed: [],
     },
     interviewers: [],
     updatedData: [],
@@ -157,7 +157,7 @@ const kanbanSlice = createSlice({
         state.tasks.Tech = allTasks.filter(
           (task) => task.currentStatus === "IN_TECH"
         );
-        state.tasks.Selected = allTasks.filter(
+        state.tasks.Completed = allTasks.filter(
           (task) => task.currentStatus === "COMPLETED"
         );
        

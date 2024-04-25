@@ -53,7 +53,7 @@
   
 //     try {
 //       // Make API call to remove the interviewer
-//       await axios.post('https://hireflowapi.focusrtech.com:90/hiring/entryLevel/removeinterviewer', {
+//       await axios.post('http://172.235.10.116:7000/hiring/entryLevel/removeinterviewer', {
 //         candidate_id: selectedcard.id,
 //         interviewer_id: removedInterviewerId, // Send the removed interviewer's ID
 //       });
@@ -119,7 +119,7 @@
 
 
 import React, { useState, useEffect} from "react";
-import { Tooltip, Select, Button, Modal } from "antd";
+import { Tooltip, Select, Button, Modal, notification } from "antd";
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import AlarmIcon from '@mui/icons-material/Alarm';
@@ -129,7 +129,7 @@ import axios from 'axios'; // Import Axios library
  
 const { Option } = Select;
  
-const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) => {
+const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1,handletechmodal}) => {
   const [toolkits, setToolkits] = useState([]);
   const [interviewerstate, setinterviewerstate] = useState(selectedcard.interviewer);
   const [openModalIndex, setOpenModalIndex] = useState(null); // New state to manage which modal should be opened
@@ -159,7 +159,7 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
     // Update the selected interviewer ID at the specific index
     const updatedSelectedCard = { ...selectedcard };
     updatedSelectedCard.interviewer[index] = value;
-    handleclick(updatedSelectedCard); // Assuming handleclick updates the state of the parent component with the updated selected card
+    // handleclick(updatedSelectedCard); 
   };
  
   const handleDeleteToolkit = async (index) => {
@@ -167,7 +167,7 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
     updatedToolkits.splice(index, 1);
     setToolkits(updatedToolkits);
   
-    const updatedInterviewers = [...selectedcard.interviewer];
+    const updatedInterviewers = [...selectedcard.interviewerorder];
     const removedInterviewerId = updatedInterviewers.splice(index, 1)[0];
   
     // Update the interviewer array directly in the selectedcard prop
@@ -179,6 +179,8 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
         candidate_id: selectedcard.id,
         interviewer_id: removedInterviewerId, // Send the removed interviewer's ID
       });
+      handletechmodal()
+      notification.success({ message: 'Interviewer removed successfully' });
     } catch (error) {
       console.error('Error occurred while removing interviewer:', error);
       // Handle error as needed
@@ -188,25 +190,41 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
  
   const handleModalOpen = (index) => {
     setIsModalMeet(true);
-    setOpenModalIndex(index); // Set the index of the modal to be opened
+    setOpenModalIndex(index); 
   };
- 
+  const checkCondition=()=>{
+    console.log("ENteringconditons")
+    // {selectedcard && (selectedcard.recruiterSubmissionStatus === "SUBMITTED"||selectedcard.currentStatus==="IN_TECH")
+    
+    if(selectedcard.recruiterSubmissionStatus==="SUBMITTED"&&selectedcard.currentStatus!=="IN_TECH"){
+      console.log("ENteringconditons")
+      return true;
+    }
+    else{
+      return false;
+    }
+      
+   }
   return (
     <>
       {toolkits.map((toolkit, index) => (
-        <div key={index} style={{ }}>
-          <Tooltip title="Interviewer">
-            <Select
-              placeholder="Interviewer"
-              value={toolkit.interviewer}
-              onChange={(value) => handleSelectChange(index, value)}
-              style={{ width: 134, marginTop : '5px', marginRight : '5px'}}
-            >
-              {interviewerList.map((interviewer) => (
-                <Option key={interviewer.id} value={interviewer.id}>
-                  {interviewer.name}
-                </Option>
-              ))}
+  <div key={index} style={{}}>
+    <Tooltip title="Interviewer">
+      <Select
+        placeholder="Interviewer"
+        value={toolkit.interviewer}
+        onChange={(value) => handleSelectChange(index, value)}
+        style={{ width: 134, marginTop: '5px', marginRight: '5px' }}
+        disabled={checkCondition()}
+      >
+        {interviewerList
+          .filter(interviewer => !toolkits.some(t => t.interviewer === interviewer.id && t.interviewer !== toolkit.interviewer)) // Filter out already selected interviewers
+          .map((interviewer) => (
+            <Option key={interviewer.id} value={interviewer.id}>
+              {interviewer.name}
+            </Option>
+          ))}
+
             </Select>
           </Tooltip>
           <IconButton aria-label="delete" onClick={() => handleDeleteToolkit(index)} size="small" style={{marginRight : '5px' }} className="delete-icon-button">
@@ -225,7 +243,10 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
           </Modal>
         </div>
       ))}
-      <Button onClick={handleAddToolkit} style={{ width: "135px", marginTop : '5px' }}>
+      <Button onClick={handleAddToolkit} style={{ width: "135px", marginTop : '5px' }} 
+      disabled={checkCondition()}
+      // disabled={false}
+      >
         <div style={{ display: "flex", alignItems: "center" }}>
           <PersonAddAltIcon  style={{marginRight : '5px'}} />
           Interviewer
@@ -236,4 +257,5 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1}) =
 };
  
 export default Toolkit;
+ 
  

@@ -1,28 +1,71 @@
 
- 
+
 import React, { useEffect, useState } from "react";
 import './NewCandidateCards.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
- 
+import { DownloadOutlined } from '@ant-design/icons';
+import { message } from 'antd';
+
+
 const ProfileCard = ({ profile }) => {
+    const handleDownload = async () => {
+        console.log(profile.resumeId);
+        const resumeId = profile.resumeId;
+        try {
+            const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
+                responseType: 'blob',
+            });
+            console.log(response.headers);
+
+
+            const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+            console.log(disposition);
+            const match = /filename="([^"]+)"/.exec(disposition);
+            console.log(match);
+            const filename = match ? match[1] : `resume-${resumeId}.pdf`;
+
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+
+
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            message.error('File not found!');
+            console.error('Error downloading file:', error);
+        }
+    };
     return (
         <div className="profile-card">
             <AccountCircleIcon className="profile-icon" />
             <h2>{profile.name || 'null'}</h2>
             <p>Experience: {profile.yearsOfExperience} years</p>
             <p>Job Role: {profile.jobRole || 'null'}</p>
-            <p>AI Score: {profile.resumeScore || 'null'}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p>AI Score: {profile.resumeScore || 'null'}</p>
+                <DownloadOutlined style={{ fontSize: '25px', cursor: 'pointer', color: 'rgb(0,33,64)' }} onClick={handleDownload} />
+            </div>
+
         </div>
     );
 };
- 
-export const Candidatecards = ({ selectedFilters, candidateCards}) => {
+
+export const Candidatecards = ({ selectedFilters, candidateCards }) => {
     const [profileData, setProfileData] = useState([]);
- 
+
     // useEffect(() => {
     //     const token = localStorage.getItem('accessToken');
- 
+
     //     const fetchData = async () => {
     //         try {
     //             const response = await axios.get('https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getAllCandidates', {
@@ -43,15 +86,15 @@ export const Candidatecards = ({ selectedFilters, candidateCards}) => {
     //             console.error('Error fetching data:', error);
     //         }
     //     };
- 
+
     //     if (token) {
     //         fetchData();
     //     } else {
     //         console.error('Access token not found in localStorage.');
     //     }
     // }, []);
- 
- 
+
+
     let filteredData = [...candidateCards];
     console.log(filteredData);
     selectedFilters.forEach(filter => {
@@ -69,7 +112,7 @@ export const Candidatecards = ({ selectedFilters, candidateCards}) => {
             filteredData.sort((a, b) => (b.jobRole || '').localeCompare(a.jobRole || ''));
         }
     });
- 
+
     return (
         <>
             <div style={{ backgroundColor: "transparent" }}>
@@ -82,9 +125,8 @@ export const Candidatecards = ({ selectedFilters, candidateCards}) => {
                     ))}
                 </div> : <center><h2 className="profile-card-container">No New Candidates</h2></center>
                 }
- 
+
             </div>
         </>
     );
 };
- 

@@ -11,7 +11,7 @@ import {
 import "../pages/kanban.css";
 import { useNavigate } from "react-router-dom";
 import { logoutAction } from "../redux/slices/authSlice";
-import { Button, Modal, Form, Input, Rate, Select, Divider, message } from "antd";
+import { Button, Modal, Form, Input, Rate, Select, Divider, message, notification } from "antd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { PlusOutlined } from "@ant-design/icons";
 import Kanbanintnav from "../components/usermanagement/Kanbanintnav";
@@ -22,7 +22,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 ////////////////////////////////////////////////////////////////////////////////////////////
- 
+
 export default function KanbanInterviewer() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,15 +34,32 @@ export default function KanbanInterviewer() {
   const [interViewerId, setInterViewerId] = useState("");
   const [interViewerData, setInterViewerData] = useState([]);
   const [interViewerStatus, setInterViewerStatus] = useState("");
- 
+
   useEffect(() => {
     dispatch(fetchTasksAsync());
     // dispatch(fetchInterviewerDataByIdAsync());
   }, [dispatch]);
- 
+
+  const validateFields = (fields) => {
+    const errors = {};
+    let requiredFields = [];
+    console.log("fields",fields);
+    requiredFields = [
+      "overall_comments",
+      "overall_rating"
+    ]
+
+    requiredFields.forEach((field) => {
+      if (!fields[field]) {
+        errors[field] = `${field} is required.`;
+      }
+    });
+    return errors;
+  }
+
   const handleDrop = (result) => {
     const { source, destination } = result;
- 
+
     if (
       !destination ||
       (source.droppableId === destination.droppableId &&
@@ -50,20 +67,20 @@ export default function KanbanInterviewer() {
     ) {
       return;
     }
- 
+
     // Check if the source column is "Tech" and the destination column is  "Selected"
     if (
       source.droppableId === "Tech" &&
-      destination.droppableId === "Selected"
+      destination.droppableId === "Completed"
     ) {
       // Prevent the drop action for cards from the "Assigned" column to  or "Selected"
       return;
     }
- 
+
     // Check if the source column is "Waiting" and the destination column is  "Selected"
     if (
       source.droppableId === "Waiting" &&
-      destination.droppableId === "Selected"
+      destination.droppableId === "Completed"
     ) {
       // Prevent the drop action for cards from the "Waiting" column to  or "Selected"
       return;
@@ -75,22 +92,38 @@ export default function KanbanInterviewer() {
       // Prevent the drop action for cards from the "Waiting" column to   "tech"
       return;
     }
-    // if (
-    //   source.droppableId === "Selected" &&
-    //   destination.droppableId === "Waiting"
-    // ) {
-    //   // Prevent the drop action for cards from the "Waiting" column to   "tech"
-    //   return;
-    // }
+
     if (
-      source.droppableId === "Selected" &&
+      source.droppableId === "Completed" &&
       destination.droppableId === "Tech"
       // || destination.droppableId === "Waiting"
     ) {
       // Prevent the drop action for cards from the "Selected" column to   "Tech"
       return;
     }
- 
+    if (
+      source.droppableId === "Completed" &&
+      destination.droppableId === "Waiting"
+      // || destination.droppableId === "Waiting"
+    ) {
+      // Prevent the drop action for cards from the "Selected" column to   "waiting"
+      return;
+    }
+
+    // if (
+    //   source.droppableId === "Tech" &&
+    //   destination.droppableId === "Waiting"
+
+    // ) {
+    //   const validationErrors = validateFields();
+    //   Object.values(validationErrors).forEach((errorMsg) => {
+    //     notification.error({ message: errorMsg });
+    //   });
+    // }
+    
+
+
+
     dispatch(
       moveTask({
         sourceColumn: source.droppableId,
@@ -101,24 +134,25 @@ export default function KanbanInterviewer() {
     );
     const updatedTask = tasks[source.droppableId][source.index];
     console.log("updated task", updatedTask);
- 
+
     if (source.droppableId !== destination.droppableId) {
       // Ensure interViewerData is updated with the latest data
       dispatch(fetchInterviewerDataByIdAsync(updatedTask.resumeId))
         .then((response) => {
           const data = response.payload;
           setInterViewerData(data);
- 
+          
           dispatch(
             updateTaskAsync({
-              ...data, // Use the latest interViewerData
+              ...data,
               submissionStatus: "SUBMITTED",
             })
           );
+
         })
         .catch((error) => {
           console.error("Error fetching interviewer data by ID:", error);
-          // Handle error as needed
+
         });
     }
   };
@@ -151,20 +185,34 @@ export default function KanbanInterviewer() {
       // Handle error as needed
     }
   };
- 
+
   const handleModalCancel = () => {
     setIsModalVisible(false);
     setSelectedTasks({});
   };
- 
-  const handleModalSubmit = (updatedData) => {
+  const [saving, setSaving] = useState(false);
+  const handleModalSubmit = async (updatedData) => {
+    setSaving(true);
     console.log("Updated data:", updatedData);
     // if (!updatedData || !updatedData.values || !updatedData.values.skills) {
     if (!updatedData || !updatedData.values) {
       console.error("Invalid updatedData object:", updatedData);
       return;
     }
- 
+
+    const validationErrors = validateFields(updatedData.values);
+      
+
+      if(Object.keys(validationErrors).length !== 0){
+        console.log("validation Errors", validationErrors)
+        console.log("Entering If")
+        Object.values(validationErrors).forEach((errorMsg) => {
+          notification.error({ message: errorMsg });
+        });
+        return;
+      }
+
+
     const updatedTask = {
       ...updatedData.values,
       submissionStatus: "SAVED",
@@ -172,36 +220,27 @@ export default function KanbanInterviewer() {
       id: interViewerId,
       skills: updatedData.values.skills || []
     };
- 
-    // delete updatedTask.name;
-    // const skillsToDelete = updatedData.initialValues.skills.filter(skill => !updatedTask.skills.includes(skill.skills));
-    // if (skillsToDelete.length > 0) {
-    //   // Iterate over skills to delete and make API calls
-    //   skillsToDelete.forEach(skill => {
-    //     // Replace `<int:id>` with the actual ID value
-    //     fetch(`https://hireflow.focusrtech.com:90/hiring/interviewer/deleteskill/${skill.id}`, {
-    //       method: 'DELETE',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       // You may need to include credentials or authorization headers if required
-    //     })
-    //       .then(response => {
-    //         if (!response.ok) {
-    //           throw new Error('Network response was not ok');
-    //         }
-    //         // Handle successful deletion
-    //       })
-    //       .catch(error => {
-    //         console.error('Error deleting skill:', error);
-    //         // Handle error as needed
-    //       });
-    //   });
-    // }
-    console.log("before save");
-    dispatch(updateTaskAsync(updatedTask));
-    setIsModalVisible(false);
-    setSelectedTasks({});
+
+
+    // console.log("before save");
+    // dispatch(updateTaskAsync(updatedTask));
+    // setSaving(false); 
+    // setIsModalVisible(false);
+    // message.success("Candidate details saved successfully!");
+    // setSelectedTasks({});
+
+    try {
+      await dispatch(updateTaskAsync(updatedTask));
+      setIsModalVisible(false);
+      setSelectedTasks({});
+      setSaving(false);
+
+    } catch (error) {
+      console.error("Error updating task:", error);
+      setSaving(false); // Reset loading state if an error occurs
+
+    }
+
   };
   const handleDownload = async () => {
     console.log(selectedTasks.resumeId);
@@ -212,25 +251,25 @@ export default function KanbanInterviewer() {
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
- 
+
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
- 
+
       const blob = new Blob([response.data], { type: 'application/pdf' });
- 
- 
+
+
       const url = window.URL.createObjectURL(blob);
- 
+
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
- 
+
       document.body.appendChild(link);
       link.click();
- 
+
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -239,8 +278,8 @@ export default function KanbanInterviewer() {
       console.error('Error downloading file:', error);
     }
   };
- 
- 
+
+
   const avatarUrl = process.env.PUBLIC_URL + "./img/avtr3.jpg";
   const { Option } = Select;
   const handleRemoveSkill = async (index, skills) => {
@@ -248,17 +287,17 @@ export default function KanbanInterviewer() {
       // Get the skill to delete
       console.log('index', index);
       console.log('skills', skills.skills[index].id);
-     
-       
+
+
       await axios.delete(`https://hireflowapi.focusrtech.com:90/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
         headers: {
           'Content-Type': 'application/json'
         },
       });
- 
+
     } catch (error) {
       console.error('Error deleting skill:', error);
-     
+
       message.error('unable to delete skill')
       // Handle error as needed
     }
@@ -268,7 +307,9 @@ export default function KanbanInterviewer() {
       <Kanbanintnav />
       <DragDropContext onDragEnd={handleDrop}>
         <div className="kanban-board">
+          
           {Object.keys(tasks).map((column) => (
+            
             <Droppable key={column} droppableId={column}>
               {(provided, snapshot) => (
                 <div
@@ -276,31 +317,30 @@ export default function KanbanInterviewer() {
                   {...provided.droppableProps}
                   className="column"
                 >
-                   <div
-  
-                      style={{
-                        backgroundColor: "rgb(230, 230, 230)",
-                        padding: "15px",
-                        paddingTop: '20px',
-                        borderBottom: "3px solid #0091ff",
-                        borderRadius: "3px",
-                        color: "rgb(62, 62, 62)",
-                        fontSize: "1.4em",
-                        fontWeight: "400",
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <div style={{ flex: 1, textAlign: 'center', paddingLeft:'10%' }}>
-                        {column}
-                      </div>
-                      
-                      <div style={{ fontSize: "0.8em", color:"rgb(110,110,110)", backgroundColor:'rgb(210,210,210)', paddingRight:'10px', paddingLeft:'10px', borderRadius:'5px', marginLeft: 'auto' }}>
-                        {tasks[column].length}
-                      </div>
+                  <div
+                    style={{
+                      backgroundColor: "rgb(230, 230, 230)",
+                      padding: "15px",
+                      paddingTop: '20px',
+                      borderBottom: "3px solid #0091ff",
+                      borderRadius: "3px",
+                      color: "rgb(62, 62, 62)",
+                      fontSize: "1.4em",
+                      fontWeight: "400",
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <div style={{ flex: 1, textAlign: 'center', paddingLeft: '10%'}}>
+                      {column}
                     </div>
- 
+
+                    <div style={{ fontSize: "0.8em", color: "rgb(110,110,110)", backgroundColor: 'rgb(210,210,210)', paddingRight: '10px', paddingLeft: '10px', borderRadius: '5px', marginLeft: 'auto' }}>
+                      {tasks[column].length}
+                    </div>
+                  </div>
+
                   <ul>
                     {tasks[column].map((task, index) => (
                       <Draggable
@@ -326,10 +366,9 @@ export default function KanbanInterviewer() {
                                 src={avatarUrl}
                                 alt="User Avatar"
                               /> */}
- 
-<div>
+
+                              <div>
                                 <h3 style={{ fontWeight: '500' }}>{task.name}</h3>
- 
                                 {/* <p>Mail:{task.email}</p> */}
                                 {/* <div style={{border: '1px solid', borderRadius:'5px', padding:'10px', borderColor:'rgb(236, 236, 236)', fontWeight:'450' }}> */}
                                 <p style={{ display: 'flex', alignItems: 'center' }}><WorkOutlineIcon style={{ color: "rgb(88, 167, 204)" }} />    <div style={{ paddingLeft: '15px' }}> {task.jobRole}</div></p>
@@ -351,10 +390,11 @@ export default function KanbanInterviewer() {
                 </div>
               )}
             </Droppable>
+            
           ))}
         </div>
       </DragDropContext>
- 
+
       <Modal
         title={"Edit Candidate Details"}
         visible={isModalVisible}
@@ -373,31 +413,31 @@ export default function KanbanInterviewer() {
                 <Input disabled />
               </Form.Item> */}
               <Form.Item label="Candidate Name" name="name">
-                <Input />
+                <Input disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Form.Item label="Resume ID" name="resumeId">
-                <Input />
+                <Input disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Form.Item label="Strength" name="strength">
-                <Input />
+                <Input disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Form.Item label="Weakness" name="weakness">
-                <Input />
+                <Input disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Form.Item label="Shortlist Status" name="shortlistStatus">
-                <Select>
+                <Select disabled={selectedTask.submissionStatus === "SUBMITTED"}>
                   <Option value="SHORTLISTED">SHORTLISTED</Option>
                   <Option value="NOTSHORTLISTED">NOTSHORTLISTED</Option>
                 </Select>
               </Form.Item>
               <Form.Item label="Overall Comments" name="overall_comments">
-                <Input.TextArea />
+                <Input.TextArea disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Form.Item label="Overall Rating" name="overall_rating">
-                <Rate />
+                <Rate disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Form.Item label="Remarks" name="remarks">
-                <Input />
+                <Input disabled={selectedTask.submissionStatus === "SUBMITTED"} />
               </Form.Item>
               <Divider>Skills</Divider>
               <Form.List name="skills">
@@ -411,7 +451,7 @@ export default function KanbanInterviewer() {
                           name={[name, "skills"]}
                           fieldKey={[fieldKey, "skills"]}
                         >
-                          <Input placeholder="Skill" />
+                          <Input placeholder="Skill" disabled={selectedTask.submissionStatus === "SUBMITTED"} />
                         </Form.Item>
                         <Form.Item
                           label={`Proficiency ${key + 1}`}
@@ -419,10 +459,10 @@ export default function KanbanInterviewer() {
                           name={[name, "proficiency"]}
                           fieldKey={[fieldKey, "proficiency"]}
                         >
-                          <Input placeholder="Proficiency" />
+                          <Input placeholder="Proficiency" disabled={selectedTask.submissionStatus === "SUBMITTED"} />
                         </Form.Item>
                         <Form.Item
-                          label={`Rating out of 10 ${key + 1}`}
+                          label={`Rating (out of 10) ${key + 1}`}
                           {...restField}
                           name={[name, "ratingoutof10"]}
                           fieldKey={[fieldKey, "ratingoutof10"]}
@@ -432,6 +472,7 @@ export default function KanbanInterviewer() {
                             type="number"
                             min={0}
                             max={10}
+                            disabled={selectedTask.submissionStatus === "SUBMITTED"}
                           />
                         </Form.Item>
                         <Form.Item
@@ -440,43 +481,46 @@ export default function KanbanInterviewer() {
                           name={[name, "comments"]}
                           fieldKey={[fieldKey, "comments"]}
                         >
-                          <Input.TextArea placeholder="Comments" />
+                          <Input.TextArea placeholder="Comments" disabled={selectedTask.submissionStatus === "SUBMITTED"} />
                         </Form.Item>
                         <Button
                           type="dashed"
                           onClick={() => { remove(name); handleRemoveSkill(name, selectedTask); }}
                           style={{ width: "100%" }}
+                          disabled={selectedTask.submissionStatus === "SUBMITTED"}
                         >
                           Remove Skill
                         </Button>
                       </div>
                     ))}
-                    {interViewerData && !("message" in interViewerData) && (
-        <Form.Item>
-          <Button
-            type="dashed"
-            onClick={() => add()}
-            icon={<PlusOutlined />}
-          >
-            Add Skill
-          </Button>
-        </Form.Item>
-      )}
-                </>
+                    <Form.Item>
+                      <Button
+                        type="dashed"
+                        onClick={() => add()}
+                        icon={<PlusOutlined />}
+                        disabled={selectedTask.submissionStatus === "SUBMITTED"}
+                      >
+                        Add Skill
+                      </Button>
+                    </Form.Item>
+                  </>
                 )}
               </Form.List>
+
               <Form.Item>
- 
-                <Button type="success" htmlType="submit">
-                  SAVE
-                </Button>
+
+                {selectedTask.submissionStatus != "SUBMITTED" &&
+                  <Button type="primary" htmlType="submit">
+                    SAVE
+                  </Button>
+                }
                 <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{ marginLeft: "20px" }} />
               </Form.Item>
             </Form>
           ))}
       </Modal>
- 
- 
+
+
     </>
   );
 }

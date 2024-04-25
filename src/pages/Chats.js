@@ -38,7 +38,7 @@ export default function Chats() {
       const payload = {
         recruiterMail: recruiterMail,
         candidateMail: user.email, // Use the clicked user's email from the userList
-        password: "Sudharsan#02",
+        password: "vstf icah eeil kkpd",
       };
     
       try {
