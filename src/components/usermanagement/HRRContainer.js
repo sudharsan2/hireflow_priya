@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./hrrcontainer.css";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import { Modal, Button } from 'antd';
 
 const UserCard = ({ user, onClick, hrCount}) => {
   const getAvatarUrl = () => {
@@ -75,7 +76,7 @@ const HRRContainer = ({users1, fetchData}) => {
     const isActive = selectedUser.is_active;
     const id = selectedUser.id;
     try {
-      await axios.put(`http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`, {
+      await axios.put(`https://hireflowapi.focusrtech.com:90/hiring/auth/activeInactiveUser/${id}`, {
         is_active: !isActive
       });
       fetchData();
@@ -89,7 +90,7 @@ const HRRContainer = ({users1, fetchData}) => {
     const id = selectedUser.id;
     const isPause = selectedUser.pause;
     try {
-      await axios.put(`http://172.235.10.116:7000/hiring/auth/pauseResumeUser/${id}`, {
+      await axios.put(`https://hireflowapi.focusrtech.com:90/hiring/auth/pauseResumeUser/${id}`, {
         pause: !isPause
       });
       fetchData();
@@ -101,7 +102,7 @@ const HRRContainer = ({users1, fetchData}) => {
 
   const handleCountHrUser = async (empId) => {
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/statsofhr/${empId}`);
+      const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/statsofhr/${empId}`);
       setHrCount(response.data);
     } catch (error) {
       console.error("Error fetching HR count:", error.message);
@@ -116,18 +117,28 @@ const HRRContainer = ({users1, fetchData}) => {
         <UserCard key={user.id} user={user} onClick={handleCardClick} hrCount={hrCount}/>
       ))}
 
+<Modal
+      title="User Details"
+      visible={!!selectedUser}
+      onCancel={handleCloseModal}
+      footer={null}
+      width={'20%'}
+    >
       {selectedUser && (
-        <>
-          <div className="modal-backdrop" onClick={handleCloseModal}></div>
-          <UserDetailsModal
-            user={selectedUser}
-            onClose={handleCloseModal}
-            onDelete={handleDeleteUser}
-            onPause={handlePauseUser}
-            hrCount={hrCount}
-          />
-        </>
+        <div>
+        <p>Name: {selectedUser.name}</p>
+        <p>Email: {selectedUser.email}</p>
+        <p>Emp ID: {selectedUser.empId}</p>
+        {/* Add more details as needed */}
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+          <Button type='primary' onClick={() => handleDeleteUser(selectedUser)}>Delete</Button>
+          <Button type='primary' onClick={() => handlePauseUser(selectedUser)}>
+            {selectedUser.pause ? 'Unpause' : 'Pause'}
+          </Button>
+        </div>
+      </div>
       )}
+    </Modal>
     </div>
   );
 };

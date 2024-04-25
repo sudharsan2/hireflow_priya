@@ -250,7 +250,7 @@ export default function KanbanInterviewer() {
       console.log('skills', skills.skills[index].id);
      
        
-      await axios.delete(`http://172.235.10.116:7000/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
+      await axios.delete(`https://hireflowapi.focusrtech.com:90/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -467,7 +467,7 @@ export default function KanbanInterviewer() {
               </Form.List>
               <Form.Item>
  
-                <Button type="primary" htmlType="submit">
+                <Button type="success" htmlType="submit">
                   SAVE
                 </Button>
                 <Button type="primary" icon={<DownloadOutlined />} onClick={handleDownload} style={{ marginLeft: "20px" }} />

@@ -34,32 +34,36 @@ const GaugeComponent = ({ value, title }) => {
   return (
     
     <div style={{
-      height: '45vh', /* 50% of the viewport height */
-      width: '30.33vw', /* 33.33% of the viewport width */
-      position: 'relative',
+      height:'fit-content', /* 50% of the viewport height */
+      width: '27vw', /* 33.33% of the viewport width */
+      // position: 'relative',
       // display:'flex',
       // alignItems:'center',
       // justifyContent:'center',
       backgroundColor: 'white',
-      paddingTop: '5%', /* Adjust this value according to your need */
-      borderRadius: '3px',
+      paddingTop: '0%', /* Adjust this value according to your need */
+      borderRadius: '10px',
       margin: '10px',
-      boxShadow: '0 0 10px rgba(0,0,0,0.2)', /* Corrected the rgba syntax */
+      // boxShadow: '0 0 10px rgba(0,0,0,0.2)', /* Corrected the rgba syntax */
     }}>
-       <h2 style={{ textAlign: 'center', fontWeight: 'normal', paddingBottom: '0' }}>{title.toUpperCase()}</h2>
+       <h2 style={{ textAlign: 'center', fontWeight: 'normal', }}>{title}</h2>
       <GaugeChart
         id="gauge-chart1"
         percent={animatedValue}
         needleColor="rgb(100,100,100,0)"
         textColor="rgb(100,100,100)"
-        formatTextValue={() => `${Math.round(animatedValue * 100)}%`}
+        formatTextValue={() => {
+          const percentValue = Math.round(animatedValue * 100);
+          const paddedValue = percentValue.toString().padStart(2, '0'); // Add padding
+          return `${paddedValue}%`;
+        }}
         needleBaseColor="rgb(100,100,100,0)"
         needleBaseSize={3}
         needleWidth={1}
         animate={false}
         arcsLength={[animatedValue, 1 - animatedValue]}
         colors={['#23da78', 'rgb(100,100,100,0.3)']}
-        fontSize='50px'
+        fontSize='30px'
         arcPadding={0.01}
         fontWeight='bold'
       />

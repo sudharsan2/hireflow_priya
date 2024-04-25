@@ -24,7 +24,7 @@ export default function ForgetPassword() {
     const handleSubmit = () => {
         setLoading(true);
         // Make API call to forgot password endpoint
-        axios.post('http://172.235.10.116:7000/hiring/auth/forgotPassword', {
+        axios.post('https://hireflowapi.focusrtech.com:90/hiring/auth/forgotPassword', {
             email: email
         })
         .then(response => {

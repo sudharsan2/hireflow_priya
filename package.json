@@ -2,7 +2,7 @@
   "name": "kanban",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://172.235.10.116:7000",
+  "homepage": "https://hireflowapi.focusrtech.com:90",
   "dependencies": {
     "@ant-design/charts": "^2.0.3",
     "@ant-design/icons": "^5.3.4",

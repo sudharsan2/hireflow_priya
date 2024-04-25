@@ -137,7 +137,7 @@ useEffect(() => {
   return (
     <Layout style={{ minHeight: "100vh",  }}>
        <Sider
-    width={200} // Set the initial width of the Sider
+    width={250} // Set the initial width of the Sider
     collapsedWidth={80} // Set the width of the Sider when collapsed
     trigger={null} // Hide the default trigger button
     collapsible
@@ -240,7 +240,7 @@ useEffect(() => {
   {roles[userRole]?.map((item) => (
     <React.Fragment key={item.key}>
       {/* Render General or Candidates as text */}
-      <div style={{ paddingLeft: '10px', paddingTop: '25px', paddingBottom: '8px', color: 'rgba(255, 255, 255, 0.65)', fontSize:'18px', fontWeight:'lighter' }}>
+      <div style={{ paddingLeft: '10px', paddingTop: '25px', paddingBottom: '8px', color: 'rgba(255, 255, 255, 0.65)', fontSize:'19px', fontWeight:'lighter' }}>
         {!collapsed && item.icon}
         <span style={{ marginLeft: '8px' }}>{!collapsed && item.label}</span>
       </div>
@@ -249,7 +249,7 @@ useEffect(() => {
       {item.subMenu && item.subMenu.map((subItem) => (
         <Menu.Item key={subItem.key} theme="dark" defaultSelectedKeys={["1"]} mode="inline">
         <Link to={subItem.linkTo}>
-          <div style={{ display: 'flex', alignItems: 'center', fontSize:'1.1em', fontWeight:'lighter' }}>
+          <div style={{ display: 'flex', alignItems: 'center', fontSize:'1.2em', fontWeight:'lighter' }}>
             <div style={{ marginRight: '5px' }}><span>{subItem.icon}</span></div> 
             {!collapsed && <span>{subItem.label}</span>}
           </div>
@@ -271,7 +271,7 @@ useEffect(() => {
       </Sider>
       <Layout
         style={{
-          marginLeft: collapsed ? 80 : 200,
+          marginLeft: collapsed ? 80 : 250,
           transition: "margin-left 0.2s",
         }}
       >

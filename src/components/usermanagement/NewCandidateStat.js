@@ -8,7 +8,7 @@ import axios from 'axios';
 const StatisticComponent = ({ label, value }) => {
     return (
         <tr>
-            <td>{label} :</td>
+            <td>{label}:</td>
             <td>{value || '0'}</td>
         </tr>
     );
@@ -22,7 +22,7 @@ export const Stats = () => {
  
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.235.10.116:7000/hiring/auth/statisticsforadmin', {
+                const response = await axios.get('https://hireflowapi.focusrtech.com:90/hiring/auth/statisticsforadmin', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -42,7 +42,8 @@ export const Stats = () => {
         }
     }, []);
     const keys = Object.keys(statsData);
- 
+    const keysToShow = Object.keys(statsData).slice(0, 2); // Get the first two keys
+
     return (
         <div className='stats'>
             {keys.length > 0 ? (
@@ -50,9 +51,9 @@ export const Stats = () => {
                     <table className="stats-table" style={{ padding: "20px" }}>
                         <h3 style={{ color: "rgb(0, 33, 64)", paddingLeft: "15px", marginTop: "0px", marginBottom: "10px" }}>STATS</h3>
                         <tbody>
-                            {keys.map((key, index) => (
-                                <StatisticComponent key={index} label={key} value={statsData[key]} />
-                            ))}
+                             {keysToShow.map((key, index) => (
+      <StatisticComponent key={index} label={key} value={statsData[key]} />
+    ))}
                         </tbody>
                     </table>
                 </>

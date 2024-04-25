@@ -15,7 +15,7 @@ const WalkInCandidate = ({ isWalkinUpload }) => {
       formData.append('resume', file);
 
       const response = await axios.post(
-        'http://172.235.10.116:7000/hiring/entryLevel/walkin',
+        'https://hireflowapi.focusrtech.com:90/hiring/entryLevel/walkin',
         formData,
         {
           headers: {

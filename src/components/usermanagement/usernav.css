@@ -1,13 +1,14 @@
 /* Navbar.css */
 
 .navbar {
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
   /* background-image: url("../../../public/img/bg_17.jpg"); */
   background-size: cover;
   background-position: center;
-  background-color: rgb(7, 21, 37);
+  background-color: #001529;
   color: #fff;
   padding: 10px; 
 }

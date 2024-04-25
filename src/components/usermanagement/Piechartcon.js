@@ -1,85 +1,54 @@
-import React, { Component } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import Usernav from './Usernav';
+import React from 'react';
+import { PieChart, Pie, Cell, Tooltip, Legend , ResponsiveContainer} from 'recharts';
 
-class BarChartWithApiData extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      error: null,
-      data: null,
-    };
-  }
+const COLORS = ['#82b6ff', '#5ad7ba', '#ffd653', '#ffb173']; // You can add more colors as needed
 
-  componentDidMount() {
-    // Fetch data from the API
-    fetch('http://172.235.10.116:7000/hiring/auth/overallstats')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch data from the API');
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState({
-          loading: false,
-          data: {
-            'HRR': data['review by HR'],
-            'Interview': data['Scheduled For Interview'],
-            'completed': data['Interview Done'],
-            'Offered': data['Offer Letters Given'],
-          },
-        });
-      })
-      .catch(error => {
-        this.setState({
-          loading: false,
-          error: error.message,
-        });
-      });
-  }
+const customLabels = {
+  zero_experience_count: 'Freshers',
+  one_to_three_experience_count: '1 to 3 Years',
+  four_to_six_experience_count: '4 to 6 Years',
+  above_six_experience_count: '8+ Years',
+};
 
-  render() {
-    const { loading, error, data } = this.state;
+const PieChartComponent = ({ data }) => {
+  const chartData = Object.keys(data).map(name => ({
+    name: customLabels[name], // Map the original label name to the custom label
+    value: data[name],
+  }));
 
-    if (loading) {
-      return <div>Loading...</div>;
-    }
+  return (
+    <div style={{
+      height: '57vh', /* 50% of the viewport height */
+      width: '27vw', /* 33.33% of the viewport width */
+      position: 'relative',
+      backgroundColor: 'white',
+      paddingBottom: '20%', /* Adjust this value according to your need */
+      borderRadius: '10px',
+      margin: '10px',
+      // boxShadow: '0 0 10px rgba(0,0,0,0.2)', /* Corrected the rgba syntax */
+    }}>
+    <ResponsiveContainer>
+      <h2 style={{ textAlign: 'center', fontWeight: 'normal' }}>Experience</h2>
+    <PieChart >
+      <Pie
+        data={chartData}
+        cx="50%"
+        cy="50%"
+        outerRadius={'80%'}
+        innerRadius={'50%'}
+        fill="#8884d8"
+        
+      >
+        {chartData.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+      <Tooltip />
+      <Legend />
+    </PieChart>
+    </ResponsiveContainer>
+    </div>
+  );
+};
 
-    if (error) {
-      return <div>Error: {error}</div>;
-    }
-
-    const chartData = Object.entries(data).map(([label, value], index) => ({
-      name: label,
-      Number: value,
-      fill: index % 1 === 0 ? '#8884d8' : '#82ca9d', // Alternating colors
-    }));
-
-    return (
-      <div style={{ height: '300px', width: '600px' }}>
-        <h3 style={{textAlign:'center'}}>Overall Report</h3>
-        <ResponsiveContainer>
-          <BarChart
-            data={chartData}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <XAxis dataKey="name" />
-            <YAxis dataKey="Number"/>
-            <Tooltip />
-           
-            <Bar dataKey="Number" fill="#8884d8" barSize={30} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    );
-  }
-}
-
-export default BarChartWithApiData;
+export default PieChartComponent;

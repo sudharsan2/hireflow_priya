@@ -52,6 +52,7 @@ import TechSummary from "./pages/summary/TechSummary";
 import ForgetPassword from "./components/usermanagement/forgetPassword";
 import ResetPassword from "./components/usermanagement/resetPassword";
 import Candidatequery from "./pages/CandidateQuery";
+import CandidateAdmin from "./components/usermanagement/CandidatesDashboard";
 
 const App = () => {
 
@@ -77,6 +78,7 @@ const App = () => {
         <Route path="/forgotPassword" element={<ForgetPassword/>} />
         <Route path="/resetPassword/:token" element={<ResetPassword/>} />
         <Route path="/candidatequery" element={<CustomLayout><Candidatequery/></CustomLayout>} />
+        <Route path="/candidateadmin" element={<CustomLayout><CandidateAdmin/></CustomLayout>} />
         
         {/* Add more routes as needed */}
       </Routes>

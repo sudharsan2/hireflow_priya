@@ -1,0 +1,10 @@
+.paused-row {
+    background-color: red;
+    color: white; /* Change text color to ensure visibility */
+  }
+  
+  .active-row {
+    background-color: green;
+    color: rgb(167, 255, 203); /* Change text color to ensure visibility */
+  }
+  

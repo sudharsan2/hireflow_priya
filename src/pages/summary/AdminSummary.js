@@ -517,7 +517,8 @@ const AdminSummary = () => {
             </Col>
             <Col span={8}>
               <DatePicker
-                style={{ width: "100%", height: "32px" }}
+                style={{ width: "100%", height: "32px", }}
+                // inputStyle={{ textAlign: 'center' }} // Align text to center
                 placeholder="To Date"
                 value={formData.unformatedtoDate ? formData.unformatedtoDate : null}
                 onChange={handleToDateChange}

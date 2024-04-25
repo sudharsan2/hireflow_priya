@@ -108,6 +108,26 @@ body {
   
 }
 
+.user-card-canhold {
+  flex: 0 0 calc(20% - 20px);
+  position: relative;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 10px;
+  padding: 10px;
+  padding-left: 20px;
+  border-radius: 5px;
+  color: #434343;
+  background-size: cover;
+  background-position: center;
+  transition: background-color 0.3s;
+  align-items: center; /* Center items vertically within the user card */
+  /* Add styles for circular avatar */
+  overflow: hidden;
+  border-top: 3px solid #ffda22;
+  
+}
+
 
 
 .user-card-hrr:hover {
