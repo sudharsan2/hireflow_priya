@@ -56,7 +56,8 @@ const UserDetailsModal = ({ user, onClose, onDelete }) => {
         <button>Pause</button>
       </div>
       <span>
-        <BarChartIcon />
+        <BarChartIcon /> 
+        {/*  */}
         Show Analytics
       </span>
     </div>
