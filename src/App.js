@@ -51,6 +51,7 @@ import Admineval from "./pages/Admineval";
 import TechSummary from "./pages/summary/TechSummary";
 import ForgetPassword from "./components/usermanagement/forgetPassword";
 import ResetPassword from "./components/usermanagement/resetPassword";
+import LLMSummary from "./pages/summary/LLMSummary";
 
 const App = () => {
 
@@ -69,6 +70,7 @@ const App = () => {
         <Route path="/chat-msg" element={<CustomLayout><Chats /></CustomLayout>} />
         
         <Route path="/hrr-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />
+        <Route path="/llmAdminSummary" element={<CustomLayout><LLMSummary/></CustomLayout>} />
         <Route path="/tech-summary" element={<CustomLayout><TechSummary/></CustomLayout>} />
         <Route path="/add-candidate" element={<CustomLayout><Newcandidate /></CustomLayout>} />
         <Route path="/dashboard" element={<CustomLayout><Piechart /></CustomLayout>} />

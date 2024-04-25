@@ -32,13 +32,13 @@ export default function Chats() {
       setSelectedUser({});
       setCurrentUser(user);
       setSpinFlag(true);
-      const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/getemail";
+      const apiUrl = "https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getemail";
       const recruiterMail = localStorage.getItem("mail");
     
       const payload = {
         recruiterMail: recruiterMail,
         candidateMail: user.email, // Use the clicked user's email from the userList
-        password: "Sudharsan#02",
+        password: "vstf icah eeil kkpd",
       };
     
       try {

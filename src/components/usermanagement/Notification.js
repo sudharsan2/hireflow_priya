@@ -23,7 +23,7 @@ export const Notification = ({ onClearNotification }) => {
   
     const fetchNotificationData = async () => {
       try {
-        const api = "http://172.235.10.116:7000/hiring/auth/notificationforadmin"
+        const api = "https://hireflowapi.focusrtech.com:90/hiring/auth/notificationforadmin"
         const token = localStorage.getItem('accessToken');
         const response = await axios.get(api,
           {
@@ -41,7 +41,7 @@ export const Notification = ({ onClearNotification }) => {
     const fetchRecruiterNotification = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const api = "http://172.235.10.116:7000/hiring/interviewer/notshortlistedNotification"
+        const api = "https://hireflowapi.focusrtech.com:90/hiring/interviewer/notshortlistedNotification"
         
         const response = await axios.get(api,
           {
@@ -58,7 +58,7 @@ export const Notification = ({ onClearNotification }) => {
     };
     const fetchInterviewerNotification = async () => {
       try {
-        const api = "http://172.235.10.116:7000/hiring/entryLevel/getMeetingNotification"
+        const api = "https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getMeetingNotification"
         const token = localStorage.getItem('accessToken');
         const response = await axios.get(api,
           {
@@ -91,7 +91,7 @@ export const Notification = ({ onClearNotification }) => {
       try {
         const token = localStorage.getItem('accessToken');
         const response = await axios.post(
-          'http://172.235.10.116:7000/hiring/auth/clearnotification',
+          'https://hireflowapi.focusrtech.com:90/hiring/auth/clearnotification',
           null,
           {
             headers: {
@@ -110,7 +110,7 @@ export const Notification = ({ onClearNotification }) => {
       try {
         const token = localStorage.getItem('accessToken');
         const response = await axios.post(
-          'http://172.235.10.116:7000/hiring/interviewer/clearNotification',
+          'https://hireflowapi.focusrtech.com:90/hiring/interviewer/clearNotification',
           null,
           {
             headers: {
@@ -129,7 +129,7 @@ export const Notification = ({ onClearNotification }) => {
       try {
         const token = localStorage.getItem('accessToken');
         const response = await axios.post(
-          'http://172.235.10.116:7000/hiring/entryLevel/clearNotification',
+          'https://hireflowapi.focusrtech.com:90/hiring/entryLevel/clearNotification',
           null,
           {
             headers: {

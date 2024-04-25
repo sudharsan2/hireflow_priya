@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import Cannav from "../../components/usermanagement/Cannav";
 import moment from "moment";
@@ -36,14 +37,14 @@ import Kanbannav from "../../components/usermanagement/Kanbannav";
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 ////////////////////////////////////////////////////////////
-
+ 
 const { Option } = Select;
-
+ 
 const HrrSummary = () => {
   const [loadings, setLoadings] = useState(false);
   const loading = useSelector(getLoadingState);
   const error = useSelector(getErrorState);
-
+ 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -118,7 +119,7 @@ const HrrSummary = () => {
       key: "comments",
     }
   ]
-
+ 
   const handleFromDateChange = (date) => {
     handleChange("fromDate", date);
   };
@@ -131,7 +132,7 @@ const HrrSummary = () => {
   const handleToDateChange = (date) => {
     handleChange("toDate", date);
   };
-
+ 
   const handleChange = (field, value) => {
     if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
       const forvalue = value
@@ -149,11 +150,11 @@ const HrrSummary = () => {
         [field]: value,
       });
     }
-
-
+ 
+ 
     console.log(formData);
   };
-
+ 
   const handleEdit = (record) => {
     setEditFormData(record);
     setEditModalVisible(true);
@@ -162,30 +163,30 @@ const HrrSummary = () => {
     console.log(record.resumeId);
     const resumeId = record.resumeId;
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
-
+ 
       const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
       console.log(disposition);
       const match = /filename="([^"]+)"/.exec(disposition);
       console.log(match);
       const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-
+ 
       const blob = new Blob([response.data], { type: 'application/pdf' });
-
-
+ 
+ 
       const url = window.URL.createObjectURL(blob);
-
+ 
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
-
+ 
       document.body.appendChild(link);
       link.click();
-
+ 
       // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -194,7 +195,7 @@ const HrrSummary = () => {
       console.error('Error downloading file:', error);
     }
   };
-
+ 
   const fetchCandidateDetails = async () => {
     try {
       // Filter out fields with empty values
@@ -214,7 +215,7 @@ const HrrSummary = () => {
       setLoadings(false);
     }
   };
-
+ 
   useEffect(() => {
     dispatch(fetchListofInterviewerAsync());
     dispatch(fetchListofRecruiterAsync());
@@ -337,8 +338,24 @@ const HrrSummary = () => {
     },
     // Add more columns as needed
   ];
-
+ 
   const clearForm = () => {
+    setFormData({
+      ...formData,
+      resumeId: "",
+      candidateName: "",
+      resumeScore: "",
+      jobRole: "",
+      recruiterName: "",
+      recruiterStatus: "",
+      recruiterDate: null,
+      interviewerName: "",
+      interviewerStatus: "",
+      interviewerDate: null,
+      status: "",
+    });
+  };
+  const clearForm1 = () => {
     setFormData({
       resumeId: "",
       candidateName: "",
@@ -353,13 +370,13 @@ const HrrSummary = () => {
       status: "",
     });
   };
-
+ 
   const handleSave = async () => {
     try {
       setLoadings(true);
       // Dispatch the async thunk action to update the data
       await dispatch(updateCandidateDataAsync(editFormData));
-
+ 
       // Close the modal or handle any other actions upon successful update
       setEditModalVisible(false);
       // Optionally, fetch updated candidate details
@@ -372,7 +389,7 @@ const HrrSummary = () => {
       setLoadings(false);
     }
   };
-
+ 
   const handleInterviewerClick = async (record) => {
     try {
       // Dispatch the fetchInterviewerRemarksAsync thunk with the resumeId
@@ -499,7 +516,7 @@ const HrrSummary = () => {
                 ))}
               </Select>
             </Col> */}
-
+ 
             <Col span={8}>
               <Select
                 style={{ width: "100%" }}
@@ -508,7 +525,7 @@ const HrrSummary = () => {
                 onChange={(value) => handleChange("recruiterStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
                 <Option value="HOLD">HOLD</Option>
               </Select>
             </Col>
@@ -520,7 +537,7 @@ const HrrSummary = () => {
                 onChange={(value) => handleChange("interviewerStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+                <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
                 {/* Add more options as needed */}
               </Select>
             </Col>
@@ -538,12 +555,12 @@ const HrrSummary = () => {
               <Select
                 style={{ width: "100%" }}
                 placeholder="Interviewer Name"
-
+ 
                 onChange={(value) => handleChange("interviewerName", value)}
               >
                 {interviewers.map((interviewer) => (
                   <Option key={interviewer.id} value={interviewer.empId}>
-                    {interviewer.username}
+                    {interviewer.name}
                   </Option>
                 ))}
               </Select>
@@ -556,7 +573,7 @@ const HrrSummary = () => {
                 onChange={(value) => handleChange("interviewerStatus", value)}
               >
                 <Option value="SHORTLISTED">SHORTLISTED</Option>
-                <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option> */}
+                <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option> */}
             {/* Add more options as needed */}
             {/* </Select>
             </Col> */}
@@ -598,6 +615,19 @@ const HrrSummary = () => {
                 }}
               >
                 Find
+              </Button>
+              <Button
+                style= {{marginLeft : "10px"}}
+                type="primary"
+                icon={<SyncOutlined />}
+                loading={loadings}
+                onClick={() => {
+                  
+                  clearForm1();
+                  setShowTable(false); // Set showTable to true when clicking the button
+                }}
+              >
+                Clear
               </Button>
             </Col>
           </Row>
@@ -733,7 +763,7 @@ const HrrSummary = () => {
               }
             >
               <Option value="SHORTLISTED">SHORTLISTED</Option>
-              <Option value="NOT_SHORTLISTED">NOT SHORTLISTED</Option>
+              <Option value="NOTSHORTLISTED">NOT SHORTLISTED</Option>
               <Option value="HOLD">HOLD</Option>
             </Select>
           </Tooltip>
@@ -758,7 +788,7 @@ const HrrSummary = () => {
         </div>
       </Modal> */}
       {/* Interviewer Remarks Modal */}
-
+ 
       <Modal
         title="Interviewer Remarks"
         visible={modalVisible}
@@ -783,5 +813,5 @@ const HrrSummary = () => {
     </>
   );
 };
-
+ 
 export default HrrSummary;

@@ -14,7 +14,7 @@ class BarChartWithApiData extends Component {
 
   componentDidMount() {
     // Fetch data from the API
-    fetch('http://172.235.10.116:7000/hiring/auth/overallstats')
+    fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/overallstats')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data from the API');

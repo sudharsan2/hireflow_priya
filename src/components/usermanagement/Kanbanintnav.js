@@ -33,7 +33,7 @@ const Kanbanintnav = () => {
     const token = localStorage.getItem("accessToken");
     console.log("Token", token);
     axios
-      .get("http://172.235.10.116:7000/hiring/auth/getAllRoles", {
+      .get("https://hireflowapi.focusrtech.com:90/hiring/auth/getAllRoles", {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -51,7 +51,7 @@ const Kanbanintnav = () => {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     axios
-      .get("http://172.235.10.116:7000/hiring/entryLevel/getMeetingNotification", {
+      .get("https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getMeetingNotification", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

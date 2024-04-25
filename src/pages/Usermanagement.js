@@ -31,7 +31,7 @@ const Usermanagement = () => {
     const token = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        "http://172.235.10.116:7000/hiring/auth/getAllUsers",
+        "https://hireflowapi.focusrtech.com:90/hiring/auth/getAllUsers",
         {
           headers: {
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const Usermanagement = () => {
     const token = localStorage.getItem("accessToken");
     console.log("Token", token);
     axios
-      .get("http://172.235.10.116:7000/hiring/auth/getAllRoles", {
+      .get("https://hireflowapi.focusrtech.com:90/hiring/auth/getAllRoles", {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -81,7 +81,7 @@ const Usermanagement = () => {
     };
 
     axios
-      .post("http://172.235.10.116:7000/hiring/auth/register/", postData, {
+      .post("https://hireflowapi.focusrtech.com:90/hiring/auth/register/", postData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("accessToken"),
@@ -261,7 +261,7 @@ const Usermanagement = () => {
               )}
 
               <div className="button-container">
-                <Button loading={loading} type="submit" onClick={handleAddUser}>
+                <Button style={{width:"50px", padding:'10px 70px'}}loading={loading} type="submit" onClick={handleAddUser}>
                   Add User
                 </Button>
                 <Button type="submit" onClick={handleCloseAddUserModal}>

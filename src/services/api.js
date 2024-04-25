@@ -85,7 +85,7 @@
 // src/api.js
 import axios from "axios";
 
-const BASE_URL = "http://172.235.10.116:7000"; // Replace with your API base URL
+const BASE_URL = "https://hireflowapi.focusrtech.com:90"; // Replace with your API base URL
 
 
 const api = axios.create({

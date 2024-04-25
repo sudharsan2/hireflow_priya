@@ -30,7 +30,7 @@ const App = () => {
   },[]);
 
   const getFinalCandidates=async()=>{
-    axios.get("http://172.235.10.116:7000/hiring/auth/getallcadidatesforevaluation")
+    axios.get("https://hireflowapi.focusrtech.com:90/hiring/auth/getallcadidatesforevaluation")
     .then(response => {
       setCandidates(response.data);
     })
@@ -41,7 +41,7 @@ const App = () => {
 
   const handleModalOpen = (user) => {
 
-    axios.get(`http://172.235.10.116:7000/hiring/auth/getallcadidatesforevalutaionbyid/${user.resumeId}`)
+    axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/getallcadidatesforevalutaionbyid/${user.resumeId}`)
       .then(response => {
         setUserData(response.data);
         setModalVisible(true);
@@ -60,7 +60,7 @@ const App = () => {
     console.log("Form values:", { ...userData.candidateData, finalRemarks });
 
     // Call the API
-    axios.post("http://172.235.10.116:7000/hiring/auth/selectcandidatesstatus", {
+    axios.post("https://hireflowapi.focusrtech.com:90/hiring/auth/selectcandidatesstatus", {
       resumeId: userData.candidateData.resumeId,
       currentStatus: status
     })

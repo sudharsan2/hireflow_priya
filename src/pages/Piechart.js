@@ -32,7 +32,7 @@ class Dashboard extends Component {
 
   componentDidMount() {
     // Fetch data from the API
-    fetch('http://172.235.10.116:7000/hiring/auth/overallstats')
+    fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/overallstats')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data from the API');
@@ -65,7 +65,7 @@ class Dashboard extends Component {
 
 
 
-      fetch('http://172.235.10.116:7000/hiring/auth/reviewbyHR')
+      fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/reviewbyHR')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data from the reviewbyHR API');
@@ -98,7 +98,7 @@ class Dashboard extends Component {
 
 
 
-      fetch('http://172.235.10.116:7000/hiring/auth/assigned')
+      fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/assigned')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data from the reviewbyHR API');
@@ -129,7 +129,7 @@ class Dashboard extends Component {
 
 
 
-      fetch('http://172.235.10.116:7000/hiring/auth/interviewdone')
+      fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/interviewdone')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data from the reviewbyHR API');
@@ -160,7 +160,7 @@ class Dashboard extends Component {
 
 
       
-      fetch('http://172.235.10.116:7000/hiring/auth/selected')
+      fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/selected')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch data from the reviewbyHR API');
@@ -189,7 +189,7 @@ class Dashboard extends Component {
         });
       });
 
-      fetch('http://172.235.10.116:7000/hiring/auth/hiringPercentage')
+      fetch('https://hireflowapi.focusrtech.com:90/hiring/auth/hiringPercentage')
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch hiring percentage data');
