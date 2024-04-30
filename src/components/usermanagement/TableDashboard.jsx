@@ -47,7 +47,7 @@ const UserTable = () => {
   ];
 
   return (
-    <div style={{ width: '25vw', margin: '10px' }}>
+    <div style={{ width: '100%', margin: '10px' }}>
       
       <Table dataSource={users} columns={columns} scroll={{ x: true }} pagination={{ pageSize: 4 }}/>
     </div>

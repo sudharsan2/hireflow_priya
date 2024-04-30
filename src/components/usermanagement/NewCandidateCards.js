@@ -10,41 +10,28 @@ import { message } from 'antd';
 
 const ProfileCard = ({ profile }) => {
     const handleDownload = async () => {
-        console.log(profile.resumeId);
-        const resumeId = profile.resumeId;
-        try {
-            const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
-                responseType: 'blob',
-            });
-            console.log(response.headers);
-
-
-            const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
-            console.log(disposition);
-            const match = /filename="([^"]+)"/.exec(disposition);
-            console.log(match);
-            const filename = match ? match[1] : `resume-${resumeId}.pdf`;
-
-            const blob = new Blob([response.data], { type: 'application/pdf' });
-
-
-            const url = window.URL.createObjectURL(blob);
-
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', filename);
-
-            document.body.appendChild(link);
-            link.click();
-
-            // Clean up
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            message.error('File not found!');
-            console.error('Error downloading file:', error);
-        }
-    };
+  console.log(profile.resumeId);
+  const resumeId = profile.resumeId;
+  try {
+    const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
+      responseType: 'blob',
+    });
+    console.log(response.headers);
+    // const match = /filename="([^"]+)"/.exec(disposition);
+ 
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+ 
+    const url = window.URL.createObjectURL(blob);
+ 
+    window.open(url, '_blank'); // Open PDF in a new tab/window
+ 
+    // Clean up
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    message.error('File not found!');
+    console.error('Error downloading file:', error);
+  }
+};
     return (
         <div className="profile-card">
             <AccountCircleIcon className="profile-icon" />

@@ -90,6 +90,7 @@ const TechSummary = () => {
   });
   // State to hold fetched candidate details
   const [candidates, setCandidates] = useState([]);
+  
   const handleDownload = async (record) => {
     console.log(record.resumeId);
     const resumeId = record.resumeId;
@@ -99,33 +100,22 @@ const TechSummary = () => {
       });
       console.log(response.headers);
       // const match = /filename="([^"]+)"/.exec(disposition);
- 
-      const disposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
-      console.log(disposition);
-      const match = /filename="([^"]+)"/.exec(disposition);
-      console.log(match);
-      const filename = match ? match[1] : `resume-${resumeId}.pdf`;
- 
+   
       const blob = new Blob([response.data], { type: 'application/pdf' });
- 
- 
+   
       const url = window.URL.createObjectURL(blob);
- 
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
- 
-      document.body.appendChild(link);
-      link.click();
- 
+   
+      window.open(url, '_blank'); // Open PDF in a new tab/window
+   
       // Clean up
-      document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       message.error('File not found!');
       console.error('Error downloading file:', error);
     }
   };
+
+
   const handleChange = (field, value) => {
     if (field === "fromDate" || field === "toDate" || field === "recruiterDate" || field === "interviewerDate") {
       const forvalue=value

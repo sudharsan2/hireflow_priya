@@ -69,8 +69,8 @@ class Dashboard extends Component {
     return (
       <div>
         <Usernav/>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}></div>
-        <div style={{ display: 'flex', marginTop: '0px' }}>
+       
+        <div style={{ display: 'flex', marginTop: '0px', }}>
         <div style={{display:'flex', flexDirection:'column'}}>
           <RoundsGraph data={chartData} title='Overall Report' />
           <BarGraph data={ovraldata} />
@@ -81,7 +81,7 @@ class Dashboard extends Component {
           <Gaugecon value={percent} title='Hired rate'/>
           <PieChartComponent data={expdata} />
           </div>
-          <div style={{display:'flex', flexDirection:'column'}}>
+          <div style={{display:'flex', flexDirection:'column', width:'25vw'}}>
           <UserTable/>
           <CandidateStatusTable/>
           
@@ -98,7 +98,7 @@ class Dashboard extends Component {
         <Adminevaldashboard /> */}
 
         
-        </div>
+        // </div>
         
        
         
