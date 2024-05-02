@@ -31,7 +31,15 @@ const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [userData, setUserData] = useState(null);
   const [candidates, setCandidates] = useState([]);
-  const [finalRemarks, setFinalRemarks] = useState("");
+  const [finalremarks, setFinalRemarks] = useState("");
+
+useEffect(() => {
+  // Check if userData is not null before setting finalRemarks
+  if (userData && userData.candidateData) {
+    setFinalRemarks(userData.candidateData.finalRemarks);
+  }
+}, [userData]);
+
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(()=>{
@@ -39,7 +47,7 @@ const App = () => {
   },[]);
 
   const getFinalCandidates=async()=>{
-    axios.get("https://hireflowapi.focusrtech.com:90/hiring/auth/getallcadidatesforevaluation")
+    axios.get("http://172.235.10.116:7000/hiring/auth/getallcadidatesforevaluation")
     .then(response => {
       setCandidates(response.data);
     })
@@ -50,7 +58,7 @@ const App = () => {
 
   const handleModalOpen = (user) => {
 
-    axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/getallcadidatesforevalutaionbyid/${user.resumeId}`)
+    axios.get(`http://172.235.10.116:7000/hiring/auth/getallcadidatesforevalutaionbyid/${user.resumeId}`)
       .then(response => {
         setUserData(response.data);
         setModalVisible(true);
@@ -65,25 +73,25 @@ const App = () => {
   };
 
   const handleFormSubmit = (status) => {
-
-    console.log("Form values:", { ...userData.candidateData, finalRemarks });
-
+    console.log("Form values:", { ...userData.candidateData, finalRemarks: finalremarks });
+  
     // Call the API
-    axios.post("https://hireflowapi.focusrtech.com:90/hiring/auth/selectcandidatesstatus", {
+    axios.post("http://172.235.10.116:7000/hiring/auth/selectcandidatesstatus", {
       resumeId: userData.candidateData.resumeId,
-      currentStatus: status
+      currentStatus: status,
+      finalRemarks: finalremarks // Use finalremarks state variable here
     })
-      .then(response => {
-        console.log("API response:", response.data);
-        getFinalCandidates();
-      })
-      .catch(error => {
-        console.error("Error calling API:", error);
-      });
-
-    
+    .then(response => {
+      console.log("API response:", response.data);
+      getFinalCandidates();
+    })
+    .catch(error => {
+      console.error("Error calling API:", error);
+    });
+  
     setModalVisible(false);
   };
+  
 
   const filteredCandidates = candidates.filter(candidate => {
     const searchTerms = Object.values(candidate).join(" ").toLowerCase();
@@ -123,7 +131,7 @@ const App = () => {
             <Typography.Text>Feedback : {userData.candidateData.hrFeedback}</Typography.Text>
             <Typography.Text>Overall Rating : {userData.candidateData.overall_rating}</Typography.Text>
             <Form.Item label="Final Remarks">
-              <Input value={finalRemarks} onChange={(e) => setFinalRemarks(e.target.value)} />
+              <Input value={finalremarks} onChange={(e) => setFinalRemarks(e.target.value)} />
             </Form.Item>
             <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "20%", paddingRight: "20%" }}>
               <Button type="primary" onClick={() => handleFormSubmit("SELECTED")}>

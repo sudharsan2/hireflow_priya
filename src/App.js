@@ -54,6 +54,8 @@ import ResetPassword from "./components/usermanagement/resetPassword";
 import LLMSummary from "./pages/summary/LLMSummary";
 import Candidatequery from "./pages/CandidateQuery";
 import CandidateAdmin from "./components/usermanagement/CandidatesDashboard";
+import MyPage from "./pages/selectedCandidates";
+
 
 const App = () => {
 
@@ -73,6 +75,7 @@ const App = () => {
         
         <Route path="/hrr-summary" element={<CustomLayout><HrrSummary/></CustomLayout>} />
         <Route path="/llmAdminSummary" element={<CustomLayout><LLMSummary/></CustomLayout>} />
+        <Route/>
         <Route path="/tech-summary" element={<CustomLayout><TechSummary/></CustomLayout>} />
         <Route path="/add-candidate" element={<CustomLayout><Newcandidate /></CustomLayout>} />
         <Route path="/dashboard" element={<CustomLayout><Piechart /></CustomLayout>} />
@@ -83,6 +86,7 @@ const App = () => {
         <Route path="/candidateadmin" element={<CustomLayout><CandidateAdmin/></CustomLayout>} />
         
         {/* Add more routes as needed */}
+      <Route path= "/SelectedCandidates" element={<CustomLayout><MyPage/></CustomLayout>}/>
       </Routes>
     </Router>
   );

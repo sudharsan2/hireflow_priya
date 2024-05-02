@@ -43,6 +43,7 @@ const roles = {
         { key: "evaluation", label: "Admin Evaluation", linkTo: "/evaluation", icon: <FileDoneOutlined /> },
         { key: "summary", label: "Summary", linkTo: "/admin-summary", icon: <ProfileOutlined /> },
         { key: "llmSummary", label: "Query", linkTo: "/llmAdminSummary", icon: <FileSearchOutlined /> },
+        {key: "SelectedCandidates",label: "Selected Candidates", linkTo: "/SelectedCandidates", icon: <FileSearchOutlined /> }
       ],
     },
   ],

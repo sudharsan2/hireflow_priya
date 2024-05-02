@@ -19,7 +19,7 @@ export function Newcandidate() {
 
     const handleAssignConfirmation = async () => {
         try {
-            const apiUrl = "https://hireflowapi.focusrtech.com:90/hiring/entryLevel/assignRole/";
+            const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/assignRole/";
             const response = await axios.post(apiUrl);
             fetchData();
             notification.success({
@@ -39,14 +39,14 @@ export function Newcandidate() {
     const fetchData = async () => {
         const token = localStorage.getItem('accessToken');
         try {
-            const response = await axios.get('https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getAllCandidates', {
+            const response = await axios.get('http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             });
             const extractedData = response.data.map(profile => ({
                 name: profile.name || 'null',
-                experience: profile.experience || 'null',
+                experience: profile.yearsOfExperience || 'null',
                 jobRole: profile.jobRole || 'null',
                 aiScore: profile.resumeScore || 'null'
             }));

@@ -31,7 +31,7 @@ const Usermanagement = () => {
     const token = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        "https://hireflowapi.focusrtech.com:90/hiring/auth/getAllUsers",
+        "http://172.235.10.116:7000/hiring/auth/getAllUsers",
         {
           headers: {
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const Usermanagement = () => {
     const token = localStorage.getItem("accessToken");
     console.log("Token", token);
     axios
-      .get("https://hireflowapi.focusrtech.com:90/hiring/auth/getAllRoles", {
+      .get("http://172.235.10.116:7000/hiring/auth/getAllRoles", {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
@@ -81,7 +81,7 @@ const Usermanagement = () => {
     };
 
     axios
-      .post("https://hireflowapi.focusrtech.com:90/hiring/auth/register/", postData, {
+      .post("http://172.235.10.116:7000/hiring/auth/register/", postData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("accessToken"),

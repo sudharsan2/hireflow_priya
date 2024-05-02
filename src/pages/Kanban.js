@@ -140,7 +140,7 @@ export default function Kanban() {
     console.log(selectedCard.resumeId);
     const resumeId = selectedCard.resumeId;
     try {
-      const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
@@ -471,7 +471,7 @@ export default function Kanban() {
     if (!selectedCard.interviewerorder.includes(selectedCard.interviewer[selectedCard.interviewer.length - 1])) {
       selectedCard.interviewerorder.push(selectedCard.interviewer[selectedCard.interviewer.length - 1])
     }
-    axios.put(`https://hireflowapi.focusrtech.com:90/hiring/entryLevel/updatedata/${resumeId}/`, selectedCard, {
+    axios.put(`http://172.235.10.116:7000/hiring/entryLevel/updatedata/${resumeId}/`, selectedCard, {
       headers: {
         Authorization: `Bearer ${token}`
       }

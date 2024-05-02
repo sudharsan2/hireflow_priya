@@ -57,7 +57,7 @@ const Kanbannav = () => {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     axios
-      .get("https://hireflowapi.focusrtech.com:90/hiring/interviewer/notshortlistedNotification", {
+      .get("http://172.235.10.116:7000/hiring/interviewer/notshortlistedNotification", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
