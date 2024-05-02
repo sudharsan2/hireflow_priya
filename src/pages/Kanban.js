@@ -252,7 +252,7 @@ export default function Kanban() {
     // Check if the source column is "Assigned" and the destination column is "Waiting" or "Selected"
     if (
       source.droppableId === "Assigned" &&
-      (destination.droppableId === "Waiting" ||
+      (destination.droppableId === "Processed" ||
         destination.droppableId === "Completed")
     ) {
       // Prevent the drop action for cards from the "Assigned" column to "Waiting" or "Selected"
@@ -262,10 +262,10 @@ export default function Kanban() {
       console.log(tasks);
       return;
     }
-    if (source.droppableId === "Waiting" && (destination.droppableId == "Tech" || destination.droppableId == "Assigned")) {
+    if (source.droppableId === "Processed" && (destination.droppableId == "Tech" || destination.droppableId == "Assigned")) {
       return;
     }
-    if (source.droppableId === "Completed" && (destination.droppableId == "Waiting" || destination.droppableId == "Tech" || destination.droppableId == "Assigned")) {
+    if (source.droppableId === "Completed" && (destination.droppableId == "Processed" || destination.droppableId == "Tech" || destination.droppableId == "Assigned")) {
       return;
     }
 

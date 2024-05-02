@@ -89,8 +89,11 @@ const Techcontainer = ({ users, fetchData }) => {
             
           ]}
         >
-          {hrCount && (
+          {selectedUser&& (
             <>
+              <p>Name:   {selectedUser.username}</p> 
+              <p>Email:   {selectedUser.email}</p>
+               <p>Emp ID:   {selectedUser.empId}</p>
               <p>New Applicants: {hrCount.assignedCandidates}</p>
               <p>completed: {hrCount.completed}</p>
             </>

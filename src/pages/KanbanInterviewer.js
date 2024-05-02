@@ -79,14 +79,14 @@ export default function KanbanInterviewer() {
 
     // Check if the source column is "Waiting" and the destination column is  "Selected"
     if (
-      source.droppableId === "Waiting" &&
+      source.droppableId === "Processed" &&
       destination.droppableId === "Completed"
     ) {
       // Prevent the drop action for cards from the "Waiting" column to  or "Selected"
       return;
     }
     if (
-      source.droppableId === "Waiting" &&
+      source.droppableId === "Processed" &&
       destination.droppableId === "Tech"
     ) {
       // Prevent the drop action for cards from the "Waiting" column to   "tech"
@@ -103,7 +103,7 @@ export default function KanbanInterviewer() {
     }
     if (
       source.droppableId === "Completed" &&
-      destination.droppableId === "Waiting"
+      destination.droppableId === "Processed"
       // || destination.droppableId === "Waiting"
     ) {
       // Prevent the drop action for cards from the "Selected" column to   "waiting"

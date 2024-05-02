@@ -126,9 +126,13 @@ const HRRContainer = ({users1, fetchData}) => {
     >
       {selectedUser && (
         <div>
-        <p>Name: {selectedUser.name}</p>
-        <p>Email: {selectedUser.email}</p>
-        <p>Emp ID: {selectedUser.empId}</p>
+        <p>Name:   {selectedUser.username}</p>
+        <p>Email:   {selectedUser.email}</p>
+        <p>Emp ID:   {selectedUser.empId}</p>
+        <p>New applicants:  {hrCount.newApplicants}</p>
+        <p>Assigned To Tech:   {hrCount.assignedToTech}</p>
+        <p>Waiting For Approval:   {hrCount.waitingForApproval}</p>
+        <p>Completed:   {hrCount.completed}</p>
         {/* Add more details as needed */}
         <div style={{display:'flex',justifyContent:'space-between'}}>
           <Button type='primary' onClick={() => handleDeleteUser(selectedUser)}>Delete</Button>
