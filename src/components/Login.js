@@ -1,6 +1,7 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./login.css";
@@ -15,10 +16,8 @@ import {
 } from "../redux/slices/authSlice";
 import useIsMountedRef from "../hooks/useIsMountedRef";
 import { useSelector } from "react-redux";
-import { EyeOutlined } from '@ant-design/icons';
-
-////////////////////////////////////////////////////////////////////////////////////
-
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+ 
 const Login = () => {
   const isMountedRef = useIsMountedRef();
   const navigate = useNavigate();
@@ -31,27 +30,19 @@ const Login = () => {
     username: Yup.string().required("Username is required"),
     password: Yup.string().required("Password is required"),
   });
-
-
+ 
   const formik = useFormik({
     initialValues: {
       username: "",
       password: "",
     },
-
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
-        
         dispatch(fetchLoginDetailsAsync(values));
-        
-        
-        
         if (isMountedRef.current) {
           setSubmitting(false);
-          
         }
-        
       } catch (error) {
         console.error(error);
         console.log("error")
@@ -67,12 +58,10 @@ const Login = () => {
       }
     },
   });
-
+ 
   useEffect(() => {
-    
     const role = localStorage.getItem("role");
     if (isAuthenticated === 2) {
-      // console.log({'authentication': isAuthenticated})
       switch (role) {
         case "ROLE_ADMIN":
           navigate("/admin-page");
@@ -84,7 +73,6 @@ const Login = () => {
           navigate("/kanban-interviewer");
           break;
         default:
-          // Navigate to a default page or handle other roles
           navigate("/");
       }
       // Show notification when API call is finished
@@ -92,24 +80,68 @@ const Login = () => {
         message: "Login Successful",
         description: "You have successfully logged in.",
       });
-    }
-
-    else if(isAuthenticated === 3){
+    } else if (isAuthenticated === 3) {
       notification.error({
         message: "Login Failed",
         description: isError || "An error occurred during login.",
       });
     }
-    
   }, [isAuthenticated, navigate]);
-
+ 
   const imgurl1 = process.env.PUBLIC_URL + "./img/bg_3.mp4";
   const imgurl2 = process.env.PUBLIC_URL + "./img/login3.jpg";
-
+ 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-
+ 
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        "http://172.235.10.116:7000/hiring/auth/signin/",
+        {
+          username: formik.values.username,
+          password: formik.values.password
+        }
+      );
+ 
+      const token = response.data.tokens.access_token;
+ 
+      localStorage.setItem("accessToken", response.data.tokens.access_token);
+      const { exp, role, username, email, empId } = jwtDecode(response.data.tokens.access_token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("empId", empId)
+      localStorage.setItem("username", username);
+      localStorage.setItem("mail", email);
+      if(role==="ROLE_ADMIN"){
+        navigate("/admin-page");
+        notification.success({
+          message: "Login Successful",
+          description: "You have successfully logged in.",
+        });
+      }
+      else if(role==="ROLE_RECRUITER"){
+        navigate("/kanban-recurit");
+        notification.success({
+          message: "Login Successful",
+          description: "You have successfully logged in.",
+        });
+      }
+      else if (role==="ROLE_INTERVIEWER"){
+        navigate("/kanban-interviewer");
+        notification.success({
+          message: "Login Successful",
+          description: "You have successfully logged in.",
+        });
+      }
+    } catch (exception) {
+      notification.error({
+        message: "Login Failed",
+        description: "Invalid Credentials, Please check Your Credentials again  🥹",
+      })
+    }
+  }
+ 
   return (
     <div className="Login">
       <video autoPlay loop muted className="background-video" playsInline>
@@ -124,8 +156,7 @@ const Login = () => {
           <div className="form-container">
             <h1>Sign in to HireFlow</h1>
             <p>by FocusR AI</p>
-            <form onSubmit={formik.handleSubmit}>
-              {/* {isError !== "" && <Alert severity="error">{isError}</Alert>} */}
+            <div>
               <div className="form-group">
                 <input
                   type="text"
@@ -140,20 +171,27 @@ const Login = () => {
                 )}
               </div>
               <div className="form-group">
-
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  name="password"
-                  placeholder="Enter your password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                />
-                {/* <EyeOutlined
-                  onClick={handleTogglePassword}
-                  className="eye-icon"
-                /> */}
-
+                <div className="password-input">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                  />
+                  {showPassword ? (
+                    <EyeInvisibleOutlined
+                      onClick={handleTogglePassword}
+                      className="eye-icon"
+                    />
+                  ) : (
+                    <EyeOutlined
+                      onClick={handleTogglePassword}
+                      className="eye-icon"
+                    />
+                  )}
+                </div>
                 {formik.touched.password && formik.errors.password && (
                   <div className="error">{formik.errors.password}</div>
                 )}
@@ -163,25 +201,26 @@ const Login = () => {
                   <input type="checkbox" name="rememberMe" />
                   Remember Me
                 </label>
-                <Link to="/forgotPassword" className="forgot-password"> {/* Use Link to navigate to the Forgot Password page */}
+                <Link to="/forgotPassword" className="forgot-password">
                   Forgot Password?
                 </Link>
               </div>
               <Button
                 className="log-button"
                 type="primary"
-                htmlType="submit"
-                loading={isLoading} // Set loading state based on the isLoading value
+                loading={isLoading}
                 disabled={formik.isSubmitting}
+                onClick={handleSubmit}
               >
                 Login
               </Button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
+ 
 export default Login;
+ 
