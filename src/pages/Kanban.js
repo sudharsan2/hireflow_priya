@@ -70,6 +70,8 @@ export default function Kanban() {
 
   const steps = tracker;
 
+  
+
   const handleChatButton = () => {
     navigate('/chat-msg');
 
@@ -1148,19 +1150,28 @@ export default function Kanban() {
               </div>
 
               <div style={{ marginLeft: "15%", marginTop: "10%" }}>
-                <Stepper
-                  activeStep={activeStep}
-                  orientation="vertical"
-                  style={{ textAlign: "center" }}
-                >
-                  {steps.map((label, index) => (
-                    <Step key={index} style={{ color: getStatusColor(label) }}>
-                      <StepLabel>
-                        {label === "NOTSHORTLISTED" ? <>{label}</> : label}
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
+              <Stepper
+      activeStep={activeStep}
+      orientation="vertical"
+      style={{ textAlign: "center" }}
+    >
+      {steps.map((label, index) => (
+        <Step key={index}>
+          <StepLabel
+            sx={{
+              '& .MuiStepIcon-root': {
+                color: label === 'NOTSHORTLISTED' ? '#ff5a5a' : label === 'SHORTLISTED' ? '#3bcd5f' : '#767676', // Change circle color based on step label and activeStep
+              },
+              '& .MuiStepLabel-label': {
+                color: label === 'NOTSHORTLISTED' ? '#ff5a5a' : label === 'SHORTLISTED' ? '#3bcd5f' : '#767676', // Change label text color based on step label and activeStep
+              },
+            }}
+          >
+            {label === 'NOTSHORTLISTED' ? 'Not Shortlisted' : label === 'SHORTLISTED' ? 'Shortlisted' : 'Yet to start'}
+          </StepLabel>
+        </Step>
+      ))}
+    </Stepper>
               </div>
               <div style={{ marginTop: "10%" }}>
                 <Select
