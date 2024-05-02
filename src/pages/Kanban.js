@@ -1160,10 +1160,10 @@ export default function Kanban() {
           <StepLabel
             sx={{
               '& .MuiStepIcon-root': {
-                color: label === 'NOTSHORTLISTED' ? '#ff5a5a' : label === 'SHORTLISTED' ? '#3bcd5f' : '#767676', // Change circle color based on step label and activeStep
+                color: label === 'NOTSHORTLISTED' ? '#ff5a5a' : label === 'SHORTLISTED' ? '#2eab4d' : '#767676', // Change circle color based on step label and activeStep
               },
               '& .MuiStepLabel-label': {
-                color: label === 'NOTSHORTLISTED' ? '#ff5a5a' : label === 'SHORTLISTED' ? '#3bcd5f' : '#767676', // Change label text color based on step label and activeStep
+                color: label === 'NOTSHORTLISTED' ? '#ff5a5a' : label === 'SHORTLISTED' ? '#2eab4d' : '#767676', // Change label text color based on step label and activeStep
               },
             }}
           >
