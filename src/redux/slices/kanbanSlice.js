@@ -100,7 +100,7 @@ const kanbanSlice = createSlice({
     tasks: {
       Assigned: [],
       Tech: [],
-      Waiting: [],
+      Processed: [],
       Completed: [],
     },
     interviewers: [],
@@ -237,7 +237,7 @@ const kanbanSlice = createSlice({
         state.status = "succeeded";
         // Assuming the fetched data is an object containing the fields you need
         // You can update the state accordingly based on the structure of the API response
-        state.tasks.Waiting = action.payload;
+        state.tasks.Processed = action.payload;
       })
       .addCase(fetchFinalDataAsync.rejected, (state, action) => {
         state.status = "failed";

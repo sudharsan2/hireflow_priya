@@ -29,7 +29,7 @@ const Techcontainer = ({ users, fetchData }) => {
 
     try {
       const response = await axios.get(
-        `https://hireflowapi.focusrtech.com:90/hiring/auth/statsofinterviewer/${empId}`
+        `http://172.235.10.116:7000/hiring/auth/statsofinterviewer/${empId}`
       );
       setHrCount(response.data);
     } catch (error) {
@@ -49,7 +49,7 @@ const Techcontainer = ({ users, fetchData }) => {
     const id = selectedUser.id;
     try {
       await axios.put(
-        `https://hireflowapi.focusrtech.com:90/hiring/auth/activeInactiveUser/${id}`,
+        `http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`,
         {
           is_active: !is_active,
         }
@@ -89,8 +89,11 @@ const Techcontainer = ({ users, fetchData }) => {
             
           ]}
         >
-          {hrCount && (
+          {selectedUser&& (
             <>
+              <p>Name:   {selectedUser.username}</p> 
+              <p>Email:   {selectedUser.email}</p>
+               <p>Emp ID:   {selectedUser.empId}</p>
               <p>New Applicants: {hrCount.assignedCandidates}</p>
               <p>completed: {hrCount.completed}</p>
             </>

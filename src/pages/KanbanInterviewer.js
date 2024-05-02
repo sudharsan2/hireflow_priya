@@ -79,14 +79,14 @@ export default function KanbanInterviewer() {
 
     // Check if the source column is "Waiting" and the destination column is  "Selected"
     if (
-      source.droppableId === "Waiting" &&
+      source.droppableId === "Processed" &&
       destination.droppableId === "Completed"
     ) {
       // Prevent the drop action for cards from the "Waiting" column to  or "Selected"
       return;
     }
     if (
-      source.droppableId === "Waiting" &&
+      source.droppableId === "Processed" &&
       destination.droppableId === "Tech"
     ) {
       // Prevent the drop action for cards from the "Waiting" column to   "tech"
@@ -103,7 +103,7 @@ export default function KanbanInterviewer() {
     }
     if (
       source.droppableId === "Completed" &&
-      destination.droppableId === "Waiting"
+      destination.droppableId === "Processed"
       // || destination.droppableId === "Waiting"
     ) {
       // Prevent the drop action for cards from the "Selected" column to   "waiting"
@@ -246,7 +246,7 @@ export default function KanbanInterviewer() {
     console.log(selectedTask.resumeId);
     const resumeId = selectedTask.resumeId;
     try {
-      const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
@@ -276,7 +276,7 @@ export default function KanbanInterviewer() {
       console.log('skills', skills.skills[index].id);
 
 
-      await axios.delete(`https://hireflowapi.focusrtech.com:90/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
+      await axios.delete(`http://172.235.10.116:7000/hiring/interviewer/deleteskill/${skills.skills[index].id}`, {
         headers: {
           'Content-Type': 'application/json'
         },

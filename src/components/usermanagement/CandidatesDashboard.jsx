@@ -12,7 +12,7 @@ const CandidateAdmin = () => {
     const fetchData = async () => {
         const token = localStorage.getItem('accessToken');
         try {
-            const response = await axios.get('https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getAllCandidates', {
+            const response = await axios.get('http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -37,7 +37,7 @@ const CandidateAdmin = () => {
 
     const handleAssignClick = async () => {
         try {
-            const apiUrl = "https://hireflowapi.focusrtech.com:90/hiring/entryLevel/assignRole/";
+            const apiUrl = "http://172.235.10.116:7000/hiring/entryLevel/assignRole/";
 
             // Make a POST request to the API
             const response = await axios.post(apiUrl);

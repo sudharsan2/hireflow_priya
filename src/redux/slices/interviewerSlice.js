@@ -57,7 +57,7 @@ const interviewerSlice = createSlice({
   initialState: {
     tasks: {
       Tech: [],
-      Waiting: [],
+      Processed: [],
       Completed: [],
     },
     interviewerData: [],
@@ -103,7 +103,7 @@ const interviewerSlice = createSlice({
         state.tasks.Tech = allTasks.filter(
           (task) => task.currentStatus === "IN_TECH" && (task.interviewerSubmissionStatus === "SAVED" || task.interviewerSubmissionStatus === null )
         );
-        state.tasks.Waiting = allTasks.filter(
+        state.tasks.Processed = allTasks.filter(
           (task) => (task.currentStatus === "IN_FINAL" && task.interviewerSubmissionStatus === "SUBMITTED") || (task.currentStatus === "IN_TECH" && task.interviewerSubmissionStatus === "SUBMITTED")
       );
       

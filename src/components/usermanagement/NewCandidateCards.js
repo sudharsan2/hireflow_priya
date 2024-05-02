@@ -13,7 +13,7 @@ const ProfileCard = ({ profile }) => {
   console.log(profile.resumeId);
   const resumeId = profile.resumeId;
   try {
-    const response = await axios.get(`https://hireflowapi.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
+    const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
       responseType: 'blob',
     });
     console.log(response.headers);
@@ -36,10 +36,10 @@ const ProfileCard = ({ profile }) => {
         <div className="profile-card">
             <AccountCircleIcon className="profile-icon" />
             <h2>{profile.name || 'null'}</h2>
-            <p>Experience: {profile.yearsOfExperience} years</p>
+            <p>Experience: {profile.experience} years</p>
             <p>Job Role: {profile.jobRole || 'null'}</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p>AI Score: {profile.resumeScore || 'null'}</p>
+                <p>AI Score: {profile.aiScore || 'null'}</p>
                 <DownloadOutlined style={{ fontSize: '25px', cursor: 'pointer', color: 'rgb(0,33,64)' }} onClick={handleDownload} />
             </div>
 
@@ -55,7 +55,7 @@ export const Candidatecards = ({ selectedFilters, candidateCards }) => {
 
     //     const fetchData = async () => {
     //         try {
-    //             const response = await axios.get('https://hireflowapi.focusrtech.com:90/hiring/entryLevel/getAllCandidates', {
+    //             const response = await axios.get('http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates', {
     //                 headers: {
     //                     Authorization: `Bearer ${token}`,
     //                 }
