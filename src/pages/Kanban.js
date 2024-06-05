@@ -978,7 +978,7 @@ export default function Kanban() {
           footer={
             [
               // <Button key="back" onClick={handleModalClose}>
-              //   Close
+              //   Clos
               // </Button>,
             ]
           }
