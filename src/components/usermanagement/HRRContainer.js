@@ -76,7 +76,7 @@ const HRRContainer = ({users1, fetchData}) => {
     const isActive = selectedUser.is_active;
     const id = selectedUser.id;
     try {
-      await axios.put(`http://172.235.10.116:7000/hiring/auth/activeInactiveUser/${id}`, {
+      await axios.put(`https://hireflowapidev.focusrtech.com:90/hiring/auth/activeInactiveUser/${id}`, {
         is_active: !isActive
       });
       fetchData();
@@ -90,7 +90,7 @@ const HRRContainer = ({users1, fetchData}) => {
     const id = selectedUser.id;
     const isPause = selectedUser.pause;
     try {
-      await axios.put(`http://172.235.10.116:7000/hiring/auth/pauseResumeUser/${id}`, {
+      await axios.put(`https://hireflowapidev.focusrtech.com:90/hiring/auth/pauseResumeUser/${id}`, {
         pause: !isPause
       });
       fetchData();
@@ -102,7 +102,7 @@ const HRRContainer = ({users1, fetchData}) => {
 
   const handleCountHrUser = async (empId) => {
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/statsofhr/${empId}`);
+      const response = await axios.get(`https://hireflowapidev.focusrtech.com:90/hiring/auth/statsofhr/${empId}`);
       setHrCount(response.data);
     } catch (error) {
       console.error("Error fetching HR count:", error.message);

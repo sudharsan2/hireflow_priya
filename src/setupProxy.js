@@ -4,7 +4,7 @@
 //   app.use(
 //     "/hiring/api/",
 //     createProxyMiddleware({
-//       target: "http://172.235.10.116:7000",
+//       target: "https://hireflowapidev.focusrtech.com:90",
 //       changeOrigin: true,
 //     })
 //   );
@@ -16,7 +16,7 @@ module.exports = function (app) {
   app.use(
     "/hiring/",
     createProxyMiddleware({
-      target: "http://172.235.10.116:7000",
+      target: "https://hireflowapidev.focusrtech.com:90",
       changeOrigin: true,
     })
   );

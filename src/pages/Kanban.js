@@ -142,7 +142,7 @@ export default function Kanban() {
     console.log(selectedCard.resumeId);
     const resumeId = selectedCard.resumeId;
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`https://hireflowapidev.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
@@ -473,7 +473,7 @@ export default function Kanban() {
     if (!selectedCard.interviewerorder.includes(selectedCard.interviewer[selectedCard.interviewer.length - 1])) {
       selectedCard.interviewerorder.push(selectedCard.interviewer[selectedCard.interviewer.length - 1])
     }
-    axios.put(`http://172.235.10.116:7000/hiring/entryLevel/updatedata/${resumeId}/`, selectedCard, {
+    axios.put(`https://hireflowapidev.focusrtech.com:90/hiring/entryLevel/updatedata/${resumeId}/`, selectedCard, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -748,6 +748,19 @@ export default function Kanban() {
                   disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
                 />
               </Tooltip>
+              <Tooltip title="Total Experience">
+                <Input
+                  placeholder="Total Experience"
+                  value={selectedCard.yearsOfExperience}
+                  onChange={(e) =>
+                    setSelectedCard({
+                      ...selectedCard,
+                      yearsOfExperience: e.target.value,
+                    })
+                  }
+                  disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
+                />
+              </Tooltip>
               <Tooltip title="Candidate's Domain Experience">
                 <Input
                   placeholder="Candidate's Domain Experience"
@@ -756,6 +769,32 @@ export default function Kanban() {
                     setSelectedCard({
                       ...selectedCard,
                       domainExperience: e.target.value,
+                    })
+                  }
+                  disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
+                />
+              </Tooltip>
+              <Tooltip title="Current Company">
+                <Input
+                  placeholder="Current Company"
+                  value={selectedCard.currentCompany}
+                  onChange={(e) =>
+                    setSelectedCard({
+                      ...selectedCard,
+                      currentCompany: e.target.value,
+                    })
+                  }
+                  disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
+                />
+              </Tooltip>
+              <Tooltip title="Project's worked on">
+                <Input
+                  placeholder="Project's worked on"
+                  value={selectedCard.projectWorkedOn}
+                  onChange={(e) =>
+                    setSelectedCard({
+                      ...selectedCard,
+                      projectWorkedOn: e.target.value,
                     })
                   }
                   disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
@@ -827,9 +866,9 @@ export default function Kanban() {
                   disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
                 />
               </Tooltip>
-              <Tooltip title="Notification Period">
+              <Tooltip title="Notice Period">
                 <Input
-                  placeholder="Notification Period"
+                  placeholder="Notice Period"
                   value={selectedCard.notificationPeriod}
                   onChange={(e) =>
                     setSelectedCard({

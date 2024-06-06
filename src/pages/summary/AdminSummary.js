@@ -18,7 +18,7 @@ import {
   Tooltip,
   message,
 } from "antd";
-import { SyncOutlined } from "@ant-design/icons";
+import { SyncOutlined,ArrowDownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCandidateDetailsAsync,
@@ -156,7 +156,7 @@ const AdminSummary = () => {
     console.log(record.resumeId);
     const resumeId = record.resumeId;
     try {
-      const response = await axios.get(`http://172.235.10.116:7000/hiring/auth/downloadResume/${resumeId}`, {
+      const response = await axios.get(`https://hireflowapidev.focusrtech.com:90/hiring/auth/downloadResume/${resumeId}`, {
         responseType: 'blob',
       });
       console.log(response.headers);
@@ -555,6 +555,9 @@ const AdminSummary = () => {
                   Oracle SCM consultant
                 </Option>
                 <Option value="Fresher">Fresher</Option>
+                <Option value="Oracle Finance - Domain Trainee">
+                  Oracle Finance - Domain Trainee
+                  </Option>
               </Select>
             </Col>
             <Col span={8}>
@@ -670,6 +673,19 @@ const AdminSummary = () => {
                 }}
               >
                 Clear
+              </Button>
+              <Button
+                style= {{marginLeft : "10px"}}
+                type="primary"
+                icon={<ArrowDownOutlined />}
+                loading={loadings}
+                onClick={() => {
+                  
+                  clearForm1();
+                  setShowTable(false); // Set showTable to true when clicking the button
+                }}
+              >
+                Export
               </Button>
             </Col>
           </Row>

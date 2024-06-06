@@ -74,7 +74,7 @@ const Candidatecon = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
-          "http://172.235.10.116:7000/hiring/entryLevel/getAllCandidates",
+          "https://hireflowapidev.focusrtech.com:90/hiring/entryLevel/getAllCandidates",
           {
             headers: {
               "Content-Type": "application/json",

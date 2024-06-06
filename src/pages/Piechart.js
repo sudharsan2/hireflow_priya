@@ -29,10 +29,10 @@ class Dashboard extends Component {
   componentDidMount() {
     // Fetch data from the API for chartData, percent, and ovraldata
     Promise.all([
-      fetch('http://172.235.10.116:7000/hiring/auth/overallstats'),
-      fetch('http://172.235.10.116:7000/hiring/auth/hiringPercentage'),
-      fetch('http://172.235.10.116:7000/hiring/auth/jobstats'),
-      fetch('http://172.235.10.116:7000/hiring/auth/expdata')
+      fetch('https://hireflowapidev.focusrtech.com:90/hiring/auth/overallstats'),
+      fetch('https://hireflowapidev.focusrtech.com:90/hiring/auth/hiringPercentage'),
+      fetch('https://hireflowapidev.focusrtech.com:90/hiring/auth/jobstats'),
+      fetch('https://hireflowapidev.focusrtech.com:90/hiring/auth/expdata')
     ])
     .then(([response1, response2, response3, response4]) => Promise.all([response1.json(), response2.json(), response3.json(), response4.json()]))
     .then(([data1, data2, data3, data4]) => {

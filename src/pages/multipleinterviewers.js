@@ -53,7 +53,7 @@
   
 //     try {
 //       // Make API call to remove the interviewer
-//       await axios.post('http://172.235.10.116:7000/hiring/entryLevel/removeinterviewer', {
+//       await axios.post('https://hireflowapidev.focusrtech.com:90/hiring/entryLevel/removeinterviewer', {
 //         candidate_id: selectedcard.id,
 //         interviewer_id: removedInterviewerId, // Send the removed interviewer's ID
 //       });
@@ -175,7 +175,7 @@ const Toolkit = ({ interviewerList, selectedcard, handleclick, interviewers1,han
   
     try {
       // Make API call to remove the interviewer
-      await axios.post('http://172.235.10.116:7000/hiring/entryLevel/removeinterviewer', {
+      await axios.post('https://hireflowapidev.focusrtech.com:90/hiring/entryLevel/removeinterviewer', {
         candidate_id: selectedcard.id,
         interviewer_id: removedInterviewerId, // Send the removed interviewer's ID
       });
