@@ -50,7 +50,7 @@ const LLMSummary = () => {
     const currentItems = responseData.slice(indexOfFirstItem, indexOfLastItem);
 
     const paginate = pageNumber => setCurrentPage(pageNumber);
-
+''
     return (
         <>
             <Usernav />
