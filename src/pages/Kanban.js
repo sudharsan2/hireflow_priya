@@ -23,6 +23,10 @@ import {
   Typography,
   message,
   notification,
+  Row,
+  Col,
+  Card
+  
 } from "antd";
 import CardDetails from "../components/kanban/CardDetails";
 import api from "../services/api";
@@ -49,6 +53,8 @@ import StepContent from "@mui/material/StepContent";
 import DirectionsWalkSharpIcon from '@mui/icons-material/DirectionsWalkSharp';
 
 const { Option } = Select;
+const { Text, Title } = Typography;
+const { TextArea } = Input;
 
 export default function Kanban() {
   const dispatch = useDispatch();
@@ -85,6 +91,12 @@ export default function Kanban() {
 
 
   // Get navigate function
+  const handleCompanyChange = (index, field, value) => {
+    const updatedCompanyHistory = [...selectedCard.candidateHistory];
+    updatedCompanyHistory[index][field] = value;
+    console.log({'history':updatedCompanyHistory})
+    setSelectedCard({ ...selectedCard, candidateHistory: updatedCompanyHistory });
+  };
 
   const handleChat = (param1Value) => {
     // Navigate to the '/chat-msg' route when chat button is clicked
@@ -774,7 +786,7 @@ export default function Kanban() {
                   disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
                 />
               </Tooltip>
-              <Tooltip title="Current Company">
+              {/* <Tooltip title="Current Company">
                 <Input
                   placeholder="Current Company"
                   value={selectedCard.currentCompany}
@@ -799,7 +811,7 @@ export default function Kanban() {
                   }
                   disabled={selectedCard && selectedCard.recruiterSubmissionStatus === "SUBMITTED"}
                 />
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip title="phoneNo">
                 <Input
                   placeholder="phoneNo"
@@ -979,7 +991,88 @@ export default function Kanban() {
 
           </div>
           <hr style={{ margin: "40px 0" }} />
-          <div>
+          {/* <div style={{ gridColumn: "1 / -1" }}>
+        <h3>Past Company Details</h3>
+        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+          {selectedCard&& selectedCard.candidateHistory&& selectedCard.candidateHistory.length > 0 ? (
+            selectedCard.candidateHistory.map((company, index) => (
+              <Card key={index} style={{ marginBottom: '10px' }}>
+                <Typography>
+                  <strong>Company Name:</strong> 
+                  <Input 
+                    value={company.companyName} 
+                    onChange={(e) => handleCompanyChange(index, 'name', e.target.value)}
+                  />
+                </Typography>
+                <Typography>
+                  <strong>Time Period:</strong> 
+                  <Input 
+                    value={company.timeinyears} 
+                    onChange={(e) => handleCompanyChange(index, 'timePeriod', e.target.value)}
+                  />
+                </Typography>
+                <Typography>
+                  <strong>Projects Worked:</strong> 
+                  <Input 
+                    value={company.projects} 
+                    onChange={(e) => handleCompanyChange(index, 'projects', e.target.value)}
+                  />
+                </Typography>
+              </Card>
+            ))
+          ) : (
+            <Typography>No company history available</Typography>
+          )}
+        </div>
+      </div> */}
+      <div style={{ gridColumn: "1 / -1" }}>
+      <Title level={5}>Past Company Details</Title>
+      <div style={{ maxHeight: '200px', overflowY: 'auto', padding: '10px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
+        {selectedCard && selectedCard.candidateHistory && selectedCard.candidateHistory.length > 0 ? (
+          selectedCard.candidateHistory.map((company, index) => (
+            <Card key={index} style={{ marginBottom: '10px' }}>
+              <Row gutter={[16, 16]}>
+                <Col span={24}>
+                  <Text strong>Company Name:</Text>
+                  <Input
+                    value={company.companyName}
+                    onChange={(e) => handleCompanyChange(index, 'companyName', e.target.value)}
+                    style={{ marginBottom: '8px' }}
+                  />
+                </Col>
+                <Col span={24}>
+                  <Text strong>Time Period:</Text>
+                  <Input
+                    value={company.timerange}
+                    onChange={(e) => handleCompanyChange(index, 'timerange', e.target.value)}
+                    style={{ marginBottom: '8px' }}
+                  />
+                </Col>
+                {/* <Col span={24}>
+                  <Text strong>N.O years:</Text>
+                  <Input
+                    value={company.timeinyears}
+                    onChange={(e) => handleCompanyChange(index, 'timeinyears', e.target.value)}
+                    style={{ marginBottom: '8px' }}
+                  />
+                </Col> */}
+                <Col span={24}>
+                  <Text strong>Projects Worked:</Text>
+                  <TextArea
+                    value={company.projects}
+                    onChange={(e) => handleCompanyChange(index, 'projects', e.target.value)}
+                    rows={4}
+                  />
+                </Col>
+              </Row>
+            </Card>
+          ))
+        ) : (
+          <Text>No company history available</Text>
+        )}
+      </div>
+    </div>
+          <div style={{ gridColumn: "1 / -1" }}>
             <h3>Skills</h3>
             {selectedCard && selectedCard.llmskills ? (
               <p>

@@ -135,6 +135,33 @@ const AdminSummary = () => {
  
     console.log(formData);
   };
+  
+  const exportData = async () => {
+    try {
+      const filteredData = Object.fromEntries(
+        Object.entries(formData).filter(([_, value]) => value !== "")
+      );
+      const response = await axios.post('https://hireflowapidev.focusrtech.com:90/hiring/auth/exportSummary', filteredData, {
+        responseType: 'blob' // Important for handling binary data
+      });
+
+      // Create a URL for the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'summary.xlsx'); // Name of the file
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error exporting data:', error);
+    }
+  };
+
+
   const handleFromDateChange = (date) => {
     handleChange("fromDate", date);
     console.log("date", formData.fromDate);
@@ -649,7 +676,7 @@ const AdminSummary = () => {
               </Select>
             </Col>
             <Col span={8}>
-              <Button
+              {/* <Button
                 type="primary"
                 icon={<SyncOutlined />}
                 loading={loadings}
@@ -686,7 +713,54 @@ const AdminSummary = () => {
                 }}
               >
                 Export
-              </Button>
+              </Button> */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+      <Button
+        type="primary"
+        icon={<SyncOutlined />}
+        loading={loadings}
+        onClick={() => {
+          fetchCandidateDetails();
+          clearForm();
+          setShowTable(true); // Set showTable to true when clicking the button
+        }}
+        style={{ width: 'auto', flex: '1 1 auto' }}
+      >
+        Find
+      </Button>
+      <Button
+        type="primary"
+        icon={<SyncOutlined />}
+        loading={loadings}
+        onClick={() => {
+          clearForm1();
+          setShowTable(false); // Set showTable to false when clicking the button
+        }}
+        style={{ marginLeft: '10px', width: 'auto', flex: '1 1 auto' }}
+      >
+        Clear
+      </Button>
+      <Button
+        type="primary"
+        icon={<ArrowDownOutlined />}
+        loading={loadings}
+        onClick={() => {
+          
+          exportData(); // Set showTable to false when clicking the button
+        }}
+        style={{ marginLeft: '10px', width: 'auto', flex: '1 1 auto' }}
+      >
+        Export
+      </Button>
+      <style jsx>{`
+        @media (max-width: 1280px) {
+          button {
+            width: 100%;
+            flex: none;
+          }
+        }
+      `}</style>
+    </div>
             </Col>
           </Row>
         </Space>

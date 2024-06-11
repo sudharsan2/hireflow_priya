@@ -43,6 +43,7 @@ import KanbanInterviewer from "./pages/KanbanInterviewer";
 //import ResultPage from "./components/usermanagement/ResultsPage";
 import Chats from "./pages/Chats";
 import CustomLayout from "./layout/CustomLayout";
+
 import AdminSummary from "./pages/summary/AdminSummary";
 import HrrSummary from "./pages/summary/HrrSummary";
 import { Newcandidate } from "./components/usermanagement/NewCandidateAdmin";
@@ -61,6 +62,7 @@ const App = () => {
 
   
   return (
+    
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -89,6 +91,7 @@ const App = () => {
       <Route path= "/SelectedCandidates" element={<CustomLayout><MyPage/></CustomLayout>}/>
       </Routes>
     </Router>
+    
   );
 };
 

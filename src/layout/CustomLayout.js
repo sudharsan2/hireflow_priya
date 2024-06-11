@@ -88,7 +88,7 @@ const roles = {
   ],
 };
 // 
-const CustomLayout = ({ children }) => {
+const CustomLayout = ({state, children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [userRole, setUserRole] = useState("");
 
@@ -102,6 +102,8 @@ const CustomLayout = ({ children }) => {
   //   const role = localStorage.getItem("role");
   const [role, setRole] = useState("");
   const imgurl2 = process.env.PUBLIC_URL + "./img/frlogo.png";
+
+  
 
   const HandlerRole = (jobRole) => {
     if (jobRole === 'ROLE_ADMIN') {
@@ -252,7 +254,8 @@ const CustomLayout = ({ children }) => {
       </div>
       
       {/* Render submenu items */}
-      {item.subMenu && item.subMenu.map((subItem) => (
+      {/* {item.subMenu && item.subMenu.map((subItem) => (
+        
         <Menu.Item key={subItem.key} theme="dark" defaultSelectedKeys={["1"]} mode="inline">
         <Link to={subItem.linkTo}>
           <div style={{ display: 'flex', alignItems: 'center', fontSize:'1.2em', fontWeight:'lighter' }}>
@@ -260,9 +263,25 @@ const CustomLayout = ({ children }) => {
             {!collapsed && <span>{subItem.label}</span>}
           </div>
         </Link>
+        
       </Menu.Item>
       
-      ))}
+      ))} */}
+      {item.subMenu && item.subMenu.map((subItem) => {
+    console.log({"mass": subItem.linkTo}); // Move console.log outside of the JSX
+
+    return (
+        <Menu.Item key={subItem.key} theme="dark" defaultSelectedKeys={["1"]} mode="inline">
+            <Link to={subItem.linkTo}>
+                <div style={{ display: 'flex', alignItems: 'center', fontSize: '1.2em', fontWeight: 'lighter' }}>
+                    <div style={{ marginRight: '5px' }}><span>{subItem.icon}</span></div>
+                    {!collapsed && <span>{subItem.label}</span>}
+                </div>
+            </Link>
+        </Menu.Item>
+    );
+})}
+
     </React.Fragment>
   ))}
 </Menu>
@@ -403,3 +422,7 @@ export default CustomLayout;
 // };
 
 // export default CustomLayout;
+
+
+
+// CustomLayout.js
