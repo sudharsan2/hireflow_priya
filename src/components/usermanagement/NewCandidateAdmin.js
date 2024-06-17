@@ -231,7 +231,7 @@ export function Newcandidate() {
                 </div>
             </div>
 
-            <div className="footer" style={{ backgroundColor: "transparent" }}>
+            <div  style={{ backgroundColor: "transparent" }}>
                 <Candidatecards selectedFilters={selectedFilters} candidateCards={profileData} fetchData={fetchData} />
             </div>
 
